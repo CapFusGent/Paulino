@@ -18,6 +18,7 @@ const SESSION_KEY = 'coach.session';
 export function createApi({ supabaseUrl, supabaseAnonKey }) {
   const base = (supabaseUrl || '').replace(/\/+$/, '');
   const configured = Boolean(base && supabaseAnonKey);
+  const keyIsJwt = /^eyJ/.test(supabaseAnonKey || '');
   let session = storage.get(SESSION_KEY, null);
   let refreshing = null;
   const listeners = new Set();
@@ -36,7 +37,9 @@ export function createApi({ supabaseUrl, supabaseAnonKey }) {
         method,
         headers: {
           apikey: supabaseAnonKey,
-          Authorization: `Bearer ${token || supabaseAnonKey}`,
+          // Legacy anon keys are JWTs and may double as the bearer token; the newer
+          // sb_publishable_ keys are not JWTs and must only be sent as `apikey`.
+          ...(token || keyIsJwt ? { Authorization: `Bearer ${token || supabaseAnonKey}` } : {}),
           'Content-Type': 'application/json',
         },
         body: body === undefined ? undefined : JSON.stringify(body),
