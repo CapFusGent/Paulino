@@ -1,0 +1,20 @@
+{
+  "name": "Paulino: powerlifting coaching",
+  "short_name": "Paulino",
+  "description": "Paul's personal powerlifting coaching app, with Paulino.",
+  "id": "./",
+  "start_url": "./#/",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5EFE3",
+  "theme_color": "#F5EFE3",
+  "categories": ["fitness", "health", "sports"],
+  "icons": [
+    { "src": "assets/icons/icon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "assets/icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

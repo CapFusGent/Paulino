@@ -1,0 +1,22 @@
+{
+  "name": "paulino",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Paulino — personalised powerlifting coaching PWA",
+  "type": "module",
+  "scripts": {
+    "dev": "node server/dev-server.mjs",
+    "validate": "node scripts/validate-data.mjs",
+    "test": "node --test \"test/unit/*.test.js\"",
+    "test:e2e": "playwright test",
+    "icons": "node scripts/build-icons.mjs",
+    "check": "npm run validate && npm test && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.16",
+    "@playwright/test": "1.56"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
