@@ -1,263 +1,302 @@
-# PAULINO: powerlifting coaching, with attitude
+# PAULINO: powerlifting programs, made, shared and trained
 
-Paulino is an installable, mobile-first Progressive Web App. **Paul** (the coach) builds and shares personalised powerlifting programs. **Athletes** open a personal link, train, and log what they actually did. **Paulino**, the bearded, sunglasses-wearing mascot, gives exercise cues, celebrates finished sessions, and is *very* dramatic when someone edits Paul's plan. He is never dramatic when an athlete is protecting their body.
+Paulino replaces Paul's Excel training programs with something nicer to make and nicer to follow.
 
-- Vanilla HTML/CSS/JS with ES modules. No framework and no build step, so it deploys as static files (e.g. GitHub Pages).
-- Backend on **Supabase** (Postgres + Auth). Everything goes through RPC functions, guarded by row-level security.
-- Works offline: the app shell is cached by a versioned service worker, the program can be read offline, and workouts logged offline are queued and synced later.
+**Paul builds a program → saves it → shares a link or a file → the athlete follows it and logs their training.**
+
+- **One file:** the whole app is a single `index.html` (HTML, CSS and vanilla JavaScript), plus a few icons.
+- **No accounts, no backend, no database server, no cloud.** Everything runs in the browser and is stored in the browser.
+- Deployable on GitHub Pages or any static host. After the page has loaded, it works without a connection.
+- Paulino, the bearded, sunglasses-wearing mascot, gives technique cues, celebrates finished workouts, and is very dramatic when an athlete edits Paul's plan. He is never dramatic when the athlete is protecting their body.
 
 ---
 
 ## Contents
-
-1. [Quick start (local, no accounts needed)](#quick-start)
-2. [What's in the app](#features)
-3. [Architecture](#architecture)
-4. [Data model](#data-model)
-5. [Security model](#security)
-6. [Offline & sync](#offline--sync)
-7. [Supabase setup](#supabase-setup)
-8. [Deploying the frontend](#deploying-the-frontend)
-9. [Installing the app on a phone](#installing-the-app)
-10. [Testing](#testing)
-11. [Content: exercises, cues and Paulino](#content)
-12. [What was verified, and what wasn't](#verification-status)
-13. [Project layout](#project-layout)
+1. [Run it](#run-it)
+2. [What Paul can do](#paul)
+3. [What the athlete can do](#athlete)
+4. [Repeat / Progress: the rule engine](#rule-engine)
+5. [Sharing: links, `.paulino` files, PDF](#sharing)
+6. [Program data format](#data-format)
+7. [Browser storage](#storage)
+8. [Paulino's reactions](#paulino)
+9. [Content sources](#content)
+10. [Deploy to GitHub Pages](#deploy)
+11. [Tests](#tests)
+12. [Code layout](#code-layout)
+13. [Adding progress sharing later](#future)
 
 ---
 
-## Quick start
+## Run it
 
-Requires Node 20+.
+Open `index.html` through any static web server:
 
 ```bash
-npm install
-npm run dev
+npm install          # only needed for the tests
+npm start            # → http://localhost:5173
 ```
 
-Open http://localhost:5173. The dev server prints:
-
-```
-Coach login   paul@paulino.test / paulino-dev-1234
-Athlete link  Demo Athlete: http://localhost:5173/#/a/<token>
-```
-
-The dev server serves the PWA. It also emulates the two Supabase endpoints the app uses (`/auth/v1/*`, `/rest/v1/rpc/*`) on top of **PGlite**, an in-process Postgres that runs the *real* migrations from `supabase/migrations/`. So the frontend runs exactly the code it runs in production. Local data lives in `.data/pglite/`; delete that folder to reset. The credentials above exist only in that local database (`server/seed-dev.mjs`).
+Any static server works (`python -m http.server`, VS Code Live Server…). Opening the file directly from disk (`file://`) mostly works too, but browsers limit storage and clipboard on `file://` pages, so use a server.
 
 ---
 
-## Features
+## Paul
 
-### Coach (Paul): `#/coach`
-- Email/password sign-in (Supabase Auth).
-- **Programs:** create blank or from *Paul's beginner 5×5* template (two alternating days, Mon/Wed/Fri, +2.5 kg after clean sessions: the structure of Paul's spreadsheet). Name, assign, set Draft / Active / Archived, save, duplicate (optionally shifting all dates), delete.
-- **Editor:** weeks/blocks → workouts → exercises.
-  - Quick entry per exercise: `5x5@60`, `3x8-10@40`, `5x3 bw`, `3x10 bw+2`, `1x1@100, 4x5@86%` (back-off as % of set 1, rounded up to 2.5 kg, the formula from Paul's sheet), `3x5@80 rpe8`.
-  - Per-set editing (reps or range, kg / bodyweight / BW+kg / % of set 1, RPE), rest, tempo, and a coach cue that overrides Paulino's generic tips.
-  - Optional **progression rule** per exercise ("+X kg after a session where every set hit its reps"). Never on unless Paul ticks it, and never applied after a session where pain was reported.
-  - Reorder, duplicate, "copy as next week", dates per block and workout.
-  - Edits autosave as a local draft. **Save** is version-checked: if the program was saved elsewhere in the meantime, Paul chooses explicitly whose version wins. Every save is kept as a revision.
-- **Athletes:** add an athlete and get their personal link (copy / native share). Rotating the link invalidates the old one immediately; archiving an athlete disables their link.
-- **Athlete overview:** adherence, streak, lift chart, every session as *planned vs done* per set (differences highlighted), pain flags, notes, and every **deviation** shown as *your plan vs their change*, with the reason.
+Start screen → **I'm Paul: create programs**.
 
-### Athlete: `#/a/<token>`
-- **Home:** greeting, program, next session, weekly streak, XP and level, this week's progress, completed workouts, PR highlights, Paulino.
-- **Program:** collapsible weeks; the current one starts open; per-workout status; progress bars.
-- **Workout detail:** exercises in order with sets × reps @ load, rest, tempo, RPE/RIR targets, Paul's notes, and a tappable exercise-specific Paulino cue. Buttons: **Record**, **Change**, **Restore Paul's plan**, **Skip session**, **Add exercise**.
-- **Active workout:** sticky header with close button, progress bar and set counter; per-set reps/kg inputs pre-filled with the target; ✓ to complete; optional RPE and note; "NEXT" marker; rest timer (start/pause/reset/±15 s, beep + vibration, optional notification) that survives reloads. Every keystroke is saved locally, so closing the app loses nothing.
-- **Results:** Paulino celebrates (or checks in, if pain was reported), with sets done, volume, XP earned, streak, new PRs, and milestones.
-- **Progress:** calendar, adherence, lift chart (heaviest set + **estimated** 1RM, clearly labelled), per-session table, PR history, workout history.
-- **Settings:** 4 palettes, rest-timer preferences, sync status, "Meet Paulino" (all moods), forget device.
+- **Library:** saved programs with athlete and creation date; sort by last edited, name, athlete or created. Each one can be opened, renamed, duplicated, deleted, shared, exported as a file, or printed.
+- **New program:** name, optional athlete, start date, duration in weeks, general instructions. Start **from scratch** (one empty week) or **duplicate an existing program**.
+- **Editor:** a compact, spreadsheet-like grid per training day: *Exercise · Sets · Reps · kg*. Edit the cells directly.
+  - Expand a row for **advanced options**: rest interval, tempo, instructions for the athlete, and **per-set** reps, kg, bodyweight, RPE and RIR (different reps or weights per set are fine; the grid then shows "mixed").
+  - Training days: add, remove, rename, choose the weekday, duplicate, move up/down, copy to another week.
+  - Exercises: add from the approved library, reorder, duplicate, move or copy to another day, delete.
+  - Weeks: rename, duplicate (inserted after), add, delete.
+  - Edits save automatically in the browser ("Saved on this device").
+- **Repeat / Progress:** turn one template week into a whole block. See [the rule engine](#rule-engine).
+- **Share:** a link, a `.paulino` file, or a printable version / PDF.
 
-### Paulino's rules
-| Situation | Paulino |
+## Athlete
+
+Open the link Paul sent, or **Import program file** with his `.paulino` file. No login.
+
+- **Home:** athlete name, current program and week, next workout, completion progress, PRs, Paulino.
+- **Program:** collapsible weeks (the current week is open), with dates, exercises, sets × reps, completion status and progress bars.
+- **Workout:** each exercise with Paul's prescription, rest, tempo, RIR, Paul's notes and a tappable Paulino tip. Each set has *actual reps* and *actual kg* inputs (pre-filled with the target) and a ✓ button. There's an optional rest timer (start, pause, ±15 s, reset, beep) that survives reloads. The prescription ("Paul: 5 × 100 kg") is always shown next to what was done.
+- **Results:** sets and exercises completed, actual loads and reps against the plan, volume, new PRs, Paulino celebrating.
+- **Progress:** completed workouts, per-exercise history (heaviest set and reps per set), a chart of weight per session with a clearly labelled **estimated** 1RM, and personal records.
+- **My programs:** switch between current and older programs, delete, print, back up and restore.
+
+Everything the athlete does stays on their device. Nothing is sent to Paul.
+
+---
+
+## Rule engine
+
+**Repeat / Progress** takes a template week and generates N following weeks. The result is an ordinary program: every generated week can be edited by hand afterwards.
+
+1. Choose the template week and the number of weeks to generate. Choose whether to **overwrite** the following weeks or **insert** new ones and keep the existing weeks.
+2. Add rules. Presets: *+2.5 kg / week*, *+1 rep / 2 weeks*, *+1 set / 4 weeks*, *+2 % / 2 weeks*, *deload every 4th week*, or a custom rule.
+3. Look at the **preview table** (weeks × exercises). It updates live; deload weeks and kept manual edits are highlighted.
+4. **Apply.** If existing weeks would be overwritten, Paul confirms first.
+
+| Rule | Effect |
 |---|---|
-| Opening the app / before training | **motivational** |
-| Cues during exercises | **focused** (exercise-specific cues; Paul's own note first) |
-| Finished session, PR | **happy** |
-| Athlete deliberately changes the structure (swap / remove / add exercise, change sets or reps) | **disappointed**: "NOOO! Paul spent hours planning this!" → *Sorry, Paulino. Keep the plan.* / *I'm doing it anyway!* |
-| Reason given is pain or fatigue | **concerned & supportive**: shows the safety advice, saves the change, no shaming |
-| Logging fewer reps or a lower weight, skipping because of illness, pain reports | neutral or supportive, **never** disappointed |
-| Lifting heavier than prescribed | gentle concern ("No ego lifting"), and no PR bonus XP |
+| Repeat unchanged | Copies the week as it is. Having no rules does the same. |
+| ± Weight (kg) | Adds the amount; a negative amount decreases |
+| ± Weight (%) | Multiplies the load by (1 + amount/100), compounding |
+| ± Reps | Adds reps (whole numbers; negative decreases) |
+| ± Sets | Adds sets (copies the last set) or removes from the end |
+| Deload week | On every N-th week only: load − X % (and optionally − sets). With *restart*, progression starts again from the template after each deload. |
 
-Tap Paulino or his bubble for another line. A shuffle bag stops lines from repeating until every line has been shown.
+**Scope.** Each rule applies to all exercises, to selected exercises (e.g. every squat), to selected training days, or to single entries. Different exercises can have different rules: e.g. squat +2.5 kg/week, bench +1.25 kg/week, deadlift +5 kg/2 weeks, accessories +1 rep/week.
 
----
+**Frequency.** Every 1, 2, 3, 4, 5, 6 or 8 weeks, or any N weeks. The template is week 1. A rule "every *n* weeks" has been applied ⌊k / n⌋ times by generated week *k* (k = 1, 2…). So *+1 rep every 2 weeks* changes weeks 3, 5, 7…, and *deload every 4th week* marks weeks 4, 8, 12…. Four-week blocks are counted in weeks, never calendar months.
 
-## Architecture
+**Constraints** (per rule): minimum and maximum weight, reps or sets, and a load rounding increment (0.5, 1, 1.25, 2.5 or 5 kg, or none). Loads are rounded only when a load rule touched them. Results are always clamped to ≥ 0 kg, ≥ 1 rep and 1–30 sets. Invalid rules (amount 0, fractional reps, ±100 %, empty scope, min > max…) are listed and block **Apply**.
 
-```
-┌──────────────── Browser (PWA) ────────────────┐        ┌────────── Supabase ──────────┐
-│ index.html + src/ (ES modules, no build)      │        │ Auth (coach email/password)   │
-│  router.js     hash routes + pushState        │  HTTPS │ PostgREST  /rest/v1/rpc/*     │
-│  screens/      athlete/*, coach/*             │ ─────► │ Postgres                      │
-│  core/         pure logic (tested in Node)    │        │  • tables + CHECKs + triggers │
-│  store/        offline-first stores           │        │  • RLS (coach_id = auth.uid())│
-│  api/          tiny fetch client (no SDK)     │        │  • coach_* (security invoker) │
-│ sw.js          versioned app-shell cache      │        │  • client_* (definer, token)  │
-└───────────────────────────────────────────────┘        └───────────────────────────────┘
-```
+**Order.** Rules apply in list order: weight / percent / reps / sets first, then deloads, then clamping and rounding. The engine is pure and deterministic. The same input always gives the same output, with no randomness, no backend and no spreadsheet engine.
 
-- **No SDK:** `src/api/supabase.js` is ~120 lines of `fetch` covering password auth, token refresh and RPC calls.
-- **Pure core:** `src/core/` (prescriptions, progression, stats, validation, effective view) has no DOM access and is unit-tested in Node.
-- **Navigation:** hash routes driven by `history.pushState` and `popstate`, so Android/browser back works and any static host works. Leaving the active workout never discards sets.
+**Manual overrides.** Generated exercises are marked *generated*; editing one marks it *edited*. When Repeat / Progress runs again over those weeks, Paul can keep his edits (default) or let them be regenerated.
+
+Example: template week squat 4×5 @ 100 kg, rules *squat +2.5 kg/week* and *deload every 4th week −10 %*:
+
+| Week | 1 | 2 | 3 | 4 (deload) | 5 | 6 | 7 | 8 (deload) |
+|---|---|---|---|---|---|---|---|---|
+| Squat | 100 | 102.5 | 105 | 97.5 | 110 | 112.5 | 115 | 105 |
+
+(Week 4 would be 107.5; −10 % = 96.75 kg, rounded to 97.5.)
 
 ---
 
-## Data model
+## Sharing
 
-Prescriptions (what Paul planned) and logs (what happened) are separate tables. Deviations never modify Paul's rows.
+### Link
+**Share → Copy.** The whole program is serialized into a compact, versioned format, compressed (deflate), base64url-encoded and put in the **URL fragment**:
 
-| Table | Key columns |
+```
+https://capfusgent.github.io/Paulino/#program=z1.<data>
+```
+
+The fragment is never sent to the web server. The link contains the full program, so it opens in any browser, independently of Paul's. A 12-week, 2-day program is typically 1–2 thousand characters.
+
+The share sheet shows the link length:
+- **≤ 2,000 characters:** works everywhere.
+- **≤ 8,000:** fine in browsers and most apps.
+- **Longer:** some messaging apps cut the link off, so Paul gets a warning to send the file instead.
+
+A damaged or truncated link shows a clear error instead of a broken program. Browsers without `CompressionStream` fall back to uncompressed `j1.` links.
+
+### `.paulino` file
+**Share → Download .paulino file**, e.g. `Marco_Strength_Block_1.paulino`. It's readable, versioned JSON (see the [format](#data-format)): a data file, not an executable. The athlete taps **Import program file**; the app reads it locally, checks the format, version and every field, and shows the program.
+
+### Printable version / PDF
+**Share → Printable version.** A clean layout with title, athlete, dates, notes, Paulino branding and every week as a table with tick boxes. **Print / Save as PDF** uses the browser's print dialog with a dedicated print stylesheet.
+
+### Snapshots
+Shared links and files are **snapshots**. When Paul edits a program, links and files already sent keep showing the old version; he sends a new link or file for the new version. Each snapshot has a content-based `revision`, so:
+- Opening the **same** snapshot again on the athlete's device just opens it ("You already have this one!"). It is never duplicated.
+- Opening a **newer** snapshot of the same program (same `id`) offers *Update to the new version*. The athlete's logs stay attached by day and exercise id, or *Keep my current version*.
+
+---
+
+## Data format
+
+`.paulino` files contain this JSON (shared links carry the same data in compact positional arrays, documented in the `share` module of `index.html`):
+
+```jsonc
+{
+  "format": "paulino-program", "v": 1,
+  "id": "p3f9…", "revision": "1x2k9a",          // stable program id + content hash of this snapshot
+  "name": "Strength block 1", "athlete": "Marco",
+  "startDate": "2026-11-02", "durationWeeks": 12,
+  "notes": "Warm up on every lift…",
+  "createdAt": "…", "updatedAt": "…", "exportedAt": "…",
+  "weeks": [{
+    "id": "8c1d…", "label": "",                  // "" → "Week 1"
+    "gen": { "from": 1, "deload": false },        // only on generated weeks
+    "days": [{
+      "id": "a71e…", "name": "Monday", "weekday": 0,   // 0 = Monday … 6 = Sunday
+      "notes": "Superset bench + row",
+      "exercises": [{
+        "id": "f02b…", "exerciseId": "squat",           // stable id from the approved library
+        "sets": [{ "reps": 5, "kg": 100, "bw": false, "rpe": 8, "rir": null }],
+        "rest": 120, "tempo": "3-1-1", "notes": "Brace hard",
+        "gen": true, "edited": false, "src": "…"       // editor bookkeeping (not in links)
+      }]
+    }]
+  }]
+}
+```
+
+- Workout dates come from `startDate`: Monday of the start week + 7 × week + weekday.
+- `kg: null, bw: true` is bodyweight; `bw: true, kg: 5` is bodyweight + 5 kg.
+- **Validation** (`model.validate`) runs before every share/export and on every import. It checks for: a name; a valid start date; 1–104 weeks; at most 7 days per week; unique ids; an approved exercise id; 1–30 sets; whole-number reps 1–100; weights 0–1000 kg (or bodyweight); RPE 1–10; RIR 0–10; rest 0–30 min. Newer format versions are refused with a message instead of being misread.
+
+---
+
+## Storage
+
+| Where | What |
 |---|---|
-| `profiles` (coach users) | `id` → `auth.users`, `role = 'coach'`, `display_name` |
-| `clients` (athletes) | `id`, `coach_id`, `role = 'client'`, `display_name`, `access_token` (64 hex), `archived` |
-| `exercises` | `id` (slug), `name`, `category` (squat/bench/deadlift/accessory), `description`, `tips` {setup, execution, mistakes, bracing, safety}, `coach_id` (null = core library) |
-| `programs` | `id`, `name`, `coach_id`, `client_id`, `status`, `notes`, `version`, `created_at`, `updated_at`. One *active* program per client. |
-| `blocks` | `id`, `program_id`, `name`, `position`, `start_date`, `end_date` |
-| `workouts` | `id`, `program_id`, `block_id` (composite FK keeps them in the same program), `name`, `scheduled_date`, `position` |
-| `prescriptions` | `id`, `workout_id`, `exercise_id`, `position`, `sets` (per-set reps/range/load/RPE/RIR, validated by `private.valid_sets`), `rest_seconds`, `tempo`, `coach_notes`, `progression` |
-| `program_revisions` | full snapshot per coach save (`version`, `saved_at`, `saved_by`) |
-| `workout_logs` | `id`, `workout_id` (nullable, survives deletion), `client_id`, `workout_snapshot` (frozen prescription), `status`, `skip_reason`, `session_rpe`, `pain_reported`, `notes`, `client_updated_at` |
-| `set_logs` | per set: `prescription_id`, `exercise_id`, `target`, `actual_reps`, `actual_load_kg` (≥ 0), `rpe`, `completed`, `notes` |
-| `deviations` | `client_id`, `workout_id`, `prescription_id`, `modification_type`, `reason`, `original` (written by the server from Paul's row), `modified`, `status` (active/reverted/superseded) |
+| IndexedDB `paulino` → `paul` | Paul's programs |
+| → `athlete` | programs the athlete received (Paul's prescription, never modified) |
+| → `logs` | one record per trained or skipped day: actual sets, reps, kg, done, notes, pain flag |
+| → `mods` | the athlete's local changes to exercises, with Paul's original kept alongside |
+| `localStorage` | small preferences: palette, rest timer, current program, library sort |
 
-Schema: [`supabase/migrations/20261020120000_paulino_schema.sql`](supabase/migrations/20261020120000_paulino_schema.sql). Exercise library: [`20261020120100_exercise_library.sql`](supabase/migrations/20261020120100_exercise_library.sql), generated from `src/data/exercises.js` by `node scripts/gen-exercise-sql.mjs`.
+Prescriptions, actual results and modifications are stored separately, and exercises use stable ids, so history and PRs work across programs. If IndexedDB is unavailable, Paulino falls back to `localStorage`. If that's blocked too (some private modes), it keeps data in memory for the tab and says so. Every storage error is caught and shown, never a crash.
+
+**Local means local.** Clearing browser data, private windows, another browser or a new phone means starting empty. **Settings → Export backup** downloads everything (both roles) as one JSON file; **Restore backup** merges it back. The app reminds users of this on the library and settings screens.
 
 ---
 
-## Security
+## Paulino
 
-- **Coach:** every `coach_*` function is `SECURITY INVOKER`, so Postgres **row-level security** decides what is visible (`coach_id = auth.uid()` and joins from it). Coaches can *read* their athletes' logs and deviations, never write them. Triggers stop a program being assigned to another coach's client or using another coach's custom exercise.
-- **Athlete:** athletes don't sign in. Their link carries a 64-hex-character random token (244 bits). The `anon` role has **no table privileges at all**. It can only execute `client_get_bundle` and `client_sync`, which are `SECURITY DEFINER`, resolve the token to exactly one non-archived client, and touch only that client's rows. They verify that every workout or prescription belongs to that client's program, refuse to overwrite another client's log, and write `original` on deviations from the server's own copy. Editing a URL or local data cannot grant coach rights. Those functions aren't callable by anon, which the tests check.
-- **Validation in depth:** the same rules run in the browser (`src/core/validation.js`, for readable messages) and in the database (CHECK constraints, `private.valid_sets`, composite FKs, triggers).
-- The token is in the URL **fragment** (`#/a/…`), so it isn't sent to the web host. `<meta name="referrer" content="no-referrer">` is set. Treat a link like a password: rotate it from the athlete page if it leaks.
-- `config.js` contains only the public anon key. Never put a service-role key in the frontend (the validator checks for this).
+Six moods, all drawn as one consistent editorial-collage sticker (black-and-white "photo" cut-out with grain, halftone, white edge and flat shadow, over torn paper in the palette accent): **motivated, focused, happy, celebrating, disappointed, concerned**. Tap Paulino or his bubble for another line; lines don't repeat until all have been shown.
 
----
+| Situation | Reaction |
+|---|---|
+| Home, before training | motivated |
+| Exercise tips during the workout (Paul's note first) | focused |
+| Plan restored, program saved | happy |
+| Workout finished, new PR | celebrating |
+| Athlete changes the **structure** of Paul's plan (fewer/more sets, other reps, other exercise, skipping an exercise, going heavier) | disappointed: *"WHAT?! Paul made this program for a reason!"*, *"You're changing Paul's masterpiece?! I'm disappointed!"*, with **Keep Paul's plan** / **Change anyway** |
+| The same change with reason *pain* or *fatigue* | concerned & supportive, with safety advice |
+| Logging fewer reps or less weight in a set; a lighter load via "Change"; skipping for illness; reporting pain | neutral or supportive, never disappointed |
 
-## Offline & sync
+A change is stored as a local modification. Paul's original stays intact and is shown next to it, and **Restore Paul's plan** undoes it.
 
-- **App shell:** `sw.js` precaches every file (validated: the build fails if a file in `src/` is missing from the list). Navigations are network-first with a cache fallback; assets are stale-while-revalidate; Supabase calls are never cached. Bump `VERSION` in `sw.js` on each release; old caches are deleted on activate, and the app tells the user a new version is ready.
-- **Athlete data:** the last bundle (program, exercises, logs, deviations) is stored in `localStorage` and is readable offline.
-- **Writes:** each log/deviation is written locally first with `dirty: true` and a `client_updated_at` timestamp. `client_sync` pushes all dirty records in one idempotent call when the app opens, when connectivity returns, when the tab becomes visible, every 30 s, and shortly after each change.
-- **Conflicts:** per workout, the newest `client_updated_at` wins. An older copy from another device is answered with `stale` plus the server version, which the device adopts and announces ("This workout was updated on another device. That newer version was kept."). Nothing is overwritten silently. Device clocks are trusted for ordering, which is fine for one athlete's own phones.
-- **Coach saves** use optimistic concurrency (`expected_version`): a stale editor gets a `version_conflict` (HTTP 409) and an explicit choice.
-- Completed logs keep a **frozen snapshot** of what was prescribed. Later edits, or even deleting the workout, never change history.
+**Palettes:** Original Collage (warm off-white, mustard, pink and teal shapes, black), Electric Pink, Teal Power, Blue Energy. Text colours meet WCAG 4.5:1 contrast.
 
----
+**Fonts:** Bricolage Grotesque (headings), Atkinson Hyperlegible (body), JetBrains Mono (numbers), loaded from Google Fonts with system fallbacks. Without a connection the system fonts are used.
 
-## Supabase setup
+**Using the real reference image:** export transparent PNG/WebP cut-outs of Paulino per mood into `assets/paulino/` and add before the scripts in `index.html`:
 
-1. **Create a project** at https://supabase.com (the free tier is fine).
-2. **Apply the migrations**, either:
-   - with the CLI (recommended):
-     ```bash
-     npx supabase login
-     npx supabase link --project-ref <your-project-ref>
-     npx supabase db push
-     ```
-   - or by pasting `supabase/migrations/20261020120000_paulino_schema.sql`, then `…120100_exercise_library.sql`, into the SQL editor, in that order.
-
-   Never run `supabase/dev/auth_stub.sql` on Supabase. It exists only for the local PGlite emulation.
-3. **Auth settings** (Authentication → Providers / URL configuration):
-   - Email provider enabled. With "Confirm email" on (the default), Paul confirms his address before the first sign-in.
-   - Set **Site URL** to your deployed URL (e.g. `https://capfusgent.github.io/Paulino/`), so the confirmation email links back to the app.
-   - **After Paul has created his account, turn off "Allow new users to sign up".** Anyone who signs up only gets an empty, isolated coach workspace, but there's no reason to allow it.
-4. **API keys:** copy the Project URL and the *anon* (or *publishable*) key from Project Settings → API into `config.js`, or into repository variables for the Pages workflow.
-5. Optional: if you add new functions in later migrations, end each migration with explicit `revoke … from anon, authenticated` / `grant` statements, as the first migration does. Supabase grants execute on new functions to `anon` by default.
-
----
-
-## Deploying the frontend
-
-**GitHub Pages (workflow included):**
-1. Repository → Settings → Pages → Source: **GitHub Actions**.
-2. Settings → Secrets and variables → Actions → **Variables**: add `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
-3. Push to `main`. `.github/workflows/deploy.yml` writes `config.js` from those variables and publishes `index.html`, `manifest.webmanifest`, `sw.js`, `src/`, `styles/` and `assets/`.
-
-**Any other static host** (Netlify, Cloudflare Pages, S3…): upload the same files with a filled-in `config.js`. Nothing needs server rewrites. Serve over HTTPS (required for service workers and installation).
-
-`.github/workflows/ci.yml` runs validation, unit tests and the Playwright suite on every push/PR.
-
----
-
-## Installing the app
-
-- **Android (Chrome):** open the link → ⋮ menu → *Install app* / *Add to Home screen*.
-- **iPhone/iPad (Safari, iOS 15.4+):** open the link in Safari → Share → *Add to Home Screen*.
-- **Desktop Chrome/Edge:** install icon in the address bar.
-
-Athletes should install from **their personal link**. When the installed app opens on a phone used by one athlete, it goes straight to their training. The same instructions are in the app at `#/install`.
-
----
-
-## Testing
-
-```bash
-npm run validate     # content & config checks (below)
-npm test             # unit + database tests (node:test, PGlite)
-npm run test:e2e     # Playwright end-to-end, 360 px viewport
-# use the installed Chrome instead of downloading Chromium:
-PW_CHANNEL=chrome npm run test:e2e
+```html
+<script>window.PAULINO_MASCOT = { motivated: 'assets/paulino/motivated.png', focused: '…', happy: '…', celebrating: '…', disappointed: '…', concerned: '…' };</script>
 ```
-
-**`npm run validate`** checks the exercise library (unique ids, categories, every exercise has setup/execution/mistakes/bracing/safety cues, no "guaranteed safe" claims), that the generated SQL matches the JS library, that templates validate, Paulino's lines (5 states, bubble length, no duplicates, no disappointed lines in pain/fatigue/skip contexts), **WCAG contrast ≥ 4.5:1** for every text/background token pair in all four palettes, service-worker shell completeness, manifest icons (32/180/192/512 + maskable), and that no secret key is in `config.js`.
-
-**Unit tests** (`test/unit/core.test.js`) cover quick-entry parsing, back-off formula, progression (hit / miss / pain / no rule), PR baseline, XP (no bonus above the plan or with pain), forgiving weekly streak, adherence, validation errors, deviation classification, and the effective view keeping Paul's original.
-
-**Database tests** (`test/unit/database.test.js`) run the real migrations and call functions as `anon`/`authenticated`, exactly like PostgREST. They cover: create/name/save/edit with versions and conflicts; duplicate; one active program per client; anon has no table access and can't call coach functions; coach-to-coach isolation (including id hijacking and cross-coach assignment); DB-level rejection of invalid sets, loads, dates, exercises and progression rules; link scoping, invalid links and rotation; athletes can't write into other athletes' data; newest-write-wins with stale replies; deviations store the server-side original and restore keeps history; logs survive program edits and workout deletion.
-
-**End-to-end** (`test/e2e/`, Playwright, 360 × 760 touch viewport):
-- `coach.spec.js`: sign up → add athlete → create & name program → add/reorder exercises with quick entry → Active → Save → share link → edit (draft restored after reload) → save v2 → validation blocks an empty name → duplicate.
-- `athlete.spec.js`: open link → Paulino cycles lines → record sets (fewer reps, lower weight: no drama) → reload keeps them → finish → results. **Paul on a separate browser context (second device)** sees planned vs done. Plus: skip for illness is supportive; a pain report shows safety advice and no celebration.
-- `deviation.spec.js`: change sets → **disappointed Paulino** → *Keep the plan* (nothing saved) → *I'm doing it anyway* (deviation saved, original kept) → Paul sees original vs modified → **restore** → Paul sees "restored". Pain as a reason → supportive. Removing an exercise is a deviation; logging a lower weight isn't; a heavier weight shows a gentle warning.
-- `sync.spec.js`: manifest/icons/service worker; **app shell and program load with the network off**; a **workout logged offline** reaches the server only after reconnecting; two devices: the older offline copy doesn't overwrite the newer one and the user is told; history intact after Paul edits and deletes the logged workout.
-- `visual.spec.js`: home, program, workout, active, progress, settings in **all 4 palettes**, results, coach dashboard/editor/athlete page, welcome and install, all checked for no horizontal scroll at 360 px; **all five moods** rendered. Screenshots are written to `test-results/screens/`.
 
 ---
 
 ## Content
 
-- **Exercise list:** taken from Paul's own program spreadsheet: back squat, bench press, deadlift, overhead press, barbell row, pull-up. That list is the approved set. Paul can add more from the editor ("Exercise not listed? Add it to your library"); nothing else is introduced automatically.
-- **Coaching cues:** `src/data/exercises.js`. Short, conservative, widely taught barbell cues per exercise (setup, execution, common mistakes, bracing, safety). General guidance is paraphrased from Paul's written guidelines in the spreadsheet: warm-up, 1–2 reps in reserve, rest 1:30–3:00, soreness up to 2–3/10 is OK, stop on sharp pain and wait 48 h. **No powerlifting books were included with the brief**, so no book content was used. If you add references, extend the cues there; Paul's per-exercise notes always come first. Nothing claims that a cue prevents injury.
-- **Paulino's art:** **the reference image wasn't included either**, so Paulino is an original SVG character in the requested collage style (black-and-white "photo" cut-out with grain, halftone, white sticker edge and flat shadow, over torn paper in the palette accent): dark hair and beard, sunglasses or expressive eyes, muscular, tank top, five poses. To use the real reference, export transparent PNG/WebP cut-outs per mood and set in `config.js`:
-  ```js
-  mascotImages: { motivational: 'assets/paulino/motivational.png', focused: '…', happy: '…', disappointed: '…', concerned: '…' }
-  ```
-  Add the files to `SHELL` in `sw.js`, then run `npm run icons` after changing `src/ui/paulino-art.js` to regenerate icons and `assets/paulino/*.svg`.
-- **Lines:** `src/data/messages.js`.
+- **Approved exercises:** taken from Paul's own program spreadsheet: back squat, bench press, deadlift, overhead press, barbell row, pull-up. Only these can be selected, by Paul and by the athlete. To change the list, edit `EXERCISES` in the `data` module.
+- **Cues** per exercise: setup, execution, common mistakes, bracing, safety. They're short, conservative and widely taught. General guidance paraphrases Paul's written guidelines from the spreadsheet: warm up, 1–2 reps in reserve, rest 1:30–3:00, soreness up to 2–3/10 is usually fine, stop on sharp pain and rest 48 h. Paul's own exercise notes are always shown first.
+- **Not supplied:** the brief mentions powerlifting books and a Paulino reference image, but neither was included. No book content was used, and the mascot is an original drawing in the requested style. The cues make no claims that a technique prevents injury, and Paul remains responsible for the program.
 
 ---
 
-## Verification status
+## Deploy
 
-Verified by automated tests in this repository:
-- All database logic, RLS and permission rules, against **real Postgres (PGlite)** running the exact migrations, with Supabase's `anon` / `authenticated` roles and `auth.uid()` reproduced.
-- All UI flows above, end to end in Chrome at 360 px, including offline mode, the service worker and two-device sync, against the local Supabase-compatible server.
+GitHub Pages, via the included workflow `.github/workflows/deploy.yml` (no build, no secrets):
 
-**Not** verified:
-- **A live Supabase project.** The migrations use only standard Postgres and Supabase conventions, but they haven't been applied to hosted Supabase, and real sign-up/email confirmation hasn't been exercised. Do the [setup](#supabase-setup), then a quick smoke test: sign up as Paul, create an athlete, open the link on a phone.
-- **Physical iOS Safari / Android devices.** The tests use desktop Chrome with touch emulation. "Add to Home Screen" and timer notifications while the phone is locked depend on the OS. Browsers pause background timers, so the rest-timer notification can be late when the app is in the background.
+1. Repository → **Settings → Pages → Source: GitHub Actions**.
+2. Push to `main`, or Actions → *Deploy to GitHub Pages* → **Run workflow**.
+
+It publishes `index.html`, `assets/`, `.nojekyll` and `sw.js`. `sw.js` is a retired service worker: it removes the caching service worker of the earlier PWA version from browsers that still have it. Any other static host works the same way: upload those files.
+
+The earlier version of Paulino used Supabase. That project and the `SUPABASE_URL` / `SUPABASE_ANON_KEY` repository variables are no longer used and can be deleted.
 
 ---
 
-## Project layout
+## Tests
 
+```bash
+npm install
+npx playwright install chromium   # once
+npm test                          # 25 browser tests at 360 px
+PW_CHANNEL=chrome npm test        # …or use the installed Google Chrome
 ```
-index.html, manifest.webmanifest, sw.js, config.js   PWA entry, manifest, service worker, deploy config
-styles/app.css                                       collage design system, 4 palettes
-src/app.js, src/router.js                            bootstrap, history-based routing
-src/api/supabase.js                                  fetch client (auth + RPC)
-src/core/                                            pure logic: prescription, progression, stats, validation, effective, templates
-src/data/                                            exercise library + cues, Paulino's lines, safety copy
-src/store/                                           storage, offline-first athlete store, coach store
-src/ui/                                              DOM helpers, Paulino art + component, charts, rest timer, layout
-src/screens/                                         welcome, install, athlete/*, coach/*
-assets/icons, assets/paulino                         generated icons and mascot SVGs
-supabase/migrations/                                 schema, RLS, RPC API, exercise library
-supabase/dev/auth_stub.sql                           local-only Supabase stand-in for PGlite
-server/                                              dev server (static + Supabase emulation on PGlite), demo seed
-scripts/                                             validate-data, gen-exercise-sql, build-icons
-test/unit, test/e2e                                  node:test + Playwright
-```
+
+Every test fails on any JavaScript error or `console.error` in the page. Screenshots, the generated PDF and the `.paulino` file are written to `test-results/screens/`.
+
+| Scenario from the brief | Test |
+|---|---|
+| 1 Create a four-week program manually | `paul.spec.js` › 1 |
+| 2 Repeat week 1 unchanged for 12 weeks | `engine.spec.js` › repeat…; wizard preview in `paul.spec.js` › 2–6 |
+| 3 Squat +2.5 kg every week | `engine.spec.js`, `paul.spec.js` › 2–6 |
+| 4 Bench reps every two weeks | `engine.spec.js` (with max), `paul.spec.js` › 2–6 |
+| 5 Different rules for different exercises | `engine.spec.js` (squat / bench / deadlift / sets / %), `paul.spec.js` › 2–6 |
+| 6 Deload | `engine.spec.js` (with and without restart), `paul.spec.js` › 2–6 |
+| 7 Manually override a generated week | `paul.spec.js` › 7, `engine.spec.js` › manual edits |
+| 8 Duplicate a saved program | `paul.spec.js` › 8 |
+| 9 Save and reopen locally | `paul.spec.js` › 1 (reload) |
+| 10 Export and import a `.paulino` file | `paul.spec.js` › 10 (another browser context, no duplicates, broken file) |
+| 11 Shared link in a fresh browser | `paul.spec.js` › 11 (fresh context, snapshot vs. update, damaged link) |
+| 12 Athlete progress after reload | `athlete.spec.js` › 12 |
+| 13 Modify → Paulino disappointed | `athlete.spec.js` › 13 |
+| 14 Restore the original | `athlete.spec.js` › 13/14 |
+| 15 360 px | `layout.spec.js` (every screen, 4 palettes, wizard & share sheets) |
+| 16 Printable version | `paul.spec.js` › 16 (print media + real PDF) |
+
+Also covered: validation of programs, rules, files and links; supportive reactions for pain, fatigue, lighter loads and illness; backups; the six moods; and the app working with storage blocked.
+
+---
+
+## Code layout
+
+`index.html` holds the whole app: the CSS, then one `<script>` per module, each attached to `window.Paulino`:
+
+| # | Module | Responsibility |
+|---|---|---|
+| 1 | `util` | dates, numbers, escaping HTML templates, sheets, toasts, file helpers |
+| 2 | `data` | approved exercises and cues, Paulino's lines, safety copy |
+| 3 | `model` | program structure, defaults, summaries, validation, normalisation |
+| 4 | `rules` | the Repeat / Progress engine, preview, rule validation |
+| 5 | `share` | link encoding / decoding, `.paulino` files |
+| 6 | `store` | IndexedDB with fallbacks, backups, preferences |
+| 7 | `stats` | history, PRs, estimated 1RM, progress |
+| 8 | `art` | Paulino's SVG artwork (six moods) |
+| 9 | `ui` | mascot component, layout, palettes, chart, rest timer |
+| 10 | `paul` | library, editor, wizard, share sheet, print view |
+| 11 | `athlete` | import, home, program, workout, modifications, results, history, library |
+| 12 | `app` | hash router (`pushState`/`popstate`), start screen, settings, boot |
+
+Other files: `assets/icons/` (favicon), `sw.js` (retired worker), `test/` (Playwright tests and a tiny static server).
+
+---
+
+## Future
+
+**Share progress** isn't built yet, but the pieces are there: logs are self-contained records keyed by program id, day id and exercise id, and the link/file encoders are generic. A "Share progress" button could serialize the athlete's logs for one program, the same way `share.toCompact` does for programs, into a `#progress=` link or a `.paulino-progress` file. Paul's app would import it and show it next to his program. No backend needed.

@@ -1,8 +1,6 @@
-# Deploys the static PWA to GitHub Pages.
-# Set repository variables (Settings → Secrets and variables → Actions → Variables):
-#   SUPABASE_URL       e.g. https://abcdefghijklm.supabase.co
-#   SUPABASE_ANON_KEY  the project's anon / publishable key (public by design)
-# and enable Pages with "GitHub Actions" as the source.
+# Publishes Paulino to GitHub Pages. No build step, no secrets: the site is
+# index.html + assets/ (+ the retired sw.js that cleans up the old version).
+# Settings → Pages → Source: GitHub Actions.
 name: Deploy to GitHub Pages
 on:
   push:
@@ -27,16 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Assemble site
-        env:
-          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
         run: |
-          test -n "$SUPABASE_URL" || { echo "::error::Set the SUPABASE_URL repository variable"; exit 1; }
-          test -n "$SUPABASE_ANON_KEY" || { echo "::error::Set the SUPABASE_ANON_KEY repository variable"; exit 1; }
           mkdir -p _site
-          cp -r index.html manifest.webmanifest sw.js src styles assets _site/
-          node -e "const c={supabaseUrl:process.env.SUPABASE_URL,supabaseAnonKey:process.env.SUPABASE_ANON_KEY,environment:'production'};require('fs').writeFileSync('_site/config.js','window.PAULINO_CONFIG = '+JSON.stringify(c,null,2)+';\n')"
-          touch _site/.nojekyll
+          cp -r index.html assets sw.js .nojekyll _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

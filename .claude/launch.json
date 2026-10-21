@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "paulino-dev", "runtimeExecutable": "node", "runtimeArgs": ["server/dev-server.mjs"], "port": 5173 }
+    { "name": "paulino", "runtimeExecutable": "node", "runtimeArgs": ["test/serve.mjs"], "port": 5180 }
   ]
 }
