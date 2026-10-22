@@ -170,6 +170,8 @@ test('Paul creates a five-step exercise with five photos; it becomes a lesson an
   const pid = await seedPaulProgram(page, { name: 'RDL block', weeks: 4 });
   await open(page, `#/paul/p/${pid}`);
   await page.getByRole('button', { name: 'Add exercise' }).first().click();
+  await expect(page.locator('.sheet .pick-grid .choice-btn').first()).toBeVisible();
+  await expect(page.locator('.sheet .pick-grid .choice-btn small')).toHaveCount(0);   // names only
   await page.getByRole('button', { name: /Romanian deadlift/ }).click();
   await settle(page);
   const row = page.locator('.grid-row', { has: page.locator(`option[value="${id}"]:checked`) });

@@ -28,42 +28,32 @@ Only cropping, masking and a white paper edge: no generated pixels, faces never 
 ## Lifting Academy: image manifest per panel
 `public` = deployed photo of Paul · `private` = book figure in the private pack (page image file in `PRIVATE_REFERENCE_ONLY/<exercise>/`) · `needed` = PHOTO NEEDED placeholder.
 
-| Exercise | # | Step / phase | Slot | Source | Status |
+| Exercise | # | Step | Slot | Source | Status |
 |---|---|---|---|---|---|
-| Squat | 1 | Stance | `lesson_squat_stance` | `147_photographic_descent_and_ascent.jpg` (front row) | private |
-| Squat | 2 | Bottom position | `lesson_squat_bottom_unloaded` | `057_bottom_position.jpg` | private |
-| Squat | 3 | Bar position | `lesson_squat_bar_position` | none | needed |
-| Squat | 4 | Unrack | `lesson_squat_unrack` | none | needed |
-| Squat | 5 | Descent | `lesson_squat_descent` | `147_photographic_descent_and_ascent.jpg` (side row) | private |
-| Squat | 6 | Balance | `lesson_squat_balance` | `095_balance_and_bar_position.jpg` | private |
-| Squat | 7 | Depth | `lesson_squat_bottom_loaded` | `075_full_photographic_sequence.jpg` | private |
-| Squat | 8 | Drive up | `lesson_squat_ascent` | `061_stance_and_depth.jpg` | private |
+| Squat | 1 | Set up | `lesson_squat_stance` | `147_photographic_descent_and_ascent.jpg` (front row) | private |
+| Squat | 2 | Brace | `lesson_squat_descent` | `147_photographic_descent_and_ascent.jpg` (side row) | private |
+| Squat | 3 | Down | `lesson_squat_bottom_loaded` | `075_full_photographic_sequence.jpg` | private |
+| Squat | 4 | Up | `lesson_squat_ascent` | `061_stance_and_depth.jpg` | private |
 | Press | 1 | Grip | `lesson_press_grip` | `199_grip_and_rack_position.jpg` | private |
-| Press | 2 | Start position | `lesson_press_start` | none | needed |
+| Press | 2 | Press | `lesson_press_bar_path` | `215_complete_drawn_sequence.jpg` | private |
 | Press | 3 | Lockout | `lesson_press_lockout` | `207_overhead_lockout.jpg` | private |
-| Press | 4 | Bar path | `lesson_press_bar_path` | `215_complete_drawn_sequence.jpg` | private |
-| Press | 5 | Reps | `lesson_press_lower` | `235_complete_photographic_sequence.jpg` | private |
+| Press | 4 | Down | `lesson_press_lower` | `235_complete_photographic_sequence.jpg` | private |
 | Press | – | Mistakes | `lesson_press_mistakes` | `223_press_mechanics_comparison.jpg` | private |
-| Deadlift | 1 | Stance | `lesson_deadlift_paul_setup` | `paul_11.mp4` @ 0.1 s → `assets/lessons/deadlift_paul_setup.webp` | public |
-| Deadlift | 2 | Grip & shins | `lesson_deadlift_grip` | `259_setup_photographic_positions.jpg` | private |
-| Deadlift | 3 | Chest up | `lesson_deadlift_paul_set` | `paul_11.mp4` @ 10.0 s → `deadlift_paul_set.webp` (back line drawn on the frame) | public |
-| Deadlift | 4 | Pull | `lesson_deadlift_paul_pull` | `paul_11.mp4` @ 2.7 s → `deadlift_paul_pull.webp` | public |
-| Deadlift | 5 | Lockout & down | `lesson_deadlift_paul_lockout` | `paul_11.mp4` @ 3.5 s → `deadlift_paul_lockout.webp` (bar path traced from the three frames) | public |
+| Deadlift | 1 | Set up | `lesson_deadlift_paul_setup` | `paul_11.mp4` @ 0.1 s | public |
+| Deadlift | 2 | Back | `lesson_deadlift_paul_set` | `paul_11.mp4` @ 10.0 s | public |
+| Deadlift | 3 | Pull | `lesson_deadlift_paul_pull` | `paul_11.mp4` @ 2.7 s | public |
+| Deadlift | 4 | Lockout | `lesson_deadlift_paul_lockout` | `paul_11.mp4` @ 3.5 s (bar path from three frames) | public |
 | Deadlift | – | Mistakes | `lesson_deadlift_mistakes` | `321_starting_position_comparison.jpg` | private |
-| Bench | 1 | Safety | `lesson_bench_paul_spotter` | `paul_06.mp4` @ 5.6 s → `bench_paul_spotter.webp` (spotter's face blurred) | public |
-| Bench | 2 | On the bench | `lesson_bench_setup` | `355_body_position_photographs.jpg` | private |
-| Bench | 3 | Feet | `lesson_bench_feet` | `401_arm_and_bar_position_comparison.jpg` | private |
-| Bench | 4 | Grip | `lesson_bench_grip` | `373_arm_and_elbow_position.jpg` | private |
-| Bench | 5 | Unrack | `lesson_bench_paul_lockout` | `paul_06.mp4` @ 0.0 s → `bench_paul_lockout.webp` (spotter's face blurred) | public |
-| Bench | 6 | Down & up | `lesson_bench_paul_bottom` | `paul_06.mp4` @ 4.4 s → `bench_paul_bottom.webp` (spotter's face blurred) | public |
-| Clean | 1 | Stance & grip | `lesson_clean_stance` | `433_starting_position_photographs.jpg` | private |
-| Clean | 2 | Hang | `lesson_clean_hang` | `435_pull_and_position_photographs.jpg` | private |
-| Clean | 3 | Rack | `lesson_clean_rack` | none (the candidate image showed the hang) | needed |
-| Clean | 4 | Jumping position | `lesson_clean_jump_position` | `441_transition_photographs.jpg` | private |
-| Clean | 5 | Jump & catch | `lesson_clean_catch` | `455_complete_photographic_sequence.jpg` | private |
-| Clean | 6 | From the floor | `lesson_clean_floor` | `463_phase_by_phase_diagram.jpg` | private |
+| Bench | 1 | Safety | `lesson_bench_paul_spotter` | `paul_06.mp4` @ 5.6 s (spotter's face blurred) | public |
+| Bench | 2 | Set up | `lesson_bench_setup` | `355_body_position_photographs.jpg` | private |
+| Bench | 3 | Unrack | `lesson_bench_paul_lockout` | `paul_06.mp4` @ 0.0 s (spotter's face blurred) | public |
+| Bench | 4 | Down & up | `lesson_bench_paul_bottom` | `paul_06.mp4` @ 4.4 s (spotter's face blurred) | public |
+| Clean | 1 | Hang | `lesson_clean_hang` | `435_pull_and_position_photographs.jpg` | private |
+| Clean | 2 | Jump position | `lesson_clean_jump_position` | `441_transition_photographs.jpg` | private |
+| Clean | 3 | Jump & catch | `lesson_clean_catch` | `455_complete_photographic_sequence.jpg` | private |
+| Clean | 4 | From the floor | `lesson_clean_floor` | `463_phase_by_phase_diagram.jpg` | private |
 
-32 panels: 7 public (Paul's own lifts), 21 private, 4 needed. On the public site, 25 panels show PHOTO NEEDED. The book figures for deadlift *chest up* and bench *safety*, *unrack* and *down & up* are still in the private pack but no longer shown, because Paul's own frames take those panels. No face swaps were made: Paulino comments next to the figures instead, so the technique pictures stay accurate and the book figures are not turned into derivatives.
+22 panels (four short steps per lift, plus two comparison figures): 7 public (Paul's own lifts), 15 private, none without a source. On the public site, 15 panels show PHOTO NEEDED until Paul films the squat, press and clean. The private pack now holds only the 15 figures still in use.
 
 The deadlift and bench frames come from Paul's own videos, built by `tools/build_lesson_frames.py` (exact second, crop and blur boxes per frame; source videos are not committed). In the bench videos Paul is the lifter; the spotter is someone else, so his face is blurred in every frame. Nothing is generated or composited. People in the background are blurred, and the arrows, bar path and hip circle are placed on these exact frames.
 
@@ -83,8 +73,8 @@ The deadlift and bench frames come from Paul's own videos, built by `tools/build
 5. **Scanned paper, newsprint and handwriting.** CSS/SVG stand-ins are used meanwhile.
 
 ## Technical-content questions for Paul
-- **Squat:** the book teaches a low-bar position, labelled *Coaching choice*. Does Paul coach low-bar or high-bar? Is "hip crease below the knee" his depth standard for everyone?
-- **Deadlift:** the five-step setup is labelled *Coaching choice*. Does he teach it this way? Do the frames from his own heavy pull show the form he wants to teach (bar contact, lockout)?
+- **Squat:** low-bar or high-bar? The short lesson just says "upper back". Is "hip crease below the knee" his depth standard for everyone?
+- **Deadlift:** do the frames from his own heavy pull show the form he wants to teach (bar contact, lockout)?
 - **Bench:** the lesson includes no arch and no leg-drive details. Should it?
 - **Press:** how much lean back does he allow?
 - **Power clean:** it isn't in his exercise list. Keep the lesson? Barbell row and pull-up have no lesson.

@@ -75,18 +75,20 @@ for (const [lesson, ids, credit] of [
   });
 }
 
-test('lesson bubbles cycle through the step cues; coaching choices are labelled', async ({ page }) => {
+test('lesson bubbles cycle through the step cues; lessons are short', async ({ page }) => {
   await open(page, '#/academy/squat');
-  const step5 = page.locator('.lesson-step[data-step="5"]');
+  const step5 = page.locator('.lesson-step[data-step="3"]');
   await step5.scrollIntoViewIfNeeded();
   const text = step5.locator('.bubble-text');
-  const cues = await page.evaluate(() => window.Paulino.academy.LESSONS[0].steps[4].cues.map((c) => c.t || c));
+  const cues = await page.evaluate(() => window.Paulino.academy.LESSONS[0].steps[2].cues.map((c) => c.t || c));
   const first = await text.textContent();
   expect(cues).toContain(first);
   await step5.locator('.bubble').click();
   await expect(text).not.toHaveText(first);
   expect(cues).toContain(await text.textContent());
-  await expect(page.locator('.lesson-step[data-step="3"] .pref-note')).toContainText('Coaching choice');
+  // short lessons: four steps, one or two sentences each
+  const lens = await page.evaluate(() => window.Paulino.academy.LESSONS.map((l) => [l.steps.length, Math.max(...l.steps.map((s) => s.body.join(' ').length))]));
+  for (const [n, longest] of lens) { expect(n).toBe(4); expect(longest).toBeLessThan(140); }
 });
 
 test('a private illustration pack fills empty slots on this device only, and can be removed', async ({ page }) => {

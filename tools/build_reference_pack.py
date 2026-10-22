@@ -28,9 +28,7 @@ BOOK = "Starting Strength: Basic Barbell Training, 3rd ed. (Rippetoe, The Aasgaa
 FIGURES = {
     # squat
     "lesson_squat_stance": ("squat", "147_photographic_descent_and_ascent.jpg", (632, 1380, 1872, 1856), "Front view of a loaded squat: the knees follow the toes all the way down."),
-    "lesson_squat_bottom_unloaded": ("squat", "057_bottom_position.jpg", (688, 444, 1804, 1952), "Finding the bottom without a bar: elbows push the knees out, feet flat."),
     "lesson_squat_descent": ("squat", "147_photographic_descent_and_ascent.jpg", (628, 620, 1872, 1100), "Side view, frame by frame: hips back, back angle set, bar over the mid-foot."),
-    "lesson_squat_balance": ("squat", "095_balance_and_bar_position.jpg", (608, 1488, 1208, 2280), "Leverage: any horizontal distance between the bar and the mid-foot (moment arm) has to be fought."),
     "lesson_squat_bottom_loaded": ("squat", "075_full_photographic_sequence.jpg", (628, 444, 1864, 1920), "The complete squat in the rack, from unrack to depth and back."),
     "lesson_squat_ascent": ("squat", "061_stance_and_depth.jpg", (696, 984, 1804, 2468), "Hip-drive drill: a coach blocks the hips so you feel them drive straight up."),
     # press
@@ -39,19 +37,11 @@ FIGURES = {
     "lesson_press_bar_path": ("overhead_press", "215_complete_drawn_sequence.jpg", (430, 430, 2080, 1640), "The torso moves forward under the bar once it passes the face."),
     "lesson_press_lower": ("overhead_press", "235_complete_photographic_sequence.jpg", (572, 444, 1920, 1956), "A complete press, frame by frame."),
     "lesson_press_mistakes": ("overhead_press", "223_press_mechanics_comparison.jpg", (560, 430, 2000, 1640), "The further the bar drifts in front of the shoulder, the longer the moment arm (M.A.) the shoulders have to fight."),
-    # deadlift (setup steps; the pull itself uses frames of Paul's own deadlift)
-    "lesson_deadlift_grip": ("deadlift", "259_setup_photographic_positions.jpg", (652, 924, 1836, 2748), "The setup in steps: stance, grip, shins to the bar, chest up."),
-    "lesson_deadlift_set": ("deadlift", "261_back_position_photographs.jpg", (592, 444, 1900, 1756), "Squeezing the chest up sets the back flat without moving the bar."),
+    # deadlift and bench: the steps use frames of Paul's own lifts; only the comparison figure remains
     "lesson_deadlift_mistakes": ("deadlift", "321_starting_position_comparison.jpg", (512, 480, 1984, 1524), "Correct start (A) and the position often used instead (B): hips too low pushes the bar forward."),
     # bench press
-    "lesson_bench_safety": ("bench_press", "399_feet_and_support.jpg", (948, 444, 1552, 892), "Benching with a spotter standing by."),
     "lesson_bench_setup": ("bench_press", "355_body_position_photographs.jpg", (656, 1212, 1836, 2008), "Getting into position on the bench, eyes just past the bar."),
-    "lesson_bench_feet": ("bench_press", "401_arm_and_bar_position_comparison.jpg", (644, 848, 1856, 1368), "Foot placement compared: feet flat and planted give the most stable base."),
-    "lesson_bench_grip": ("bench_press", "373_arm_and_elbow_position.jpg", (656, 1200, 1844, 1512), "Forearms vertical: the bar sits right over the elbow when it touches the chest."),
-    "lesson_bench_unrack": ("bench_press", "377_wrist_and_elbow_alignment.jpg", (632, 1908, 1256, 2628), "Bar balanced over the shoulder joint at lockout: no moment arm."),
-    "lesson_bench_bottom": ("bench_press", "365_bench_press_photographic_sequence.jpg", (628, 444, 1860, 1452), "A complete bench press, frame by frame."),
     # power clean
-    "lesson_clean_stance": ("power_clean", "433_starting_position_photographs.jpg", (800, 444, 1700, 1112), "The jumping stance: the same as a flat-footed vertical jump."),
     "lesson_clean_hang": ("power_clean", "435_pull_and_position_photographs.jpg", (632, 1892, 1868, 2384), "The hang: straight elbows, rotated in, chest up."),
     "lesson_clean_jump_position": ("power_clean", "441_transition_photographs.jpg", (948, 444, 1552, 1908), "Sliding down to the jumping position: bar on the thighs."),
     "lesson_clean_catch": ("power_clean", "455_complete_photographic_sequence.jpg", (632, 444, 1864, 1948), "A complete power clean, frame by frame."),

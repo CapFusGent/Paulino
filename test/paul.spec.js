@@ -183,9 +183,10 @@ test('8 · duplicate a saved program', async ({ page }) => {
   // and "New program → Duplicate existing" works too
   await open(page, '#/paul/library');
   await page.getByRole('button', { name: /New program/ }).click();
+  await page.getByRole('button', { name: 'Copy a saved program' }).click();
+  await page.getByRole('radio', { name: /^Block A Marco/ }).click();
+  await expect(page.getByLabel('Program name')).toHaveValue('Block A (copy)');
   await page.getByLabel('Program name').fill('Block B');
-  await page.getByRole('button', { name: /Duplicate an existing program/ }).click();
-  await page.getByLabel('Program to duplicate').selectOption({ label: 'Block A (Marco)' });
   await page.getByRole('button', { name: 'Create program', exact: true }).click();
   await expect(page.locator('.editor-bar')).toContainText('Block B');
   await expect(row(page, 0).getByLabel('Weight in kg')).toHaveValue('100');

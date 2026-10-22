@@ -355,6 +355,14 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 .choice-btn { appearance: none; text-align: left; width: 100%; min-height: 52px; padding: 10px 14px; border: var(--b) solid var(--ink); border-radius: var(--r-sm); background: var(--paper); font: 700 1rem var(--font-body); color: var(--ink); cursor: pointer; box-shadow: var(--shadow-sm); }
 .choice-btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 .choice-btn small { display: block; font-weight: 400; color: inherit; opacity: .85; }
+.pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: var(--b) solid var(--ink); border-radius: var(--r-sm); overflow: hidden; margin-bottom: 14px; }
+.seg-btn { appearance: none; border: 0; min-height: 48px; padding: 8px; font: 700 .95rem var(--font-body); background: var(--paper); color: var(--ink); cursor: pointer; }
+.seg-btn + .seg-btn { border-left: var(--b) solid var(--ink); }
+.seg-btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.seg-btn:disabled { opacity: .45; cursor: not-allowed; }
+.copy-list { display: grid; gap: 8px; margin-bottom: 14px; max-height: 260px; overflow-y: auto; }
+.copy-list .choice-btn[aria-checked="true"] { background: var(--accent); color: var(--accent-ink); }
 
 /* ---------- program / blocks ---------- */
 details.block { background: var(--paper); border: var(--b) solid var(--ink); border-radius: var(--r); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
@@ -2789,81 +2797,71 @@ window.Paulino = window.Paulino || {};
   const LESSONS = [
     {
       id: 'squat', title: 'The Squat', kicker: 'Lesson 1', exercise: 'squat',
-      intro: 'Hips and knees bend together, the bar stays over the middle of your foot, and your hips drive you back up. Never skip leg day!',
-      sources: [SRC('The Squat', 'Learning to Squat; Balance; Squat depth')],
+      intro: 'Sit down between your hips, stand back up. Never skip leg day!',
+      sources: [SRC('The Squat', 'Learning to Squat; Squat depth')],
       steps: [
-        { phase: 'Stance', title: 'Feet first', kind: 'principle', body: ['Heels about shoulder-width apart, toes turned out roughly 30°. Use the same stance every rep.'], why: 'Turned-out feet let the knees travel out over the toes, which makes room for the hips to get deep.', cues: [PL.legday, C('TOES OUT!', 2)], photo: { id: 'squat_stance', need: 'Front view: stance, knees following the toes.' } },
-        { phase: 'Bottom position', title: 'Visit the bottom first', kind: 'principle', body: ['Without a bar, squat all the way down. Elbows inside the knees, palms together, push the knees out.', 'Feet flat, knees in line with the feet, back flat and leaning forward. That lean is supposed to be there.'], why: 'If you know where the bottom is before there is weight on your back, finding it under the bar is easy.', cues: [PL.deeper, C('KNEES OUT!', 2)], photo: { id: 'squat_bottom_unloaded', need: 'Bottom position without a bar, elbows pushing the knees out.' } },
-        { phase: 'Bar position', title: 'Put the bar on the shelf', kind: 'preference', note: 'Low-bar position, as the book teaches it. Many coaches use a high-bar position on top of the traps. Paul decides.', body: ['Bar in the rack at mid-chest height. Grip as narrow as your shoulders allow, thumbs over the bar, wrists straight.', 'The bar sits just below the bony ridge of the shoulder blades. Lift elbows and chest together to lock it in.'], why: 'A tight upper back holds the bar on muscle, not on your wrists or your neck.', cues: [C('SHELF, NOT NECK!', 2), C('Wrists straight!')], photo: { id: 'squat_bar_position', need: 'Rear view close-up: bar just below the ridge of the shoulder blades.' } },
-        { phase: 'Unrack', title: 'Tight first, then step back', kind: 'principle', body: ['Get tight under the bar with both feet under it, then stand straight up.', 'One or two short steps back. Set the same stance as before.'], why: 'Taking the bar out tight and balanced means you never fight a heavy weight before the first rep.', cues: [PL.brace, C('BOTH FEET UNDER!', 2)], photo: { id: 'squat_unrack', need: 'Side view: standing up with the bar in the rack, both feet under it.' } },
-        { phase: 'Descent', title: 'Breathe, look down, sit back', kind: 'principle', body: ['Big breath, hold it, brace. Eyes on the floor about 1.5 m ahead.', 'Hips back, knees out, chest towards the floor.'], why: 'The held breath and braced trunk make your spine a solid pillar under the bar. That brace is what lets you squat heavy.', cues: [PL.brace, PL.goodBrace, C('Control that descent!')], photo: { id: 'squat_descent', need: 'Side view sequence of the descent.' } },
-        { phase: 'Balance', title: 'Bar over the middle of the foot', kind: 'principle', body: ['Seen from the side, the bar travels up and down in a straight line over the middle of your foot.'], why: 'Any distance between the bar and the mid-foot is leverage working against you. Balanced means stronger.', cues: [C('Mid-foot, champ!', 2), PL.floor], photo: { id: 'squat_balance', need: 'Diagram or side photo: bar over the mid-foot.' } },
-        { phase: 'Depth', title: 'Below parallel', kind: 'principle', body: ['Go down until the crease of your hip is just below the top of your knee. Feet stay flat.'], why: 'Full depth trains the hamstrings and glutes through their whole range: a partial squat leaves most of that strength on the table. How deep you can go comfortably depends on your hips and mobility.', cues: [PL.deeper, C('Hip crease below the knee!')], photo: { id: 'squat_bottom_loaded', need: 'Side view: bottom position with the bar, hip crease below the knee.' } },
-        { phase: 'Drive up', title: 'Hips straight up', kind: 'principle', body: ['Drive your hips straight up out of the bottom. Up, not forward. Push the floor away and let the chest come up with you.'], why: 'Leading with the hips keeps the bar over the mid-foot and puts the strongest muscles in charge.', cues: [PL.floor, C('HIPS UP!', 2)], photo: { id: 'squat_ascent', need: 'Hip-drive drill or side view coming out of the bottom.' } },
+        { phase: 'Set up', title: 'Bar on the back', kind: 'principle', body: ['Bar on your upper back, feet shoulder-width, toes slightly out. Two steps back from the rack.'], why: 'Same stance every rep: the knees can follow the toes.', cues: [PL.legday, C('TOES OUT!', 2)], photo: { id: 'squat_stance', need: 'Front view: stance with the bar on the back.' } },
+        { phase: 'Brace', title: 'Breathe and brace', kind: 'principle', body: ['Big breath, hold it, tighten your stomach. Eyes on the floor ahead.'], why: 'A braced trunk keeps your back solid under the bar.', cues: [PL.brace, PL.goodBrace], photo: { id: 'squat_descent', need: 'Side view: braced at the top, starting down.' } },
+        { phase: 'Down', title: 'Below parallel', kind: 'principle', body: ['Hips back, knees out. Sit until your hip crease is below the top of your knee. Feet flat.'], why: 'Full depth trains the whole leg, not half of it.', cues: [PL.deeper, C('KNEES OUT!', 2)], photo: { id: 'squat_bottom_loaded', need: 'Side view: bottom position, hip crease below the knee.' } },
+        { phase: 'Up', title: 'Hips straight up', kind: 'principle', body: ['Drive your hips up and push the floor away. Bar stays over the middle of your foot.'], why: 'Leading with the hips puts your strongest muscles in charge.', cues: [PL.floor, C('HIPS UP!', 2)], photo: { id: 'squat_ascent', need: 'Side view: coming up out of the bottom.' } },
       ],
-      mistakes: ['Knees falling inwards on the way up.', 'Heels lifting: weight drifts to the toes.', 'Looking up at the ceiling.', 'Stopping above parallel.', 'Losing the brace halfway down.'],
-      recap: ['Shoulder-width heels, toes out.', 'Bar on the shelf, elbows and chest up.', 'BRACE! Look down, hips back, knees out.', 'Below parallel, then hips straight up.'],
+      mistakes: ['Knees caving in.', 'Heels lifting.', 'Stopping above parallel.'],
+      recap: ['Bar on the back, toes out.', 'BRACE!', 'Below parallel.', 'Hips up, push the floor away.'],
     },
     {
       id: 'press', title: 'The Overhead Press', kicker: 'Lesson 2', exercise: 'overhead-press',
-      intro: 'Standing, strict, from the shoulders to straight arms overhead. The legs stay still: this is not a push press.',
-      sources: [SRC('The Press', 'Learning to Press; Faults and Corrections')],
+      intro: 'Standing, from the shoulders to straight arms overhead. Legs stay still.',
+      sources: [SRC('The Press', 'Learning to Press')],
       steps: [
-        { phase: 'Grip', title: 'Forearms vertical', kind: 'principle', body: ['Hands just outside the shoulders, so the forearms are vertical from the front. Bar low in the palm, over the forearm bones, thumbs around.'], why: 'Force goes straight up through the forearm into the bar instead of bending the wrist back.', cues: [C('WRISTS STACKED!', 2), PL.goodBrace], photo: { id: 'press_grip', need: 'Grip width and rack position, front and side.' } },
-        { phase: 'Start position', title: 'Elbows a little in front', kind: 'principle', body: ['Bar on the front of the shoulders, elbows slightly in front of the bar. Squat-width stance, eyes straight ahead, chest up.'], why: 'Elbows in front of the bar point the forearms straight up, so the press starts in the right direction.', cues: [C('CHEST UP!', 2), PL.brace], photo: { id: 'press_start', need: 'Side view: bar on the shoulders, elbows just in front of it.' } },
-        { phase: 'Lockout', title: 'Learn the finish first', kind: 'principle', body: ['Press once to find the top: bar over the back of the neck, in a vertical line with the shoulders and the middle of the feet. Lock the elbows, shrug up.'], why: 'When bar, shoulder and mid-foot line up, the weight sits on a column of bone instead of hanging on leverage.', cues: [C('LOCK IT OUT!', 2), C('Bar over your ears!')], photo: { id: 'press_lockout', need: 'Lockout from the side: bar, shoulder, mid-foot in a line.' } },
-        { phase: 'Bar path', title: 'Straight up, close to the face', kind: 'principle', body: ['Big breath, brace. Move your head back just enough to let the bar pass and press it straight up.', 'Once it passes your forehead, get under it: head and chest come forward.'], why: 'A straight, close bar path is the shortest and best-balanced one. Every centimetre the bar drifts forward costs strength.', cues: [PL.goodBrace, C('Head through!', 2)], photo: { id: 'press_bar_path', need: 'Sequence: bar passing the face, body moving under it.' } },
-        { phase: 'Reps', title: 'Back to the shoulders, again', kind: 'principle', body: ['Lower the bar under control to the shoulders, elbows back in front. Breathe at the top, keep everything tight.'], why: 'Starting every rep from the same position makes the groove automatic.', cues: [C('Same start every rep!', 2), PL.brace], photo: { id: 'press_lower', need: 'A complete press, frame by frame.' } },
+        { phase: 'Grip', title: 'Forearms vertical', kind: 'principle', body: ['Hands just outside the shoulders, bar low in the palm, elbows a little in front of the bar.'], why: 'Vertical forearms push straight up.', cues: [C('WRISTS STACKED!', 2), PL.goodBrace], photo: { id: 'press_grip', need: 'Grip and start position, front and side.' } },
+        { phase: 'Press', title: 'Straight up, close to the face', kind: 'principle', body: ['Brace, tilt your head back a little and press the bar straight up past your face.'], why: 'The shortest bar path is the strongest.', cues: [PL.brace, C('Head through!', 2)], photo: { id: 'press_bar_path', need: 'Side view: bar passing the face.' } },
+        { phase: 'Lockout', title: 'Get under it', kind: 'principle', body: ['Once the bar passes your forehead, move under it. Lock your elbows, bar over your mid-foot.'], why: 'Locked out over the middle of the foot, the weight sits on bone, not muscle.', cues: [C('LOCK IT OUT!', 2)], photo: { id: 'press_lockout', need: 'Side view: lockout, bar over the mid-foot.' } },
+        { phase: 'Down', title: 'Back to the shoulders', kind: 'principle', body: ['Lower under control to the same start position. Breathe at the top.'], why: 'The same start every rep makes it automatic.', cues: [C('Same start every rep!', 2), PL.goodBrace], photo: { id: 'press_lower', need: 'Side view: lowering to the shoulders.' } },
       ],
       mistakesPhoto: { id: 'press_mistakes', need: 'Bar too far in front of the shoulder vs close.' },
-      mistakes: ['Leaning far back to turn it into an incline press.', 'Bar drifting forward away from the face.', 'Elbows behind the bar at the start.', 'Soft elbows at the top.', 'Bending the knees to help (that is a push press).'],
-      recap: ['Vertical forearms, bar in the heel of the hand.', 'Elbows a little in front, chest up, brace.', 'Straight up, head through.', 'Lock out over the mid-foot.'],
+      mistakes: ['Leaning far back.', 'Bar drifting forward.', 'Bending the knees to help.'],
+      recap: ['Vertical forearms.', 'Brace, bar past the face.', 'Lock out over the mid-foot.'],
     },
     {
       id: 'deadlift', title: 'The Deadlift', kicker: 'Lesson 3', exercise: 'deadlift',
-      intro: 'From the floor to standing tall, back locked flat, the bar travelling in a straight line over the middle of your foot. Push the floor away!',
-      sources: [SRC('The Deadlift', 'Learning to Deadlift; Back Position; Pulling Mechanics')],
+      intro: 'From the floor to standing tall, back flat, bar close. Push the floor away!',
+      sources: [SRC('The Deadlift', 'Learning to Deadlift')],
       steps: [
-        { phase: 'Stance', title: 'Bar over the middle of the foot', kind: 'principle', body: ['Heels about 20–30 cm apart, toes slightly out, like a standing jump. The bar is over the middle of your foot, a few centimetres from your shins.'], why: 'The bar will travel straight up from where it starts. Start it over the mid-foot and it stays in balance.', cues: [C('Mid-foot, champ!', 2), PL.floor], photo: { id: 'deadlift_paul_setup', need: 'Start position with the bar over the mid-foot.' } },
-        { phase: 'Grip & shins', title: 'Grip, then shins to the bar', kind: 'preference', note: 'This step-by-step setup follows the book. Other coaches set up differently; the principles (bar over mid-foot, flat back) stay the same.', body: ['Bend over with straight legs and grip the bar just outside your legs, double overhand.', 'Bend the knees until the shins touch the bar. Hips stay up. The bar does not move.'], why: 'Building the position around a bar that never moves keeps it exactly where it balances.', cues: [C("DON'T MOVE THE BAR!", 2), C('Shins to the bar!')], photo: { id: 'deadlift_grip', need: 'The setup steps: stance, grip, shins to the bar.' } },
-        { phase: 'Chest up', title: 'Lock the back flat', kind: 'principle', body: ['Squeeze your chest up between your arms until the whole back is flat and tight. Don\'t drop the hips to do it. Eyes on the floor a few metres ahead.', 'Then: big breath, brace.'], why: 'A flat, braced back passes the force from your legs to the bar. A round back leaks it, and puts load where you don\'t want it.', cues: [PL.goodBrace, PL.brace, C('CHEST UP!')], photo: { id: 'deadlift_paul_set', need: 'Chest up: back flat, shoulders slightly in front of the bar.' } },
-        { phase: 'Pull', title: 'Push the floor away', kind: 'principle', body: ['Push the floor away and drag the bar up your legs. It stays in contact the whole way. Build tension first: no jerking it off the floor.'], why: 'A bar that leaves the legs swings forward of the mid-foot and gets heavier for your back.', cues: [PL.floor, C('KEEP IT CLOSE!', 3)], photo: { id: 'deadlift_paul_pull', need: 'Mid-pull: bar touching the legs.' } },
-        { phase: 'Lockout & down', title: 'Stand tall, then reverse it', kind: 'principle', body: ['Finish with knees and hips straight and chest up. No leaning back.', 'Lower the same way: hips back first, bar down the thighs, then bend the knees once it has passed them.'], why: 'Leaning back at the top adds nothing to the lift, it only loads the lower back.', cues: [C('Stand tall!', 2), PL.goodBrace], photo: { id: 'deadlift_paul_lockout', need: 'Standing lockout.' } },
+        { phase: 'Set up', title: 'Bar over the mid-foot', kind: 'principle', body: ['Feet hip-width under the bar. Grip just outside your legs, shins to the bar.'], why: 'The bar goes straight up from where it starts.', cues: [C('Mid-foot, champ!', 2), C("DON'T MOVE THE BAR!")], photo: { id: 'deadlift_paul_setup', need: 'Start position with the bar over the mid-foot.' } },
+        { phase: 'Back', title: 'Chest up, back flat', kind: 'principle', body: ['Squeeze your chest up until your back is flat. Big breath, brace.'], why: 'A flat, braced back passes the force from your legs to the bar.', cues: [PL.goodBrace, PL.brace], photo: { id: 'deadlift_paul_set', need: 'Set position: chest up, back flat.' } },
+        { phase: 'Pull', title: 'Push the floor away', kind: 'principle', body: ['Push the floor away and drag the bar up your legs. No jerking.'], why: 'A bar that leaves your legs gets heavier for your back.', cues: [PL.floor, C('KEEP IT CLOSE!', 3)], photo: { id: 'deadlift_paul_pull', need: 'Mid-pull: bar touching the legs.' } },
+        { phase: 'Lockout', title: 'Stand tall', kind: 'principle', body: ['Knees and hips straight, chest up. Lower it the same way: hips back first.'], why: 'Leaning back adds nothing, it only loads your lower back.', cues: [C('Stand tall!', 2), PL.goodBrace], photo: { id: 'deadlift_paul_lockout', need: 'Standing lockout.' } },
       ],
       mistakesPhoto: { id: 'deadlift_mistakes', need: 'Correct start vs hips too low.' },
-      mistakes: ['Bar drifting away from the legs.', 'Dropping the hips "to squat it up": the bar rolls forward.', 'Back rounding more than in the setup.', 'Jerking the bar off the floor.', 'Leaning back at the top.'],
-      recap: ['Bar over mid-foot, narrow stance.', 'Grip, shins, chest up, without moving the bar.', 'BRACE, then push the floor away.', 'Stand tall, lower the same way.'],
+      mistakes: ['Bar drifting away from the legs.', 'Back rounding.', 'Leaning back at the top.'],
+      recap: ['Bar over the mid-foot.', 'Chest up, BRACE.', 'Push the floor away.', 'Stand tall.'],
     },
     {
       id: 'bench', title: 'The Bench Press', kicker: 'Lesson 4', exercise: 'bench-press',
-      intro: 'Lying on the bench, lower the bar to the chest and press it back to the same spot over your shoulders.',
-      sources: [SRC('The Bench Press', 'Learning to Bench Press; Common Problems')],
+      intro: 'Lower the bar to your chest, press it back over your shoulders.',
+      sources: [SRC('The Bench Press', 'Learning to Bench Press')],
       steps: [
-        { phase: 'Safety', title: 'Spotter or safeties', kind: 'principle', body: ['Use a competent spotter, or a rack with safety arms just below chest height. Start every session with the empty bar.'], why: 'The bench is the one lift where a missed rep can land on you. Plan for it.', cues: [C('Safety first, ego later!', 2), C('NO EGO LIFTING!', 2)], photo: { id: 'bench_paul_spotter', need: 'Bench with a spotter or safety arms in place.' } },
-        { phase: 'On the bench', title: 'Eyes just past the bar', kind: 'principle', body: ['Lie down so your eyes are just past the bar, toward your feet. Upper back tight on the bench, glutes down.'], why: 'This distance lets you unrack without banging the hooks and lands the bar over your chest.', cues: [C('Shoulder blades on the bench!', 2), PL.goodBrace], photo: { id: 'bench_setup', need: 'Getting into position on the bench.' } },
-        { phase: 'Feet', title: 'Feet flat, planted', kind: 'principle', body: ['Feet flat on the floor, about squat width, shins close to vertical. Drive them into the floor.'], why: 'Your legs make the whole body a stable base. Feet up or on tiptoes lose that connection.', cues: [PL.floor, C('Feet flat, champ!')], photo: { id: 'bench_feet', need: 'Foot placement compared.' } },
-        { phase: 'Grip', title: 'Forearms vertical at the bottom', kind: 'principle', body: ['Grip so your forearms will be vertical when the bar touches your chest. Bar in the heel of the hand, thumbs around. Never thumbless.'], why: 'Vertical forearms push straight up. A thumbless grip is how bars roll out of hands.', cues: [C('WRISTS STACKED!', 2), C('Thumbs around!')], photo: { id: 'bench_grip', need: 'Forearm and elbow position under the bar.' } },
-        { phase: 'Unrack', title: 'Bar over the shoulders', kind: 'principle', body: ['Lock your elbows and bring the bar out until it is right over your shoulder joints. Pick a spot on the ceiling above it.'], why: 'Over the shoulder joint the bar balances: no leverage against you. The ceiling spot is your target for every rep.', cues: [C('Over the shoulders!', 2), PL.brace], photo: { id: 'bench_paul_lockout', need: 'Bar balanced over the shoulder joint.' } },
-        { phase: 'Down & up', title: 'Touch, then back to the spot', kind: 'principle', body: ['Lower under control to touch the middle of the chest, elbows under the bar. No bounce.', 'Drive it back to the same spot on the ceiling. Don\'t follow the bar with your eyes.'], why: 'Same path every rep, controlled at the bottom: that is what makes it repeatable and safe.', cues: [C('CONTROL THAT BAR!', 3), C("THAT'S A PROPER REP!")], photo: { id: 'bench_paul_bottom', need: 'A complete bench press, frame by frame.' } },
+        { phase: 'Safety', title: 'Spotter or safeties', kind: 'principle', body: ['Heavy sets: a spotter at your head, or safety arms just below chest height.'], why: 'A missed bench rep can land on you.', cues: [C('NO EGO LIFTING!', 2)], photo: { id: 'bench_paul_spotter', need: 'Bench with a spotter in place.' } },
+        { phase: 'Set up', title: 'Eyes under the bar', kind: 'principle', body: ['Eyes just past the bar, shoulder blades tight, feet flat on the floor. Thumbs around the bar.'], why: 'A tight, planted body is a stable base to press from.', cues: [PL.floor, C('Thumbs around!')], photo: { id: 'bench_setup', need: 'Getting into position on the bench.' } },
+        { phase: 'Unrack', title: 'Arms locked', kind: 'principle', body: ['Lock your elbows and bring the bar out over your shoulders.'], why: 'Over the shoulders, the bar balances.', cues: [PL.brace, C('Over the shoulders!', 2)], photo: { id: 'bench_paul_lockout', need: 'Arms locked, bar over the shoulders.' } },
+        { phase: 'Down & up', title: 'Touch, press', kind: 'principle', body: ['Lower under control to mid-chest, no bounce. Press back to the same spot.'], why: 'The same path every rep is what makes it safe.', cues: [C('CONTROL THAT BAR!', 3), C("THAT'S A PROPER REP!")], photo: { id: 'bench_paul_bottom', need: 'Bar touching the chest.' } },
       ],
-      mistakes: ['Bouncing the bar off the chest.', 'Glutes coming off the bench.', 'Wrists bent back.', 'Thumbless grip.', 'Feet floating or on tiptoes.'],
-      recap: ['Spotter or safeties, empty bar first.', 'Eyes past the bar, feet flat, back tight.', 'Vertical forearms, thumbs around.', 'Down to mid-chest, back over the shoulders.'],
+      mistakes: ['Bouncing off the chest.', 'Glutes off the bench.', 'Thumbless grip.'],
+      recap: ['Spotter or safeties.', 'Tight back, feet flat.', 'Touch the chest, press back up.'],
     },
     {
       id: 'clean', title: 'The Power Clean', kicker: 'Lesson 5', exercise: null,
-      intro: 'An explosive jump with the bar, caught on the shoulders. It is learned from the top down.',
+      intro: 'A jump with the bar, caught on your shoulders.',
       note: 'Not in Paul\'s current exercise list: ask Paul before adding it to your training.',
-      sources: [SRC('The Power Clean', 'Learning the Power Clean; Correcting Problems')],
+      sources: [SRC('The Power Clean', 'Learning the Power Clean')],
       steps: [
-        { phase: 'Stance & grip', title: 'Jumping stance', kind: 'principle', body: ['Feet like for a standing jump, about 20–30 cm apart, toes slightly out. Grip about a hand-width wider than your deadlift.'], why: 'The power clean is a jump. You pull from the stance you jump best from.', cues: [C('JUMP STANCE!', 2), PL.legday], photo: { id: 'clean_stance', need: 'The jumping stance.' } },
-        { phase: 'Hang', title: 'Straight arms', kind: 'principle', body: ['Deadlift the empty bar to standing. Arms straight, elbows rotated in, chest up. The arms are ropes, not hooks.'], why: 'Bent arms pull too early and steal power from the jump.', cues: [C('ARMS STRAIGHT!', 3), PL.goodBrace], photo: { id: 'clean_hang', need: 'Hang position, straight elbows.' } },
-        { phase: 'Rack', title: 'Elbows high', kind: 'principle', body: ['Get the bar onto the front of the shoulders with the elbows pointing forward, high. The shoulders hold the bar, not the hands.'], why: 'High elbows make a shelf. Low elbows put the weight on your wrists.', cues: [C('ELBOWS UP!', 3)], photo: { id: 'clean_rack', need: 'Rack position: high elbows, bar on the front of the shoulders.' } },
-        { phase: 'Jumping position', title: 'Bar on the thighs', kind: 'principle', body: ['From the hang, slide the bar to mid-thigh: knees slightly bent, bar touching the thighs, chest up.'], why: 'This is where the jump happens. Feeling the bar on the thighs means it is in balance.', cues: [C('Bar on the thighs!', 2)], photo: { id: 'clean_jump_position', need: 'Jumping position, bar at mid-thigh.' } },
-        { phase: 'Jump & catch', title: 'Jump, then fast elbows', kind: 'principle', body: ['Jump explosively with straight arms. As the bar rises, whip the elbows around into the rack and land in your squat stance.'], why: 'The bar goes up because you jumped, not because you curled it.', cues: [C('JUMP!', 3), C('Fast elbows!'), PL.floor], photo: { id: 'clean_catch', need: 'A complete power clean, frame by frame.' } },
-        { phase: 'From the floor', title: 'Slow first, then fast', kind: 'principle', body: ['Later, start from the floor: pull like a deadlift to mid-thigh, under control, then jump.'], why: 'Speed belongs at the top. Rushing off the floor throws the bar out of position.', cues: [C('Slow, then BOOM!', 2), PL.goodBrace], photo: { id: 'clean_floor', need: 'From the floor to the jumping position.' } },
+        { phase: 'Hang', title: 'Straight arms', kind: 'principle', body: ['Jump stance, grip a little wider than the deadlift. Stand with the bar, arms straight.'], why: 'The arms are ropes: bending them early steals power.', cues: [C('ARMS STRAIGHT!', 3)], photo: { id: 'clean_hang', need: 'Hang position, straight elbows.' } },
+        { phase: 'Jump position', title: 'Bar on the thighs', kind: 'principle', body: ['Slide the bar to mid-thigh: knees slightly bent, chest up.'], why: 'This is where the jump happens.', cues: [C('Bar on the thighs!', 2), PL.goodBrace], photo: { id: 'clean_jump_position', need: 'Jumping position, bar at mid-thigh.' } },
+        { phase: 'Jump & catch', title: 'Jump, fast elbows', kind: 'principle', body: ['Jump hard, then whip the elbows forward and catch the bar on your shoulders.'], why: 'The bar goes up because you jumped, not because you pulled with your arms.', cues: [C('JUMP!', 3), C('Fast elbows!')], photo: { id: 'clean_catch', need: 'A complete power clean, frame by frame.' } },
+        { phase: 'From the floor', title: 'Slow, then fast', kind: 'principle', body: ['Later, start from the floor: pull slowly to the thighs, then jump.'], why: 'Speed belongs at the top.', cues: [C('Slow, then BOOM!', 2)], photo: { id: 'clean_floor', need: 'From the floor to the jumping position.' } },
       ],
-      mistakes: ['Pulling with bent arms too early.', 'Catching with the elbows pointing down.', 'Bar swinging away from the body.', 'Jumping forward instead of up.'],
-      recap: ['Jump stance, wider grip.', 'Learn hang, rack, jumping position.', 'Jump with straight arms, fast elbows.', 'Add the floor last.'],
+      mistakes: ['Bent arms too early.', 'Elbows down in the catch.', 'Jumping forward.'],
+      recap: ['Arms straight.', 'Bar on the thighs.', 'Jump, fast elbows.'],
     },
   ];
 
@@ -3122,39 +3120,57 @@ window.Paulino = window.Paulino || {};
     return savePaul(c);
   };
 
-  Paul.createDialog = (list) => sheet({ title: 'New program' }, (body, close) => {
+  Paul.createDialog = (list, { copyFrom = null } = {}) => sheet({ title: 'New program' }, (body, close) => {
+    const sorted = [...list].sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
     body.innerHTML = String(html`
+      <div class="seg" role="group" aria-label="Start from">
+        <button type="button" class="seg-btn" data-from="scratch" aria-pressed="true">Blank</button>
+        <button type="button" class="seg-btn" data-from="dup" aria-pressed="false" ${list.length ? '' : raw('disabled')}>Copy a saved program</button>
+      </div>
+      ${list.length ? html`<div class="copy-list" data-copy-list hidden role="radiogroup" aria-label="Program to copy">${sorted.map((p) => html`<button type="button" class="choice-btn" role="radio" aria-checked="false" data-src="${p.id}">${p.name}<small>${p.athlete ? `${p.athlete} · ` : ''}${P.util.plural(p.weeks.length, 'week')}</small></button>`)}</div>` : ''}
       <div class="field"><label for="np-name">Program name</label><input id="np-name" type="text" maxlength="120" placeholder="e.g. Strength block 1" autofocus></div>
       <div class="field"><label for="np-ath">Athlete (optional)</label><input id="np-ath" type="text" maxlength="80" placeholder="e.g. Marco"></div>
       <div class="ed-grid">
         <div class="field"><label for="np-start">Start date</label><input id="np-start" type="date" value="${nextMonday()}"></div>
         <div class="field"><label for="np-weeks">Duration (weeks)</label><input id="np-weeks" type="number" inputmode="numeric" min="1" max="104" value="12"></div>
       </div>
-      <div class="field"><label for="np-notes">General instructions (optional)</label><textarea id="np-notes" rows="3" maxlength="4000" placeholder="Warm up, rest times, how to report pain…"></textarea></div>
-      <fieldset class="field plain-fieldset"><legend class="label">Start from</legend><div class="choices">
-        <button type="button" class="choice-btn" data-from="scratch" aria-pressed="true">Create from scratch<small>One empty week to build your template</small></button>
-        ${list.length ? html`<button type="button" class="choice-btn" data-from="dup" aria-pressed="false">Duplicate an existing program<small>Copy everything, then adjust</small></button>
-        <select id="np-src" hidden aria-label="Program to duplicate">${list.map((p) => html`<option value="${p.id}">${p.name}${p.athlete ? ` (${p.athlete})` : ''}</option>`)}</select>` : ''}
-      </div></fieldset>
+      <div class="field"><label for="np-notes">General instructions (optional)</label><textarea id="np-notes" rows="2" maxlength="4000" placeholder="Warm up, rest times, how to report pain…"></textarea></div>
       <p class="field-error" data-err hidden></p>
       <button class="btn btn-block btn-lg" data-go>Create program</button>`);
-    let from = 'scratch';
-    body.querySelectorAll('[data-from]').forEach((b) => (b.onclick = () => {
-      from = b.dataset.from;
-      body.querySelectorAll('[data-from]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      const src = body.querySelector('#np-src'); if (src) src.hidden = from !== 'dup';
-    }));
+    let from = 'scratch', srcId = null, autoName = '';
+    const $ = (q) => body.querySelector(q);
+    const setFrom = (f) => {
+      from = f;
+      body.querySelectorAll('[data-from]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.from === f)));
+      const l = $('[data-copy-list]'); if (l) l.hidden = f !== 'dup';
+    };
+    const pick = (id) => {
+      const src = list.find((x) => x.id === id);
+      if (!src) return;
+      srcId = id;
+      body.querySelectorAll('[data-src]').forEach((x) => x.setAttribute('aria-checked', String(x.dataset.src === id)));
+      // fill what makes sense; the athlete stays blank (a copy is usually for someone else)
+      const name = $('#np-name');
+      if (!name.value.trim() || name.value === autoName) { autoName = `${src.name} (copy)`; name.value = autoName; }
+      $('#np-weeks').value = src.durationWeeks || src.weeks.length;
+      if (!$('#np-notes').value.trim()) $('#np-notes').value = src.notes || '';
+    };
+    body.querySelectorAll('[data-from]').forEach((b) => (b.onclick = () => setFrom(b.dataset.from)));
+    body.querySelectorAll('[data-src]').forEach((b) => (b.onclick = () => pick(b.dataset.src)));
+    if (copyFrom) { setFrom('dup'); pick(copyFrom); }
     body.querySelector('[data-go]').onclick = async () => {
       const err = (m) => { const e = body.querySelector('[data-err]'); e.textContent = m; e.hidden = false; };
       const name = body.querySelector('#np-name').value.trim();
       const start = body.querySelector('#np-start').value;
       const weeks = Number(body.querySelector('#np-weeks').value);
       if (!name) return err('Give the program a name.');
+      if (from === 'dup' && !srcId) return err('Choose the program to copy.');
       if (!validIso(start)) return err('Choose a valid start date.');
       if (!Number.isInteger(weeks) || weeks < 1 || weeks > 104) return err('Duration must be 1–104 weeks.');
       let p;
       if (from === 'dup') {
-        const src = list.find((x) => x.id === body.querySelector('#np-src').value);
+        const src = list.find((x) => x.id === srcId);
+        if (!src) return err('Choose the program to copy.');
         p = M.reId(src, 'program');
       } else p = M.newProgram();
       Object.assign(p, { name, athlete: body.querySelector('#np-ath').value.trim(), startDate: start, durationWeeks: weeks });
@@ -3485,7 +3501,7 @@ window.Paulino = window.Paulino || {};
     return sheet({ title: 'Add exercise' }, (body, close) => {
       body.innerHTML = String(html`${Object.entries(CATEGORIES).map(([cat, label]) => {
         const list = EXERCISES.filter((e) => e.category === cat);
-        return list.length ? html`<h3 class="pick-h">${label}</h3><div class="choices">${list.map((e) => html`<button class="choice-btn" data-pick="${e.id}">${e.name}<small>${e.description}</small></button>`)}</div>` : '';
+        return list.length ? html`<h3 class="pick-h">${label}</h3><div class="choices pick-grid">${list.map((e) => html`<button class="choice-btn" data-pick="${e.id}">${e.name}</button>`)}</div>` : '';
       })}<p class="small muted" style="margin-top:14px">Missing one? <a href="#/paul/exercises/new" data-close-sheet>Add an exercise</a>.</p>`);
       body.querySelectorAll('[data-pick]').forEach((b) => (b.onclick = () => close(b.dataset.pick)));
       body.querySelector('[data-close-sheet]')?.addEventListener('click', () => close(null));
