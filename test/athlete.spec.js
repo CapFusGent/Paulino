@@ -86,7 +86,7 @@ test('13 · modifying the prescription triggers Paulino; 14 · restore the origi
   const drama = page.getByRole('dialog', { name: 'Paulino is disappointed' });
   await expect(drama).toBeVisible();
   await expect(drama.locator('.paulino.mood-disappointed')).toBeVisible();
-  await expect(drama.locator('.bubble')).toContainText(/Paul made this program for a reason|Paul is crying/);
+  await expect(drama.locator('.bubble')).toContainText(/Paul made this program for a reason|Paul is crying/i);
   await expect(drama).toContainText('Changing the number of sets');
   await settle(page);
   await page.waitForTimeout(250);
@@ -111,7 +111,7 @@ test('13 · modifying the prescription triggers Paulino; 14 · restore the origi
   await card(page, 'Deadlift').getByRole('button', { name: 'Change' }).click();
   await page.getByLabel('Exercise', { exact: true }).selectOption('barbell-row');
   await page.getByRole('button', { name: 'Save change' }).click();
-  await expect(page.getByRole('dialog', { name: 'Paulino is disappointed' }).locator('.bubble')).toContainText(/masterpiece|Paul picked that one/);
+  await expect(page.getByRole('dialog', { name: 'Paulino is disappointed' }).locator('.bubble')).toContainText(/masterpiece|Paul picked that one/i);
   await page.getByRole('button', { name: 'Change anyway' }).click();
   await settle(page);
   await expect(card(page, 'Barbell row')).toContainText('Changed by you');

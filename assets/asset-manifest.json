@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "note": "Public manifest: only files listed under `images` are deployed. The app reads this file at start-up (with a built-in copy as fallback), so adding a photo here + dropping the file in assets/ makes it appear without code changes.",
+  "images": [
+    {
+      "id": "paul_head_smiling",
+      "file": "assets/paulino/paul_head_smiling.webp",
+      "type": "face_cutout",
+      "usage": ["happy", "celebrating", "motivated (montage head)", "hero"],
+      "expression": "big open smile, glasses",
+      "source": "Paul, user-supplied photo paul_smiling_glasses.jpg, hand-cut by tools/build_cutouts.py",
+      "license": "Photo of Paul supplied by the project owner. Paul's consent to publish his face must be confirmed.",
+      "status": "in use"
+    },
+    {
+      "id": "paul_head_direct",
+      "file": "assets/paulino/paul_head_direct.webp",
+      "type": "face_cutout",
+      "usage": ["focused", "concerned", "lesson coach face"],
+      "expression": "neutral, direct look into the camera, glasses",
+      "source": "Paul, user-supplied photo paul_playful_closeup.jpg, hand-cut (neighbour on the left excluded)",
+      "license": "As above: consent to be confirmed.",
+      "status": "in use"
+    },
+    {
+      "id": "paul_head_calm",
+      "file": "assets/paulino/paul_head_calm.webp",
+      "type": "face_cutout",
+      "usage": ["disappointed (with graphic treatment)", "calm notices"],
+      "expression": "calm half-smile, glasses",
+      "source": "Paul, user-supplied photo paul_relaxed_seaside.jpg, hand-cut (people on both sides excluded)",
+      "license": "As above: consent to be confirmed.",
+      "status": "in use"
+    },
+    {
+      "id": "paul_figure_outdoor",
+      "file": "assets/paulino/paul_figure_outdoor.webp",
+      "type": "figure_cutout",
+      "usage": ["happy"],
+      "expression": "smiling, shirtless, shoulder and arm",
+      "source": "Paul, user-supplied photo paul_outdoor_athletic.jpg, hand-cut (backpack and fence excluded)",
+      "license": "As above: consent to be confirmed.",
+      "status": "in use"
+    },
+    {
+      "id": "paul_body_outdoor",
+      "file": "assets/paulino/paul_body_outdoor.webp",
+      "type": "body_cutout",
+      "usage": ["motivated / celebrating photomontage body (big head on top)"],
+      "expression": "neck down",
+      "source": "Paul, user-supplied photo paul_outdoor_athletic.jpg, hand-cut",
+      "license": "As above: consent to be confirmed.",
+      "status": "in use"
+    }
+  ],
+  "restricted_not_deployed": [
+    { "id": "bentover_vintage_full", "reason": "historical photo, reuse rights unverified" },
+    { "id": "bentover_two_positions", "reason": "historical photo, reuse rights unverified" },
+    { "id": "bentover_vintage_small", "reason": "historical photo, reuse rights unverified" },
+    { "id": "vintage_barbell_torso", "reason": "historical photo, reuse rights unverified" },
+    { "id": "oldschool_deadlift", "reason": "historical photo, reuse rights unverified" },
+    { "id": "oldschool_squat", "reason": "historical photo, reuse rights unverified" },
+    { "id": "paul_*_originals", "reason": "uncut originals show other people; only the hand-cut versions above are published" },
+    { "id": "books", "reason": "copyrighted books (Starting Strength, Science and Practice of Strength Training): private development references only" }
+  ],
+  "missing": [
+    { "id": "lesson phase photos", "need": "Real, licensed, phase-by-phase photos for each lesson step (listed per step in the Lifting Academy as PHOTO NEEDED, with the exact angle and position)." },
+    { "id": "athlete body photos", "need": "Cleared photos of a lifter in squat / press / deadlift / bench / clean positions to carry Paul's head in exercise illustrations (template B)." },
+    { "id": "paper textures", "need": "Scans of real paper, newsprint and cardboard. Currently CSS/SVG grain is used as a stand-in." },
+    { "id": "handwriting", "need": "Scans of real handwritten notes and arrows. Currently drawn SVG marks + the Permanent Marker font are used." },
+    { "id": "more expressions", "need": "Genuine photos of Paul looking disappointed, worried and fierce. Today those moods are carried by framing, tilt, colour and annotations." }
+  ],
+  "lesson_photo_slots": {}
+}

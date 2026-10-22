@@ -7,7 +7,9 @@ Paulino replaces Paul's Excel training programs with something nicer to make and
 - **One file:** the whole app is a single `index.html` (HTML, CSS and vanilla JavaScript), plus a few icons.
 - **No accounts, no backend, no database server, no cloud.** Everything runs in the browser and is stored in the browser.
 - Deployable on GitHub Pages or any static host. After the page has loaded, it works without a connection.
-- Paulino, the bearded, sunglasses-wearing mascot, gives technique cues, celebrates finished workouts, and is very dramatic when an athlete edits Paul's plan. He is never dramatic when the athlete is protecting their body.
+- **Paulino is Paul**: a photomontage of Paul's real photos (hand-cut, paper-edged, collaged with flat paper, halftone and marker). He gives technique cues, celebrates finished workouts, and is very dramatic when an athlete edits Paul's plan. He is never dramatic when the athlete is protecting their body.
+- **Lifting Academy:** scrolling, magazine-style lessons for five barbell lifts.
+- Visual identity: a vintage strength magazine made interactive. See [`design/VISUAL_GUIDE.md`](design/VISUAL_GUIDE.md) and [`design/ASSET_NOTES.md`](design/ASSET_NOTES.md).
 
 ---
 
@@ -20,6 +22,7 @@ Paulino replaces Paul's Excel training programs with something nicer to make and
 6. [Program data format](#data-format)
 7. [Browser storage](#storage)
 8. [Paulino's reactions](#paulino)
+9. [Lifting Academy](#lifting-academy)
 9. [Content sources](#content)
 10. [Deploy to GitHub Pages](#deploy)
 11. [Tests](#tests)
@@ -193,7 +196,7 @@ Prescriptions, actual results and modifications are stored separately, and exerc
 
 ## Paulino
 
-Six moods, all drawn as one consistent editorial-collage sticker (black-and-white "photo" cut-out with grain, halftone, white edge and flat shadow, over torn paper in the palette accent): **motivated, focused, happy, celebrating, disappointed, concerned**. Tap Paulino or his bubble for another line; lines don't repeat until all have been shown.
+Six moods: **motivated, focused, happy, celebrating, disappointed, concerned**. Each is a photomontage built from real cut-outs of Paul (`assets/paulino/`) with paper scraps, halftone, marker notes and a speech bubble: cloud, shouting burst, or magazine callout. There are no genuine sad or worried photos, so those moods are carried by tilt, black-and-white, colour and marks, never by altering his face. Tap Paulino or his bubble for another line; lines don't repeat until all have been shown. The recipes are in the `art` module, and the full kit is in [`design/VISUAL_GUIDE.md`](design/VISUAL_GUIDE.md).
 
 | Situation | Reaction |
 |---|---|
@@ -211,11 +214,24 @@ A change is stored as a local modification. Paul's original stays intact and is 
 
 **Fonts:** Bricolage Grotesque (headings), Atkinson Hyperlegible (body), JetBrains Mono (numbers), loaded from Google Fonts with system fallbacks. Without a connection the system fonts are used.
 
-**Using the real reference image:** export transparent PNG/WebP cut-outs of Paulino per mood into `assets/paulino/` and add before the scripts in `index.html`:
+**The character kit:** `tools/build_cutouts.py` (a dev tool, not deployed) cuts Paul out of his original photos along hand-placed outlines and writes the WebP cut-outs. The originals stay out of the repository because they show other people. Asset ids map to files through [`assets/asset-manifest.json`](assets/asset-manifest.json), which the app loads at start-up, with a built-in copy as fallback. A missing image degrades to a paper "P" placeholder instead of a broken picture.
 
-```html
-<script>window.PAULINO_MASCOT = { motivated: 'assets/paulino/motivated.png', focused: '…', happy: '…', celebrating: '…', disappointed: '…', concerned: '…' };</script>
-```
+---
+
+## Lifting Academy
+
+`#/academy`: a contents page and one vertically scrolling "magazine" per lift. Each step is a full-height page with:
+- the photo of that exact phase;
+- a step number and phase tag;
+- a short explanation;
+- a *Coaching choice* note where the step is one coach's approach rather than a general principle;
+- Paulino with a tappable cue.
+
+Pages slide in as they scroll into view (turned off with reduced motion), and a progress rail runs along the top. Workout cards link to the matching lesson ("Learn the lift").
+
+- **Lessons:** squat, press, deadlift, bench press, power clean. These are the five *candidate* chapters from *Starting Strength*; **Paul still has to confirm the list**. The power clean isn't one of his program exercises.
+- **Text:** original, short wording written from the book chapters, which were read privately and are never deployed. No quotations or figures. Marked *draft* until Paul reviews it.
+- **Photos:** no cleared phase-by-phase photos exist yet, so every step shows a **PHOTO NEEDED** slot describing the exact shot required. Unrelated images are never substituted. Adding a photo means one entry in `asset-manifest.json` → `lesson_photo_slots` (e.g. `lesson_squat_bottom_loaded`). Bar-path arrows and labels (`annotations`, in % of the photo) are added together with it and checked against that photo.
 
 ---
 
@@ -223,7 +239,7 @@ A change is stored as a local modification. Paul's original stays intact and is 
 
 - **Approved exercises:** taken from Paul's own program spreadsheet: back squat, bench press, deadlift, overhead press, barbell row, pull-up. Only these can be selected, by Paul and by the athlete. To change the list, edit `EXERCISES` in the `data` module.
 - **Cues** per exercise: setup, execution, common mistakes, bracing, safety. They're short, conservative and widely taught. General guidance paraphrases Paul's written guidelines from the spreadsheet: warm up, 1–2 reps in reserve, rest 1:30–3:00, soreness up to 2–3/10 is usually fine, stop on sharp pain and rest 48 h. Paul's own exercise notes are always shown first.
-- **Not supplied:** the brief mentions powerlifting books and a Paulino reference image, but neither was included. No book content was used, and the mascot is an original drawing in the requested style. The cues make no claims that a technique prevents injury, and Paul remains responsible for the program.
+- **Supplied material** (`paulino_complete_handoff_v3.zip`): Paul's four photos are used as hand-cut cut-outs. The historical lifting photos have unverified rights and are kept out of the app. The books are private references only. Details and missing items are in [`design/ASSET_NOTES.md`](design/ASSET_NOTES.md). The cues make no claims that a technique prevents injury, and Paul remains responsible for the program.
 
 ---
 
@@ -234,7 +250,7 @@ GitHub Pages, via the included workflow `.github/workflows/deploy.yml` (no build
 1. Repository → **Settings → Pages → Source: GitHub Actions**.
 2. Push to `main`, or Actions → *Deploy to GitHub Pages* → **Run workflow**.
 
-It publishes `index.html`, `assets/`, `.nojekyll` and `sw.js`. `sw.js` is a retired service worker: it removes the caching service worker of the earlier PWA version from browsers that still have it. Any other static host works the same way: upload those files.
+It publishes `index.html`, `assets/` (icons, Paul's cut-outs, the manifest), `.nojekyll` and `sw.js`. Never `tools/`, `design/` or any source photos or books. `sw.js` is a retired service worker: it removes the caching service worker of the earlier PWA version from browsers that still have it. Any other static host works the same way: upload those files.
 
 The earlier version of Paulino used Supabase. That project and the `SUPABASE_URL` / `SUPABASE_ANON_KEY` repository variables are no longer used and can be deleted.
 
@@ -245,7 +261,7 @@ The earlier version of Paulino used Supabase. That project and the `SUPABASE_URL
 ```bash
 npm install
 npx playwright install chromium   # once
-npm test                          # 25 browser tests at 360 px
+npm test                          # 30 browser tests at 360 px
 PW_CHANNEL=chrome npm test        # …or use the installed Google Chrome
 ```
 
@@ -270,7 +286,7 @@ Every test fails on any JavaScript error or `console.error` in the page. Screens
 | 15 360 px | `layout.spec.js` (every screen, 4 palettes, wizard & share sheets) |
 | 16 Printable version | `paul.spec.js` › 16 (print media + real PDF) |
 
-Also covered: validation of programs, rules, files and links; supportive reactions for pain, fatigue, lighter loads and illness; backups; the six moods; and the app working with storage blocked.
+Also covered: the Lifting Academy (`academy.spec.js`: all lessons scroll, cues cycle, placeholders instead of unrelated photos, a manifest photo replaces its placeholder with annotations, missing images fall back to paper); validation of programs, rules, files and links; supportive reactions for pain, fatigue, lighter loads and illness; backups; the six moods; and the app working with storage blocked.
 
 ---
 
@@ -287,13 +303,14 @@ Also covered: validation of programs, rules, files and links; supportive reactio
 | 5 | `share` | link encoding / decoding, `.paulino` files |
 | 6 | `store` | IndexedDB with fallbacks, backups, preferences |
 | 7 | `stats` | history, PRs, estimated 1RM, progress |
-| 8 | `art` | Paulino's SVG artwork (six moods) |
+| 8 | `art` | asset manifest, Paulino photo collages (six moods), photo slots, annotations |
 | 9 | `ui` | mascot component, layout, palettes, chart, rest timer |
+| 10 | `academy` | Lifting Academy lessons (data + scrolling pages) |
 | 10 | `paul` | library, editor, wizard, share sheet, print view |
 | 11 | `athlete` | import, home, program, workout, modifications, results, history, library |
 | 12 | `app` | hash router (`pushState`/`popstate`), start screen, settings, boot |
 
-Other files: `assets/icons/` (favicon), `sw.js` (retired worker), `test/` (Playwright tests and a tiny static server).
+Other files: `assets/paulino/` (Paul cut-outs), `assets/asset-manifest.json`, `assets/icons/`, `sw.js` (retired worker), `tools/build_cutouts.py` (character kit, dev only), `design/` (visual guide, asset audit), `test/` (Playwright tests and a tiny static server).
 
 ---
 

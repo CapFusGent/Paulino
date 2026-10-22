@@ -23,6 +23,7 @@ test('all screens at 360 px in every palette', async ({ page }) => {
     ['home', '#/'], ['paul-library', '#/paul'], ['paul-editor', `#/paul/p/${pid}`], ['print', `#/paul/p/${pid}/print`],
     ['athlete-home', '#/a'], ['athlete-program', `#/a/p/${prog.id}`], ['workout', `#/a/p/${prog.id}/d/${day}`],
     ['results', `#/a/p/${prog.id}/d/${day}/done`], ['history', '#/a/history'], ['library', '#/a/library'], ['settings', '#/settings'],
+    ['academy', '#/academy'], ['lesson-squat', '#/academy/squat'], ['lesson-clean', '#/academy/clean'],
   ];
   for (const pal of ['original', 'pink', 'teal', 'blue']) {
     await page.evaluate((p) => { localStorage.setItem('paulino:palette', JSON.stringify(p)); window.Paulino.ui.applyPalette(); }, pal);
@@ -59,7 +60,10 @@ test('six Paulino moods render and react to taps', async ({ page }) => {
   for (const mood of ['motivated', 'focused', 'happy', 'celebrating', 'disappointed', 'concerned']) {
     const m = page.locator(`.paulino.mood-${mood}`).first();
     await expect(m).toBeVisible();
-    await expect(m.locator(`svg.mood-${mood}`)).toBeVisible();
+    // a real photo cut-out, actually loaded (not the paper fallback)
+    await expect(m.locator(`.cl.cl-${mood}`)).toBeVisible();
+    await expect(m.locator('.cl-missing')).toHaveCount(0);
+    expect(await m.locator('.cl-head').evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
     await expect(m.locator('.bubble-text')).not.toBeEmpty();
     await m.screenshot({ path: `test-results/screens/mood-${mood}.png` });
   }
