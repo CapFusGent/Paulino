@@ -168,14 +168,14 @@
       "reason": "copyrighted; built into private/paulino-academy-pack.json by tools/build_reference_pack.py, loaded by Paul on his own device, never deployed"
     },
     {
-      "id": "paul_03, paul_05/06, paul_09, paul_10",
-      "reason": "not used: other people in frame (03, 05/06), or no matching use yet (09 inflatable, 10 pull-ups)"
+      "id": "paul_03, paul_09, paul_10",
+      "reason": "not used: other people in frame (03), no matching use (09 inflatable), 10 is a swinging hang on a ship's pole, not a strict pull-up"
     }
   ],
   "missing": [
     {
       "id": "lesson phase photos",
-      "need": "Real, licensed, phase-by-phase photos for each lesson step (listed per step in the Lifting Academy as PHOTO NEEDED, with the exact angle and position)."
+      "need": "Real phase photos for the squat, overhead press and power clean (no footage of Paul doing these exists yet), plus bench feet/grip/setup and the deadlift grip. Shot list in design/ASSET_NOTES.md."
     },
     {
       "id": "athlete body photos",
@@ -280,6 +280,105 @@
           ],
           "r": 7,
           "label": "hips locked"
+        }
+      ]
+    },
+    "lesson_bench_paul_spotter": {
+      "file": "assets/lessons/bench_paul_spotter.webp",
+      "w": 464,
+      "h": 792,
+      "caption": "Paul benching heavy with a spotter standing at his head, hands ready at the bar.",
+      "credit": "Paul's own training video (paul_06.mp4), frame grab; the spotter's face is blurred.",
+      "license": "Paul, publication approved",
+      "exercise": "bench-press",
+      "annotations": [
+        {
+          "type": "arrow",
+          "from": [
+            4,
+            88
+          ],
+          "to": [
+            40,
+            38.5
+          ],
+          "label": "hands ready"
+        }
+      ]
+    },
+    "lesson_bench_paul_lockout": {
+      "file": "assets/lessons/bench_paul_lockout.webp",
+      "w": 464,
+      "h": 792,
+      "caption": "Top of the rep: arms straight, the bar held over the shoulders.",
+      "credit": "Paul's own training video (paul_06.mp4), frame grab; the spotter's face is blurred.",
+      "license": "Paul, publication approved",
+      "exercise": "bench-press",
+      "annotations": [
+        {
+          "type": "arrow",
+          "from": [
+            4,
+            88
+          ],
+          "to": [
+            59,
+            35.5
+          ],
+          "label": "arms locked"
+        }
+      ]
+    },
+    "lesson_bench_paul_bottom": {
+      "file": "assets/lessons/bench_paul_bottom.webp",
+      "w": 464,
+      "h": 792,
+      "caption": "Same set, bottom of the rep: the bar comes down to the chest under control.",
+      "credit": "Paul's own training video (paul_06.mp4), frame grab; the spotter's face is blurred.",
+      "license": "Paul, publication approved",
+      "exercise": "bench-press",
+      "annotations": [
+        {
+          "type": "arrow",
+          "from": [
+            4,
+            90
+          ],
+          "to": [
+            54,
+            51
+          ],
+          " label": "",
+          "label": "bar to the chest"
+        }
+      ]
+    },
+    "lesson_deadlift_paul_set": {
+      "file": "assets/lessons/deadlift_paul_set.webp",
+      "w": 464,
+      "h": 792,
+      "caption": "Paul set to pull: chest up, back flat from hips to shoulders, before the bar leaves the floor.",
+      "credit": "Paul's own training video (paul_11.mp4), frame grab; people in the background blurred.",
+      "license": "Paul, publication approved",
+      "exercise": "deadlift",
+      "annotations": [
+        {
+          "type": "path",
+          "points": [
+            [
+              16,
+              46
+            ],
+            [
+              54,
+              40.5
+            ]
+          ],
+          "label": "flat back",
+          "at": [
+            8,
+            35
+          ]
         }
       ]
     }

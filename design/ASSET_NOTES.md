@@ -46,16 +46,16 @@ Only cropping, masking and a white paper edge: no generated pixels, faces never 
 | Press | – | Mistakes | `lesson_press_mistakes` | `223_press_mechanics_comparison.jpg` | private |
 | Deadlift | 1 | Stance | `lesson_deadlift_paul_setup` | `paul_11.mp4` @ 0.1 s → `assets/lessons/deadlift_paul_setup.webp` | public |
 | Deadlift | 2 | Grip & shins | `lesson_deadlift_grip` | `259_setup_photographic_positions.jpg` | private |
-| Deadlift | 3 | Chest up | `lesson_deadlift_set` | `261_back_position_photographs.jpg` | private |
+| Deadlift | 3 | Chest up | `lesson_deadlift_paul_set` | `paul_11.mp4` @ 10.0 s → `deadlift_paul_set.webp` (back line drawn on the frame) | public |
 | Deadlift | 4 | Pull | `lesson_deadlift_paul_pull` | `paul_11.mp4` @ 2.7 s → `deadlift_paul_pull.webp` | public |
 | Deadlift | 5 | Lockout & down | `lesson_deadlift_paul_lockout` | `paul_11.mp4` @ 3.5 s → `deadlift_paul_lockout.webp` (bar path traced from the three frames) | public |
 | Deadlift | – | Mistakes | `lesson_deadlift_mistakes` | `321_starting_position_comparison.jpg` | private |
-| Bench | 1 | Safety | `lesson_bench_safety` | `399_feet_and_support.jpg` | private |
+| Bench | 1 | Safety | `lesson_bench_paul_spotter` | `paul_06.mp4` @ 5.6 s → `bench_paul_spotter.webp` (spotter's face blurred) | public |
 | Bench | 2 | On the bench | `lesson_bench_setup` | `355_body_position_photographs.jpg` | private |
 | Bench | 3 | Feet | `lesson_bench_feet` | `401_arm_and_bar_position_comparison.jpg` | private |
 | Bench | 4 | Grip | `lesson_bench_grip` | `373_arm_and_elbow_position.jpg` | private |
-| Bench | 5 | Unrack | `lesson_bench_unrack` | `377_wrist_and_elbow_alignment.jpg` | private |
-| Bench | 6 | Down & up | `lesson_bench_bottom` | `365_bench_press_photographic_sequence.jpg` | private |
+| Bench | 5 | Unrack | `lesson_bench_paul_lockout` | `paul_06.mp4` @ 0.0 s → `bench_paul_lockout.webp` (spotter's face blurred) | public |
+| Bench | 6 | Down & up | `lesson_bench_paul_bottom` | `paul_06.mp4` @ 4.4 s → `bench_paul_bottom.webp` (spotter's face blurred) | public |
 | Clean | 1 | Stance & grip | `lesson_clean_stance` | `433_starting_position_photographs.jpg` | private |
 | Clean | 2 | Hang | `lesson_clean_hang` | `435_pull_and_position_photographs.jpg` | private |
 | Clean | 3 | Rack | `lesson_clean_rack` | none (the candidate image showed the hang) | needed |
@@ -63,9 +63,9 @@ Only cropping, masking and a white paper edge: no generated pixels, faces never 
 | Clean | 5 | Jump & catch | `lesson_clean_catch` | `455_complete_photographic_sequence.jpg` | private |
 | Clean | 6 | From the floor | `lesson_clean_floor` | `463_phase_by_phase_diagram.jpg` | private |
 
-32 panels: 3 public, 25 private, 4 needed. On the public site, 29 panels show PHOTO NEEDED. No face swaps were made: Paulino comments next to the figures instead, so the technique pictures stay accurate and the book figures are not turned into derivatives.
+32 panels: 7 public (Paul's own lifts), 21 private, 4 needed. On the public site, 25 panels show PHOTO NEEDED. The book figures for deadlift *chest up* and bench *safety*, *unrack* and *down & up* are still in the private pack but no longer shown, because Paul's own frames take those panels. No face swaps were made: Paulino comments next to the figures instead, so the technique pictures stay accurate and the book figures are not turned into derivatives.
 
-The three deadlift frames come from Paul's own video. People in the background are blurred, and the arrows, bar path and hip circle are placed on these exact frames.
+The deadlift and bench frames come from Paul's own videos, built by `tools/build_lesson_frames.py` (exact second, crop and blur boxes per frame; source videos are not committed). In the bench videos Paul is the lifter; the spotter is someone else, so his face is blurred in every frame. Nothing is generated or composited. People in the background are blurred, and the arrows, bar path and hip circle are placed on these exact frames.
 
 ## Licensing report
 - **Book figures:** copyrighted. Private use doesn't by itself permit showing them to other people. The pack is kept off the site, and the app labels them *Not for sharing*. Whether Paul may show them to his athletes on his own phone, or send the pack to them, is **not settled**: either needs permission from the publisher (The Aasgaard Company). Until then, treat the pack as Paul's personal study material.
@@ -76,7 +76,7 @@ The three deadlift frames come from Paul's own video. People in the background a
 - **Not used yet:** `paul_09` (inflatable) and `paul_10` (pull-ups) have no matching use.
 
 ## Missing (placeholders in place)
-1. **Four phase photos** with no usable source: squat bar position (rear close-up), squat unrack (side), press start position (side), clean rack position.
+1. **No footage of Paul exists for the squat, the overhead press or the power clean**, so those lessons can't be illustrated from Paul's own images without inventing pictures. Shot list below.
 2. **Cleared replacements for the 25 book figures**, needed if the public site should show pictures in every panel. Ideal source: Paul or an athlete filmed from the side for each lift, as was done for the deadlift.
 3. **Cleared lifter body photos**, if face-swap illustrations are still wanted.
 4. **Genuine disappointed and worried photos of Paul.** For now, the stare and the mid-sentence look carry those moods.
@@ -89,3 +89,15 @@ The three deadlift frames come from Paul's own video. People in the background a
 - **Press:** how much lean back does he allow?
 - **Power clean:** it isn't in his exercise list. Keep the lesson? Barbell row and pull-up have no lesson.
 - **All five lessons:** the texts are marked *draft, waiting for Paul's review*.
+
+## Shot list for Paul (to finish the lessons with his own images)
+Film on a phone, upright, at hip height, about 3 m away, **from the side** unless noted; empty bar or a light warm-up weight is fine; nobody else's face in frame. Then add the times to `FRAMES` in `tools/build_lesson_frames.py` and the slot to `asset-manifest.json`.
+
+| Lesson | Clip | Frames it gives |
+|---|---|---|
+| Squat | 3 reps from the side; 1 rep from the front; 2 s close-up from behind of the bar on the back | stance (front), bar position (rear), unrack, descent, bottom below parallel, drive up |
+| Overhead press | 3 reps from the side; 2 s front view of the grip | grip, start position (elbows in front), bar passing the face, lockout, lowering |
+| Power clean | 3 reps from the side, plus the hang and jumping position held for 2 s each | stance, hang, jumping position, catch/rack, from the floor |
+| Bench (missing panels) | feet and back setup from the side; bar touching the chest from the side | on the bench, feet, grip (forearms vertical) |
+| Deadlift (missing panel) | 2 s of taking the grip and bringing the shins to the bar | grip & shins |
+

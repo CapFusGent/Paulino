@@ -57,19 +57,23 @@ test('academy lists the five lessons and every lesson scrolls through its steps'
   }
 });
 
-test("the deadlift is illustrated with Paul's own frames, annotated", async ({ page }) => {
-  await open(page, '#/academy/deadlift');
-  const photos = page.locator('.has-photo');
-  await expect(photos).toHaveCount(3);
-  for (const id of ['lesson_deadlift_paul_setup', 'lesson_deadlift_paul_pull', 'lesson_deadlift_paul_lockout']) {
-    const f = page.locator(`[data-photo="${id}"]`);
-    await f.scrollIntoViewIfNeeded();
-    await expect.poll(() => f.locator('img').evaluate((img) => img.naturalWidth)).toBe(464);
-    await expect(f.locator('svg.annot')).toHaveCount(1);
-    await expect(f.locator('figcaption small')).toContainText("Paul's own training video");
-  }
-  await expect(page.locator('[data-photo="lesson_deadlift_paul_lockout"] polyline')).toHaveCount(1);
-});
+for (const [lesson, ids, credit] of [
+  ['deadlift', ['lesson_deadlift_paul_setup', 'lesson_deadlift_paul_set', 'lesson_deadlift_paul_pull', 'lesson_deadlift_paul_lockout'], 'paul_11.mp4'],
+  ['bench', ['lesson_bench_paul_spotter', 'lesson_bench_paul_lockout', 'lesson_bench_paul_bottom'], "spotter's face is blurred"],
+]) {
+  test(`the ${lesson} is illustrated with frames of Paul's own lifts, annotated`, async ({ page }) => {
+    await open(page, `#/academy/${lesson}`);
+    await expect(page.locator('.has-photo')).toHaveCount(ids.length);
+    for (const id of ids) {
+      const f = page.locator(`[data-photo="${id}"]`);
+      await f.scrollIntoViewIfNeeded();
+      await expect.poll(() => f.locator('img').evaluate((img) => img.naturalWidth)).toBe(464);
+      await expect(f.locator('svg.annot')).toHaveCount(1);
+      await expect(f.locator('figcaption small')).toContainText(credit);
+    }
+    if (lesson === 'deadlift') await expect(page.locator('[data-photo="lesson_deadlift_paul_lockout"] polyline')).toHaveCount(1);
+  });
+}
 
 test('lesson bubbles cycle through the step cues; coaching choices are labelled', async ({ page }) => {
   await open(page, '#/academy/squat');
