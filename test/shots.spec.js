@@ -2,6 +2,7 @@
 import { test, expect, open, seedPaulProgram, settle } from './helpers.js';
 const shot = (page, n, full = true) => page.screenshot({ path: `test-results/review/${n}.png`, fullPage: full });
 test('review shots', async ({ page }) => {
+  test.slow();
   await open(page);
   const pid = await seedPaulProgram(page, { name: 'Strength block 1' });
   const url = await page.evaluate(async (id) => (await window.Paulino.share.makeLink(await window.Paulino.store.get('paul', id))).url, pid);

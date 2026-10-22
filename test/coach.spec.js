@@ -39,7 +39,7 @@ async function createFiveStepExercise(page) {
   await page.locator('#st-c-2').fill('Push the hips back!');
   await page.locator('#st-w-3').fill('Rounding the lower back.');
   await page.getByRole('button', { name: 'Save exercise' }).click();
-  await expect(page.getByText(/Exercise saved/)).toBeVisible();
+  await expect(page.getByText(/Exercise saved/).last()).toBeVisible();
   await expect(page).toHaveURL(/#\/paul\/exercises\/cx_[0-9a-f]+$/);
   return page.url().match(/(cx_[0-9a-f]+)$/)[1];
 }
@@ -134,7 +134,7 @@ test('leaving with unsaved changes asks first (nav, back button, link)', async (
   await page.getByRole('link', { name: /Add an exercise/ }).click();
   await page.getByLabel('Exercise name').fill('Saved one');
   await page.getByRole('button', { name: 'Save exercise' }).click();
-  await expect(page.getByText(/Exercise saved/)).toBeVisible();
+  await expect(page.getByText(/Exercise saved/).last()).toBeVisible();
   await page.locator('.bottom-nav').getByRole('link', { name: 'Home' }).click();
   await expect(page).toHaveURL(/#\/coach$/);
 });
@@ -212,7 +212,7 @@ test('edit and delete a custom exercise; deleting is blocked while a program use
   await page.getByRole('button', { name: 'Remove photo 1 of step 2' }).click();
   await expect(page.locator('.step-ed[data-si="1"] .ph-empty')).toBeVisible();
   await page.getByRole('button', { name: 'Save exercise' }).click();
-  await expect(page.getByText(/Exercise saved/)).toBeVisible();
+  await expect(page.getByText(/Exercise saved/).last()).toBeVisible();
   const saved = await page.evaluate((x) => window.Paulino.store.get('exercises', x), id);
   expect(saved.name).toBe('RDL');
   expect(saved.steps.map((s) => s.title)).toEqual(['Soft knees', 'Stand tall', 'Hips back', 'Bar on the thighs']);

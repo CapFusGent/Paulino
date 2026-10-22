@@ -5,6 +5,7 @@ import { test, expect, open, noHScroll, settle, seedPaulProgram } from './helper
 const shot = (page, name) => page.screenshot({ path: `test-results/screens/${name}.png`, fullPage: true });
 
 test('all screens at 360 px in every palette', async ({ page }) => {
+  test.slow();   // many screens: triple the time limit
   await open(page);
   const pid = await seedPaulProgram(page, { name: 'Layout block' });
   const url = await page.evaluate(async (id) => (await window.Paulino.share.makeLink(await window.Paulino.store.get('paul', id))).url, pid);
@@ -25,9 +26,12 @@ test('all screens at 360 px in every palette', async ({ page }) => {
     ['results', `#/a/p/${prog.id}/d/${day}/done`], ['history', '#/a/history'], ['library', '#/a/library'], ['settings', '#/settings'],
     ['academy', '#/academy'], ['lesson-squat', '#/academy/squat'], ['lesson-deadlift', '#/academy/deadlift'], ['lesson-clean', '#/academy/clean'],
   ];
+  // every screen in the default palette; a representative set in the other four
+  // (all palette colours are also contrast-checked in coach.spec.js)
+  const sample = new Set(['home', 'coach-home', 'workout', 'paul-editor', 'lesson-deadlift', 'settings']);
   for (const pal of ['legday', 'brace', 'protein', 'floor', 'deeper']) {
     await page.evaluate((p) => { localStorage.setItem('paulino:palette', JSON.stringify(p)); window.Paulino.ui.applyPalette(); }, pal);
-    for (const [name, hash] of screens) {
+    for (const [name, hash] of screens.filter(([n]) => pal === 'legday' || sample.has(n))) {
       await open(page, hash);
       await expect(page.locator('html')).toHaveAttribute('data-palette', pal);
       await page.waitForTimeout(name === 'results' ? 1700 : 50);

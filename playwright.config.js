@@ -8,11 +8,13 @@ export default defineConfig({
   testDir: 'test',
   testMatch: '*.spec.js',
   outputDir: 'test-results/pw',
-  timeout: 45_000,
-  expect: { timeout: 8_000 },
+  // CI runners are 2-3x slower than a laptop: give them room instead of retrying timeouts
+  timeout: process.env.CI ? 90_000 : 45_000,
+  expect: { timeout: process.env.CI ? 15_000 : 8_000 },
   workers: 2,
   retries: process.env.CI ? 1 : 0,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  // 'github' turns each failure into an annotation on the run (readable without signing in)
+  reporter: process.env.CI ? [['github'], ['list'], ['html', { open: 'never' }]] : [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: `http://localhost:${PORT}`,
     channel: process.env.PW_CHANNEL || undefined,
