@@ -1,30 +1,21 @@
 // Lifting Academy, home / landings, dialogue and the photo-collage system.
 import { test, expect, open, noHScroll } from './helpers.js';
 
-test('home shows only the title, Paul, a tagline, a real catchphrase and two doors', async ({ page }) => {
+test('athlete home is led by the big photo collage and a real catchphrase', async ({ page }) => {
   await open(page, '#/');
   await expect(page.locator('.home-title')).toHaveText('PAULINO!');
-  await expect(page.locator('.home-hero .paulino.mood-motivated')).toBeVisible();
-  await expect(page.locator('.home-tag')).toBeVisible();
-  await expect(page.locator('#app a, #app button:not(.bubble):not(.paulino-figure)')).toHaveCount(2);
+  const hero = page.locator('.home-hero .paulino.mood-motivated');
+  await expect(hero).toBeVisible();
+  // the collage dominates the first screen
+  const box = await hero.locator('.paulino-figure').boundingBox();
+  expect(box.y).toBeLessThan(200);
+  expect(box.height).toBeGreaterThan(760 * 0.4);
+  expect(await hero.locator('img').evaluateAll((els) => els.every((i) => i.complete && i.naturalWidth > 0))).toBe(true);
   const real = await page.evaluate(() => Object.values(window.Paulino.data.PAUL).map((x) => x.t));
   expect(real).toContain(await page.locator('.home-hero .bubble-text').textContent());
-  await noHScroll(page);
-
-  await page.getByRole('link', { name: "I'm an athlete" }).click();
-  await expect(page).toHaveURL(/#\/athlete$/);
-  await expect(page.getByRole('heading', { name: 'My Training Program' })).toBeVisible();
   await expect(page.getByRole('button', { name: /Import a \.paulino file/ })).toBeVisible();
-  await page.getByRole('link', { name: /Lifting Academy/ }).click();
-  await expect(page).toHaveURL(/#\/academy$/);
-
-  await open(page, '#/');
-  await page.getByRole('link', { name: "I'm Paul" }).click();
-  await expect(page).toHaveURL(/#\/paul$/);
-  await expect(page.getByRole('button', { name: /Create New Program/ })).toBeVisible();
-  await page.getByRole('link', { name: /Open Saved Program/ }).click();
-  await expect(page).toHaveURL(/#\/paul\/library$/);
-  await expect(page.getByRole('heading', { name: "Paul's programs" })).toBeVisible();
+  await expect(page.locator('.home-doors')).toHaveCount(0);   // no role choice
+  await noHScroll(page);
 });
 
 test("dialogue: Paul's real lines weigh most, never the same line twice in a row", async ({ page }) => {
@@ -130,7 +121,7 @@ test('workout cards link to the matching lesson; missing images fall back to pap
   const pageErrors = [];
   p2.on('pageerror', (e) => pageErrors.push(e.message));
   await p2.route('**/assets/paulino/*.webp', (r) => r.fulfill({ status: 404, body: '' }));
-  await open(p2, '#/settings');
+  await open(p2, '#/coach');
   await expect(p2.locator('.cl-missing').first()).toBeVisible();
   await expect(p2.locator('.cl-missing .cl-fallback').first()).toBeVisible();
   await open(p2, '#/');

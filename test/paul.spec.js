@@ -6,15 +6,13 @@ mkdirSync('test-results/screens', { recursive: true });
 const row = (page, i) => page.locator('.grid-row').nth(i);
 
 test('1 · create a four-week program manually, 9 · save and reopen', async ({ page }) => {
-  await open(page);
-  await expect(page.locator('.home-doors a')).toHaveCount(2);
-  await page.getByRole('link', { name: "I'm Paul" }).click();
-  await page.getByRole('button', { name: /Create New Program/ }).click();
+  await open(page, '#/coach');
+  await page.getByRole('button', { name: /Create Program/ }).click();
   await page.getByLabel('Program name').fill('Marco: block 1');
   await page.getByLabel('Athlete (optional)').fill('Marco');
   await page.getByLabel('Start date').fill('2026-11-02');
   await page.getByLabel('Duration (weeks)').fill('4');
-  await page.getByRole('button', { name: 'Create program' }).click();
+  await page.getByRole('button', { name: 'Create program', exact: true }).click();
   await expect(page.locator('.editor-bar')).toContainText('Marco: block 1');
   await noHScroll(page);
 
@@ -188,7 +186,7 @@ test('8 · duplicate a saved program', async ({ page }) => {
   await page.getByLabel('Program name').fill('Block B');
   await page.getByRole('button', { name: /Duplicate an existing program/ }).click();
   await page.getByLabel('Program to duplicate').selectOption({ label: 'Block A (Marco)' });
-  await page.getByRole('button', { name: 'Create program' }).click();
+  await page.getByRole('button', { name: 'Create program', exact: true }).click();
   await expect(page.locator('.editor-bar')).toContainText('Block B');
   await expect(row(page, 0).getByLabel('Weight in kg')).toHaveValue('100');
 });
@@ -210,7 +208,7 @@ test('10 · export a .paulino file and import it as the athlete', async ({ page,
   const phone = await ctx.newPage();
   await open(phone, '#/a');
   const importFile = async (files) => {
-    const [chooser] = await Promise.all([phone.waitForEvent('filechooser'), phone.getByRole('button', { name: /Import program file/ }).first().click()]);
+    const [chooser] = await Promise.all([phone.waitForEvent('filechooser'), phone.getByRole('button', { name: /Import a \.paulino file/ }).first().click()]);
     await chooser.setFiles(files);
   };
   await importFile(path);
@@ -218,7 +216,7 @@ test('10 · export a .paulino file and import it as the athlete', async ({ page,
   await expect(phone.getByRole('heading', { name: /Hey Marco/ })).toBeVisible();
   await expect(phone.locator('[data-next]')).toContainText('Monday');
   // importing the same file again does not duplicate it
-  await phone.getByRole('link', { name: 'Programs' }).click();
+  await phone.getByRole('link', { name: 'Saved programs' }).click();
   await importFile(path);
   await expect(phone.getByText('You already have this one!')).toBeVisible();
   expect(await phone.evaluate(async () => (await window.Paulino.store.all('athlete')).length)).toBe(1);
@@ -253,7 +251,7 @@ test('11 · shared link opens in a fresh browser; edits after sharing need a new
   await phone.getByRole('button', { name: 'Save & start training' }).click();
   await expect(phone.getByRole('heading', { name: /Hey Marco/ })).toBeVisible();
   expect(phone.url()).not.toContain('program=');
-  await phone.getByRole('link', { name: 'Program', exact: true }).click();
+  await phone.getByRole('link', { name: 'My Program', exact: true }).click();
   await expect(phone.locator('details.block')).toHaveCount(12);
   await expect(phone.locator('details.block').nth(11)).toContainText('Week 12');
 

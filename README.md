@@ -46,14 +46,21 @@ Any static server works (`python -m http.server`, VS Code Live Server…). Openi
 
 ## Paul
 
-Start screen → **I'M PAUL** → *Create New Program* or *Open Saved Program* (`#/paul/library`). These are modes, not logins.
+Paul's address is **`…/Paulino/#/coach`** (bookmark it). The coach home has three actions: **Create Program**, **Saved Programs** (`#/paul/library`) and **Manage Exercises** (`#/paul/exercises`), with a small collage and no pep talk. The bottom bar holds *Home · Programs · Exercises*.
+
+> **Route separation is not security.** There is no login: anyone who types `#/coach` can open the editor on their own device. They only ever see the programs stored in *their* browser, never Paul's.
 
 - **Library:** saved programs with athlete and creation date; sort by last edited, name, athlete or created. Each one can be opened, renamed, duplicated, deleted, shared, exported as a file, or printed.
 - **New program:** name, optional athlete, start date, duration in weeks, general instructions. Start **from scratch** (one empty week) or **duplicate an existing program**.
 - **Editor:** a compact, spreadsheet-like grid per training day: *Exercise · Sets · Reps · kg*. Edit the cells directly.
   - Expand a row for **advanced options**: rest interval, tempo, instructions for the athlete, and **per-set** reps, kg, bodyweight, RPE and RIR (different reps or weights per set are fine; the grid then shows "mixed").
   - Training days: add, remove, rename, choose the weekday, duplicate, move up/down, copy to another week.
-  - Exercises: add from the approved library, reorder, duplicate, move or copy to another day, delete.
+  - Exercises: add from the library (built-in + Paul's own), reorder, duplicate, move or copy to another day, delete.
+
+### Paul's own exercises
+**Exercises → Add an exercise**: name, optional category, short description, how to do it, optional coaching notes, and any number of **steps** (1–20). Each step has a title, what to do, up to four photos, an optional Paulino cue and an optional *watch out for*. Steps can be added, deleted and moved up or down, photos added, replaced and removed, and **Preview lesson** shows exactly what athletes will see. Leaving with unsaved changes asks first.
+
+On save, the exercise gets a stable id (`cx_…`), appears in the program editor's exercise picker (sets, reps, kg, rest, tempo, notes and Repeat / Progress rules all work the same), and gets an Academy lesson in the same scrolling collage format. Photos are shrunk in the browser (max 960 px, WebP, or JPEG on Safari) and stored with the exercise. Steps without a photo show text only; nothing pretends to be a demonstration. Deleting an exercise is blocked while a saved program still uses it.
   - Weeks: rename, duplicate (inserted after), add, delete.
   - Edits save automatically in the browser ("Saved on this device").
 - **Repeat / Progress:** turn one template week into a whole block. See [the rule engine](#rule-engine).
@@ -128,10 +135,12 @@ The share sheet shows the link length:
 - **≤ 8,000:** fine in browsers and most apps.
 - **Longer:** some messaging apps cut the link off, so Paul gets a warning to send the file instead.
 
+**Paul's own exercises travel with the program.** Links and files include the definitions and lessons of every custom exercise the program uses, so the athlete never has to recreate them. Files include the photos. Photos would make a link enormous, so when they push it past 8,000 characters the link carries the text only and the share sheet says *send the file to include the photos*. On the athlete's device the exercises are stored locally (`exercises` store) and work without Paul's browser.
+
 A damaged or truncated link shows a clear error instead of a broken program. Browsers without `CompressionStream` fall back to uncompressed `j1.` links.
 
 ### `.paulino` file
-**Share → Download .paulino file**, e.g. `Marco_Strength_Block_1.paulino`. It's readable, versioned JSON (see the [format](#data-format)): a data file, not an executable. The athlete taps **Import program file**; the app reads it locally, checks the format, version and every field, and shows the program.
+**Share → Download .paulino file**, e.g. `Marco_Strength_Block_1.paulino`. It's readable, versioned JSON (see the [format](#data-format)): a data file, not an executable. The athlete taps **Import a .paulino file**; the app reads it locally, checks the format, version and every field, and shows the program.
 
 ### Printable version / PDF
 **Share → Printable version.** A clean layout with title, athlete, dates, notes, Paulino branding and every week as a table with tick boxes. **Print / Save as PDF** uses the browser's print dialog with a dedicated print stylesheet.
@@ -155,6 +164,11 @@ Shared links and files are **snapshots**. When Paul edits a program, links and f
   "startDate": "2026-11-02", "durationWeeks": 12,
   "notes": "Warm up on every lift…",
   "createdAt": "…", "updatedAt": "…", "exportedAt": "…",
+  "custom": [{                                     // only if the program uses Paul's own exercises
+    "id": "cx_3be0…", "custom": true, "name": "Romanian deadlift", "category": "deadlift",
+    "description": "…", "instructions": "…", "notes": "…", "updatedAt": "…",
+    "steps": [{ "id": "s1", "title": "Stand tall", "body": "…", "photos": ["data:image/webp;base64,…"], "cue": "…", "warning": "…" }]
+  }],
   "weeks": [{
     "id": "8c1d…", "label": "",                  // "" → "Week 1"
     "gen": { "from": 1, "deload": false },        // only on generated weeks
@@ -162,7 +176,7 @@ Shared links and files are **snapshots**. When Paul edits a program, links and f
       "id": "a71e…", "name": "Monday", "weekday": 0,   // 0 = Monday … 6 = Sunday
       "notes": "Superset bench + row",
       "exercises": [{
-        "id": "f02b…", "exerciseId": "squat",           // stable id from the approved library
+        "id": "f02b…", "exerciseId": "squat",           // stable id: built-in, or cx_… for Paul's own
         "sets": [{ "reps": 5, "kg": 100, "bw": false, "rpe": 8, "rir": null }],
         "rest": 120, "tempo": "3-1-1", "notes": "Brace hard",
         "gen": true, "edited": false, "src": "…"       // editor bookkeeping (not in links)
@@ -174,7 +188,7 @@ Shared links and files are **snapshots**. When Paul edits a program, links and f
 
 - Workout dates come from `startDate`: Monday of the start week + 7 × week + weekday.
 - `kg: null, bw: true` is bodyweight; `bw: true, kg: 5` is bodyweight + 5 kg.
-- **Validation** (`model.validate`) runs before every share/export and on every import. It checks for: a name; a valid start date; 1–104 weeks; at most 7 days per week; unique ids; an approved exercise id; 1–30 sets; whole-number reps 1–100; weights 0–1000 kg (or bodyweight); RPE 1–10; RIR 0–10; rest 0–30 min. Newer format versions are refused with a message instead of being misread.
+- **Validation** (`model.validate`) runs before every share/export and on every import. It checks for: a name; a valid start date; 1–104 weeks; at most 7 days per week; unique ids; a known exercise id (built-in, or defined in the program's `custom` list); 1–30 sets; whole-number reps 1–100; weights 0–1000 kg (or bodyweight); RPE 1–10; RIR 0–10; rest 0–30 min. Newer format versions are refused with a message instead of being misread.
 
 ---
 
@@ -186,6 +200,8 @@ Shared links and files are **snapshots**. When Paul edits a program, links and f
 | → `athlete` | programs the athlete received (Paul's prescription, never modified) |
 | → `logs` | one record per trained or skipped day: actual sets, reps, kg, done, notes, pain flag |
 | → `mods` | the athlete's local changes to exercises, with Paul's original kept alongside |
+| → `exercises` | Paul's own exercises (with lesson photos), and the ones that came with received programs |
+| → `media` | the private book-illustration pack (Academy, never exported) |
 | `localStorage` | small preferences: palette, rest timer, current program, library sort |
 
 Prescriptions, actual results and modifications are stored separately, and exercises use stable ids, so history and PRs work across programs. If IndexedDB is unavailable, Paulino falls back to `localStorage`. If that's blocked too (some private modes), it keeps data in memory for the tab and says so. Every storage error is caught and shown, never a crash.
@@ -194,9 +210,12 @@ Prescriptions, actual results and modifications are stored separately, and exerc
 
 ---
 
-## Start screen
+## Two interfaces, two addresses
 
-Only the big **PAULINO!** title, the hero montage (Paul's head on his own double-biceps photo), one tagline, a bubble with one of Paul's real catchphrases, and two doors: **I'M AN ATHLETE** (`#/athlete`: *My Training Program* with import / saved programs / continue, and *Lifting Academy*) and **I'M PAUL** (`#/paul`). A shared link still opens the program directly.
+- **Athletes:** `…/Paulino/` (or a share link). The home is dominated by Paul's photo collage, with the next workout or an import button. Bottom bar: *Home · My Program · Academy · History*.
+- **Paul:** `…/Paulino/#/coach`. Practical screens, no motivational panels. Bottom bar: *Home · Programs · Exercises*.
+
+Nobody picks a role. The bar is on every screen except the print view (editor, lessons and the workout included). It sits above the rest timer, forms keep their save button above it, it respects the phone's safe area, and it hides while the on-screen keyboard is open. Browser Back works as usual. Leaving a screen with unsaved work (the exercise editor) asks *Leave without saving?*, from the bar, links, the back arrow and the browser's Back button. The program editor saves as you type and finishes any pending save when you leave.
 
 ## Paulino
 
@@ -216,7 +235,7 @@ Six moods: **motivated, focused, happy, celebrating, disappointed, concerned**. 
 
 A change is stored as a local modification. Paul's original stays intact and is shown next to it, and **Restore Paul's plan** undoes it.
 
-**Palettes:** Original Collage (warm off-white, mustard, pink and teal shapes, black), Electric Pink, Teal Power, Blue Energy. Text colours meet WCAG 4.5:1 contrast.
+**Palettes** (Settings): **NEVER SKIP LEG DAY** (mustard, black, warm white: the default), **BRACE! BRACE! BRACE!** (orange `#F47B20`, black `#171717`, off-white `#F5F0E6`), **PROTEIN PANIC** (pink, cream, charcoal), **PUSH THE FLOOR** (teal, deep blue, cream) and **GO DEEPER!** (retro red, beige, black). All are flat paper colours. Every text pair meets WCAG 4.5:1, which is checked in `coach.spec.js`. Paul's photos keep their own treatment in every palette. Old saved palette names map to the new ones.
 
 **Fonts:** Bricolage Grotesque (headings), Atkinson Hyperlegible (body), JetBrains Mono (numbers), loaded from Google Fonts with system fallbacks. Without a connection the system fonts are used.
 
@@ -239,7 +258,7 @@ A change is stored as a local modification. Paul's original stays intact and is 
 
 ## Content
 
-- **Approved exercises:** taken from Paul's own program spreadsheet: back squat, bench press, deadlift, overhead press, barbell row, pull-up. Only these can be selected, by Paul and by the athlete. To change the list, edit `EXERCISES` in the `data` module.
+- **Built-in exercises:** taken from Paul's own program spreadsheet: back squat, bench press, deadlift, overhead press, barbell row, pull-up. Paul adds more under **Exercises** (see above). Nothing else can be selected.
 - **Cues** per exercise: setup, execution, common mistakes, bracing, safety. They're short, conservative and widely taught. General guidance paraphrases Paul's written guidelines from the spreadsheet: warm up, 1–2 reps in reserve, rest 1:30–3:00, soreness up to 2–3/10 is usually fine, stop on sharp pain and rest 48 h. Paul's own exercise notes are always shown first.
 - **Supplied material** (`paulino_complete_handoff_v3.zip`): Paul's four photos are used as hand-cut cut-outs. The historical lifting photos have unverified rights and are kept out of the app. The books are private references only. Details and missing items are in [`design/ASSET_NOTES.md`](design/ASSET_NOTES.md). The cues make no claims that a technique prevents injury, and Paul remains responsible for the program.
 
@@ -263,7 +282,7 @@ The earlier version of Paulino used Supabase. That project and the `SUPABASE_URL
 ```bash
 npm install
 npx playwright install chromium   # once
-npm test                          # 30 browser tests at 360 px
+npm test                          # 40 browser tests at 360 px
 PW_CHANNEL=chrome npm test        # …or use the installed Google Chrome
 ```
 
@@ -285,8 +304,10 @@ Every test fails on any JavaScript error or `console.error` in the page. Screens
 | 12 Athlete progress after reload | `athlete.spec.js` › 12 |
 | 13 Modify → Paulino disappointed | `athlete.spec.js` › 13 |
 | 14 Restore the original | `athlete.spec.js` › 13/14 |
-| 15 360 px | `layout.spec.js` (every screen, 4 palettes, wizard & share sheets) |
+| 15 360 px | `layout.spec.js` (every screen, 5 palettes, wizard & share sheets) |
 | 16 Printable version | `paul.spec.js` › 16 (print media + real PDF) |
+
+`coach.spec.js` covers the coach / athlete routes and the removed "Meet Paulino", the bottom bar from every section (editor, lesson, workout), the unsaved-changes guard (bar, Back button, back arrow), creating, editing, reordering and deleting a five-step exercise with five photos, its Academy lesson and preview, using it in a program with Repeat / Progress, sharing it by file and link to fresh browsers, the photos-left-out warning, and all five palettes with contrast checks.
 
 Also covered: the Lifting Academy (`academy.spec.js`: all lessons scroll, cues cycle, placeholders instead of unrelated photos, a manifest photo replaces its placeholder with annotations, missing images fall back to paper); validation of programs, rules, files and links; supportive reactions for pain, fatigue, lighter loads and illness; backups; the six moods; and the app working with storage blocked.
 
@@ -299,7 +320,7 @@ Also covered: the Lifting Academy (`academy.spec.js`: all lessons scroll, cues c
 | # | Module | Responsibility |
 |---|---|---|
 | 1 | `util` | dates, numbers, escaping HTML templates, sheets, toasts, file helpers |
-| 2 | `data` | approved exercises and cues, Paulino's lines, safety copy |
+| 2 | `data` | built-in exercises, Paul's own exercise registry, cues, Paulino's lines, safety copy |
 | 3 | `model` | program structure, defaults, summaries, validation, normalisation |
 | 4 | `rules` | the Repeat / Progress engine, preview, rule validation |
 | 5 | `share` | link encoding / decoding, `.paulino` files |

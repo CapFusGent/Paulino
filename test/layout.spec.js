@@ -20,19 +20,19 @@ test('all screens at 360 px in every palette', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Session done!' })).toBeVisible();
 
   const screens = [
-    ['home', '#/'], ['athlete-landing', '#/athlete'], ['paul-landing', '#/paul'], ['paul-library', '#/paul/library'], ['paul-editor', `#/paul/p/${pid}`], ['print', `#/paul/p/${pid}/print`],
-    ['athlete-home', '#/a'], ['athlete-program', `#/a/p/${prog.id}`], ['workout', `#/a/p/${prog.id}/d/${day}`],
+    ['home', '#/'], ['coach-home', '#/coach'], ['paul-library', '#/paul/library'], ['exercises', '#/paul/exercises'], ['exercise-new', '#/paul/exercises/new'], ['paul-editor', `#/paul/p/${pid}`], ['print', `#/paul/p/${pid}/print`],
+    ['athlete-program', `#/a/p/${prog.id}`], ['workout', `#/a/p/${prog.id}/d/${day}`],
     ['results', `#/a/p/${prog.id}/d/${day}/done`], ['history', '#/a/history'], ['library', '#/a/library'], ['settings', '#/settings'],
     ['academy', '#/academy'], ['lesson-squat', '#/academy/squat'], ['lesson-deadlift', '#/academy/deadlift'], ['lesson-clean', '#/academy/clean'],
   ];
-  for (const pal of ['original', 'pink', 'teal', 'blue']) {
+  for (const pal of ['legday', 'brace', 'protein', 'floor', 'deeper']) {
     await page.evaluate((p) => { localStorage.setItem('paulino:palette', JSON.stringify(p)); window.Paulino.ui.applyPalette(); }, pal);
     for (const [name, hash] of screens) {
       await open(page, hash);
       await expect(page.locator('html')).toHaveAttribute('data-palette', pal);
       await page.waitForTimeout(name === 'results' ? 1700 : 50);
       await noHScroll(page);
-      if (pal === 'original' || name === 'home' || name === 'workout') await shot(page, `${name}-${pal}`);
+      if (pal === 'legday' || name === 'home' || name === 'workout') await shot(page, `${name}-${pal}`);
     }
   }
   // editor with advanced options open, the wizard and the share sheet
@@ -56,7 +56,14 @@ test('all screens at 360 px in every palette', async ({ page }) => {
 });
 
 test('six Paulino moods render and react to taps', async ({ page }) => {
-  await open(page, '#/settings');
+  await open(page, '#/academy');
+  // no "Meet Paulino" page any more: render the six moods into the page for this check
+  await page.evaluate(() => {
+    const UI = window.Paulino.ui;
+    const box = document.createElement('div'); box.className = 'page stack'; box.id = 'mood-test';
+    box.innerHTML = window.Paulino.art.MOODS.map((m) => String(UI.mascot({ mood: m, context: { motivated: 'home', focused: 'generic', happy: 'saved', celebrating: 'finish', disappointed: 'deviate', concerned: 'pain' }[m], size: 'sm', still: true }))).join('');
+    document.getElementById('app').replaceChildren(box);
+  });
   for (const mood of ['motivated', 'focused', 'happy', 'celebrating', 'disappointed', 'concerned']) {
     const m = page.locator(`.paulino.mood-${mood}`).first();
     await expect(m).toBeVisible();

@@ -146,7 +146,7 @@ test('program validation', async ({ page }) => {
     return { ok, bad: P.model.validate(bad).join('\n') };
   });
   expect(r.ok).toEqual([]);
-  for (const frag of ['name', 'start date', 'approved exercise', 'reps must', 'weight must', 'duplicate id']) expect(r.bad).toMatch(new RegExp(frag, 'i'));
+  for (const frag of ['name', 'start date', 'exercise list', 'reps must', 'weight must', 'duplicate id']) expect(r.bad).toMatch(new RegExp(frag, 'i'));
 });
 
 test('link encoding round-trips, is compressed, and rejects damage', async ({ page }) => {

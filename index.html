@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-palette="original">
+<html lang="en" data-palette="legday">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -20,8 +20,9 @@
    Palette tokens are checked for WCAG contrast by scripts/validate-data.mjs.
    ============================================================================= */
 
+/* Palettes: flat paper colours only. Text pairs are checked for WCAG AA in test/palettes.spec.js. */
 :root,
-[data-palette="original"] {
+:root[data-palette="legday"] {          /* NEVER SKIP LEG DAY: mustard, black, warm white (vintage strength magazines) */
   --bg: #F5EFE3;
   --paper: #FFFDF8;
   --paper-2: #FFF5DD;
@@ -33,41 +34,59 @@
   --pop-2: #169E96;
   --pop-3: #285BC7;
 }
-[data-palette="pink"] {
-  --bg: #F7D6E5;
-  --paper: #FFF8FB;
-  --paper-2: #FFE6F0;
+:root[data-palette="brace"] {           /* BRACE! BRACE! BRACE!: orange and black, hardcore gym */
+  --bg: #F5F0E6;
+  --paper: #FFFBF4;
+  --paper-2: #FCE7D3;
+  --accent: #F47B20;
+  --accent-ink: #171717;
+  --accent-soft: #F9C69C;
+  --accent-strong: #A13F00;
+  --pop-1: #F9A766;
+  --pop-2: #2B2B2B;
+  --pop-3: #F47B20;
+  --pop-4: #FFB37A;
+  --ink: #171717;
+}
+:root[data-palette="protein"] {         /* PROTEIN PANIC: pink, cream, dark charcoal */
+  --bg: #FAF1E4;
+  --paper: #FFFDF9;
+  --paper-2: #FDE6EF;
   --accent: #EF6497;
-  --accent-ink: #141414;
+  --accent-ink: #1F1F23;
   --accent-soft: #F9BBD4;
   --accent-strong: #9C1549;
-  --pop-1: #F4B942;
-  --pop-2: #169E96;
-  --pop-3: #285BC7;
+  --pop-1: #F7A8C5;
+  --pop-2: #33333A;
+  --pop-3: #EF6497;
+  --pop-4: #F7A8C5;
+  --ink: #1F1F23;
 }
-[data-palette="teal"] {
-  --bg: #D5F0EA;
-  --paper: #F7FFFD;
-  --paper-2: #E5F8F3;
+:root[data-palette="floor"] {           /* PUSH THE FLOOR: teal, deep blue, cream */
+  --bg: #F3EDDC;
+  --paper: #FFFCF3;
+  --paper-2: #E2F1EC;
   --accent: #169E96;
   --accent-ink: #141414;
   --accent-soft: #A9E2D9;
   --accent-strong: #0A615C;
-  --pop-1: #F4B942;
-  --pop-2: #EF6497;
-  --pop-3: #285BC7;
-}
-[data-palette="blue"] {
-  --bg: #DCE9FA;
-  --paper: #F8FBFF;
-  --paper-2: #E8F0FD;
-  --accent: #285BC7;
-  --accent-ink: #FFFFFF;
-  --accent-soft: #B9CFF3;
-  --accent-strong: #1D4596;
-  --pop-1: #F4B942;
-  --pop-2: #EF6497;
+  --pop-1: #8FD3CB;
+  --pop-2: #1D3F8F;
   --pop-3: #169E96;
+  --pop-4: #8FD3CB;
+}
+:root[data-palette="deeper"] {          /* GO DEEPER!: retro red, beige, black (old print adverts) */
+  --bg: #EDE2CC;
+  --paper: #FBF6EA;
+  --paper-2: #F4E1CB;
+  --accent: #C8342A;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #F2B8A8;
+  --accent-strong: #962015;
+  --pop-1: #EBA597;
+  --pop-2: #141414;
+  --pop-3: #C8342A;
+  --pop-4: #E9A23B;
 }
 
 :root {
@@ -151,7 +170,7 @@ a { color: var(--ink); text-decoration-thickness: 2px; text-underline-offset: 3p
 
 /* ---------- logo ---------- */
 .logo { position: relative; display: inline-block; font-family: var(--font-head); font-weight: 800; font-size: 1.6rem; letter-spacing: .02em; color: var(--accent-ink); line-height: 1; }
-.logo-word { position: relative; display: inline-block; background: var(--accent); border: var(--b) solid var(--ink); padding: .12em .32em .08em; box-shadow: var(--shadow-sm); transform: rotate(-2.5deg); }
+.logo-word { position: relative; display: inline-block; background: var(--accent); color: var(--accent-ink); border: var(--b) solid var(--ink); padding: .12em .32em .08em; box-shadow: var(--shadow-sm); transform: rotate(-2.5deg); }
 .logo-tape { position: absolute; width: 34px; height: 14px; background: rgba(255, 255, 255, .7); border: 1px solid rgba(0,0,0,.15); top: -6px; left: -8px; transform: rotate(-30deg); z-index: 1; }
 .logo-sm { font-size: 1.05rem; }
 .logo-sm .logo-tape { width: 22px; height: 9px; top: -4px; left: -6px; }
@@ -274,7 +293,7 @@ a { color: var(--ink); text-decoration-thickness: 2px; text-underline-offset: 3p
 .tip b { font-family: var(--font-head); }
 .paul-note { border-left: 6px solid var(--accent); background: var(--accent-soft); padding: 8px 12px; border-radius: 0 var(--r-sm) var(--r-sm) 0; font-size: .95rem; }
 .paul-note::before { content: "Paul says"; display: block; font: 800 .72rem var(--font-head); text-transform: uppercase; letter-spacing: .08em; color: var(--accent-strong); }
-[data-palette="blue"] .paul-note::before { color: var(--accent-strong); }
+[data-palette="deeper"] .paul-note::before { color: var(--accent-strong); }
 
 /* ---------- hero / collage ---------- */
 .hero { position: relative; padding: 8px 0 4px; }
@@ -295,7 +314,7 @@ a { color: var(--ink); text-decoration-thickness: 2px; text-underline-offset: 3p
 
 /* ---------- bottom nav ---------- */
 .bottom-nav {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr);
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(var(--n, 4), 1fr);
   min-height: calc(var(--nav-h) + var(--safe-b)); padding: 6px max(8px, env(safe-area-inset-left)) var(--safe-b);
   background: var(--paper); border-top: var(--b) solid var(--ink);
 }
@@ -412,7 +431,7 @@ details.block[open] > summary { border-bottom: var(--b) solid var(--ink); backgr
 .timer-bar .t-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
 .timer-bar .t-time { font: 700 1.55rem/1.1 var(--font-mono); }
 .timer-bar .t-time.ring { color: var(--accent); }
-[data-palette="blue"] .timer-bar .t-time.ring { color: #9fbdf5; }
+[data-palette="deeper"] .timer-bar .t-time.ring { color: #F2B8A8; }
 .timer-bar .t-label { font-size: .74rem; color: #d0d0d0; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .timer-bar .icon-btn { width: 38px; height: 38px; box-shadow: none; border-color: var(--white); font-size: 1rem; }
 .timer-bar .icon-btn svg { width: 18px; height: 18px; }
@@ -544,7 +563,7 @@ details.block[open] > summary { border-bottom: var(--b) solid var(--ink); backgr
 .legend span { display: inline-flex; align-items: center; }
 .ed-num { display: grid; place-items: center; width: 32px; height: 32px; flex: 0 0 32px; border: var(--b-thin) solid var(--ink); border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 800 .95rem var(--font-head); }
 .ed-presc .check { flex-wrap: wrap; font-size: .92rem; }
-[data-palette="blue"] .hero-name { background: linear-gradient(transparent 55%, var(--accent-soft) 55%, var(--accent-soft) 92%, transparent 92%); }
+[data-palette="deeper"] .hero-name { background: linear-gradient(transparent 55%, var(--accent-soft) 55%, var(--accent-soft) 92%, transparent 92%); }
 
 /* =====================================================================
    v2: editor grid, Repeat / Progress, sharing, print
@@ -778,18 +797,53 @@ details[open] > .summary-h::before { content: '▾'; }
 .home-hero .layout-cover .paulino-figure { width: min(330px, 80vw); margin: 0 auto; }
 .home-hero .layout-cover .bubble { top: auto; bottom: 6%; left: 0; max-width: 54%; }
 .home-tag { text-align: center; font: 700 1.05rem var(--font-body); margin: 12px auto 16px; max-width: 30ch; }
-.home-doors { display: grid; gap: 14px; margin-top: auto; }
-@media (min-width: 640px) { .home-doors { grid-template-columns: 1fr 1fr; } }
-.door { display: block; text-decoration: none; text-align: center; padding: 16px 12px; border: var(--b) solid var(--ink); box-shadow: var(--shadow-lg); font: 800 clamp(2rem, 11vw, 3rem)/.95 var(--font-head); letter-spacing: -.02em; color: var(--ink); background: var(--accent); }
-.door span { display: block; font: 700 .8rem var(--font-mono); letter-spacing: .14em; }
-.door-athlete { transform: rotate(-1deg); background: var(--pop-2); }
-.door-paul { transform: rotate(1deg); }
-.door:active { transform: translate(3px, 3px); box-shadow: none; }
 .landing-hi { margin: 0 0 4px; }
 .door-card { position: relative; display: block; text-align: left; width: 100%; color: inherit; font: inherit; cursor: pointer; }
 .door-card h2 { font-size: clamp(1.5rem, 7.5vw, 2rem); text-transform: uppercase; margin: 4px 0 8px; }
 .door-kicker { font: 800 2.2rem/1 var(--font-head); -webkit-text-stroke: 2px var(--ink); color: transparent; }
 .door-btn { appearance: none; }
+
+/* ---- persistent bottom bar: every screen except print ---- */
+.has-nav .page, .has-nav .page.no-nav { padding-bottom: calc(var(--nav-h) + 32px + var(--safe-b)); }
+.has-nav .page.with-timer { padding-bottom: calc(var(--nav-h) + 120px + var(--safe-b)); }
+.has-nav .timer-bar { bottom: calc(var(--nav-h) + var(--safe-b)); padding-bottom: 8px; }
+.kb-open .bottom-nav { display: none; }
+.kb-open.has-nav .timer-bar { bottom: 0; }
+.previewing .bottom-nav { display: none; }
+.bottom-nav .nav-item span:last-child { white-space: nowrap; }
+
+/* ---- athlete home: the big collage first ---- */
+.athlete-home { overflow-x: clip; }
+.home-top { display: flex; justify-content: flex-end; }
+.home-hero-wrap { margin-top: 0 !important; }
+.home-hi { font: 800 1.35rem var(--font-head); margin: 4px 0 0; }
+.home-hi .muted { display: block; font: 400 .9rem var(--font-body); }
+
+/* ---- coach home: practical, small collage ---- */
+.coach-head { display: flex; align-items: center; gap: 12px; }
+.coach-head h1 { margin: 6px 0 0; }
+.coach-head .btn { margin-left: auto; align-self: flex-start; }
+.coach-face { width: 74px; flex: 0 0 74px; }
+
+/* ---- Paul's exercise editor ---- */
+.step-ed .tools { display: flex; gap: 6px; }
+.photo-edit { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 8px; }
+.ph-thumb { margin: 0; background: var(--white); border: var(--b) solid var(--ink); padding: 6px; }
+.ph-thumb img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: grayscale(1) contrast(1.1); }
+.ph-thumb .btn-row { margin-top: 6px; gap: 4px; }
+.ph-empty { grid-column: 1 / -1; display: grid; place-items: center; min-height: 90px; padding: 10px; text-align: center; font-size: .9rem; color: var(--ink-2);
+  border: 2px dashed var(--ink-2); background: repeating-linear-gradient(-45deg, var(--paper) 0 12px, var(--paper-2) 12px 24px); }
+.form-actions { position: sticky; bottom: calc(var(--nav-h) + var(--safe-b) + 8px); z-index: 5; background: var(--bg); padding: 8px 0; }
+.kb-open .form-actions { bottom: 0; }
+
+/* ---- Paul's photos inside a lesson ---- */
+.photo-grid { display: grid; gap: 8px; }
+.photo-multi .photo-grid { grid-template-columns: 1fr 1fr; }
+.photo-set img { aspect-ratio: auto; }
+.warn-note { background: var(--warn-soft); border-left: 6px solid var(--danger); padding: 8px 10px; font-size: .95rem; }
+.lesson-title.long { font-size: clamp(2.4rem, 13vw, 5rem); overflow-wrap: anywhere; }
+.preview-overlay { position: fixed; inset: 0; z-index: 45; overflow-y: auto; background: var(--bg); }
+.preview-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 16px; background: var(--ink); color: var(--white); }
 
 /* ---- magazine sections ---- */
 .mag-head { position: relative; padding: 8px 0 0; }
@@ -873,6 +927,7 @@ details.block > summary .block-head h3 { font-size: 1.3rem; text-transform: uppe
 <a class="skip-link" href="#app">Skip to content</a>
 <div id="app" tabindex="-1"><div class="boot"><div class="boot-logo">PAULINO</div><noscript><p>Paulino needs JavaScript.</p></noscript></div></div>
 <div id="print-root" aria-hidden="true"></div>
+<div id="nav-root"></div>
 <div id="overlay-root"></div>
 <div id="toast-root" aria-live="polite"></div>
 <input type="file" id="file-input" accept=".paulino,application/json,.json" hidden>
@@ -1063,6 +1118,38 @@ window.Paulino = window.Paulino || {};
     };
     input.click();
   });
+
+  /** Pick one image and shrink it (max 960 px, WebP or JPEG) so lessons stay light and portable. */
+  U.pickImage = () => new Promise((resolve) => {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = 'image/*'; input.hidden = true; input.dataset.imagePicker = '';
+    document.body.append(input);
+    const done = (v) => { input.remove(); resolve(v); };
+    input.addEventListener('cancel', () => done(null));
+    input.onchange = async () => {
+      const f = input.files?.[0];
+      if (!f) return done(null);
+      if (!/^image\//.test(f.type)) { U.toast("That file isn't a photo.", { kind: 'error' }); return done(null); }
+      try { done(await U.shrinkImage(f)); } catch { U.toast("This photo couldn't be read. Try a JPEG or PNG.", { kind: 'error' }); done(null); }
+    };
+    input.click();
+  });
+  U.shrinkImage = async (file, max = 960) => {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = new Image();
+      await new Promise((ok, bad) => { img.onload = ok; img.onerror = bad; img.src = url; });
+      const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
+      const g = c.getContext('2d');
+      g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+      g.drawImage(img, 0, 0, c.width, c.height);
+      let d = c.toDataURL('image/webp', 0.78);
+      if (!d.startsWith('data:image/webp')) d = c.toDataURL('image/jpeg', 0.82);   // Safari can't encode WebP
+      return d;
+    } finally { URL.revokeObjectURL(url); }
+  };
 
   P.util = U;
 })(window.Paulino);
@@ -1282,7 +1369,7 @@ window.Paulino = window.Paulino || {};
       "text": "Supersets work: bench + row, overhead press + deadlift."
     }
   ];
-  const CATEGORIES = { squat: 'Squat', bench: 'Bench press', deadlift: 'Deadlift', accessory: 'Accessory' };
+  const CATEGORIES = { squat: 'Squat', bench: 'Bench press', deadlift: 'Deadlift', accessory: 'Accessory', other: 'Other' };
 
   const STATES = ['motivated', 'focused', 'happy', 'celebrating', 'disappointed', 'concerned'];
 
@@ -1360,6 +1447,60 @@ window.Paulino = window.Paulino || {};
   const exById = (id) => EXERCISES.find((e) => e.id === id) || null;
   const exName = (id) => exById(id)?.name || id;
 
+  /*
+   * Paul's own exercises ("custom"), stored in the "exercises" store and merged
+   * into EXERCISES, so the program editor, workouts and the Academy treat them
+   * like the built-in ones. Shape:
+   *   { id: 'cx_…', custom: true, name, category, description, instructions, notes,
+   *     steps: [{ id, title, body, photos: [data:image/…], cue, warning }], updatedAt }
+   * Shared programs carry the definitions they use (program.custom), photos included
+   * in .paulino files, so the athlete never depends on Paul's browser.
+   */
+  const CUSTOM_ID = /^cx_[a-z0-9]{4,24}$/;
+  const PHOTO_RE = /^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+/=]+$/;
+  const MAX_PHOTO = 900_000;
+  const str = (v, n) => String(v ?? '').slice(0, n);
+  function normalizeExercise(d) {
+    if (!d || !CUSTOM_ID.test(String(d.id))) return null;
+    const name = str(d.name, 60).trim();
+    if (!name) return null;
+    return {
+      id: String(d.id), custom: true, name,
+      category: CATEGORIES[d.category] ? d.category : 'other',
+      description: str(d.description, 400), instructions: str(d.instructions, 3000), notes: str(d.notes, 1500),
+      steps: (Array.isArray(d.steps) ? d.steps : []).slice(0, 20).map((st, i) => ({
+        id: str(st?.id || `s${i + 1}`, 30), title: str(st?.title, 80), body: str(st?.body, 1500),
+        photos: (Array.isArray(st?.photos) ? st.photos : []).filter((x) => typeof x === 'string' && x.length < MAX_PHOTO && PHOTO_RE.test(x)).slice(0, 4),
+        cue: str(st?.cue, 120), warning: str(st?.warning, 300),
+      })),
+      updatedAt: str(d.updatedAt || new Date().toISOString(), 40),
+    };
+  }
+  /** Add / update custom exercises in the live list. Returns the normalized ones. */
+  function registerCustom(defs, { onlyMissing = false } = {}) {
+    const out = [];
+    for (const raw of defs || []) {
+      const d = normalizeExercise(raw);
+      if (!d) continue;
+      const i = EXERCISES.findIndex((e) => e.id === d.id);
+      if (i >= 0 && !EXERCISES[i].custom) continue;          // never replace a built-in
+      if (i >= 0 && onlyMissing) continue;
+      if (i >= 0) EXERCISES[i] = d; else EXERCISES.push(d);
+      out.push(d);
+    }
+    return out;
+  }
+  function unregisterCustom(id) { const i = EXERCISES.findIndex((e) => e.id === id && e.custom); if (i >= 0) EXERCISES.splice(i, 1); }
+  const customExercises = () => EXERCISES.filter((e) => e.custom);
+  /** Definitions of the custom exercises a program uses (live version first, then the copy in the program). */
+  function customFor(program, { photos = true } = {}) {
+    const ids = new Set();
+    for (const w of program.weeks || []) for (const d of w.days || []) for (const e of d.exercises || []) if (CUSTOM_ID.test(e.exerciseId)) ids.add(e.exerciseId);
+    const inProgram = new Map((program.custom || []).map((c) => [c.id, c]));
+    return [...ids].map((id) => exById(id) || inProgram.get(id)).filter(Boolean)
+      .map((d) => normalizeExercise(photos ? d : { ...d, steps: (d.steps || []).map((st) => ({ ...st, photos: [] })) })).filter(Boolean);
+  }
+
   /** Lines for an exercise: Paul's own note (strongest), his catchphrases for that lift, then technique cues. */
   function cuesFor(exerciseId, paulNote = '') {
     const e = exById(exerciseId);
@@ -1367,13 +1508,20 @@ window.Paulino = window.Paulino || {};
     if (paulNote) out.push({ t: `Paul says: ${paulNote}`, w: 8 });
     out.push(...(EXERCISE_LINES[exerciseId] || []));
     if (!e) return out;
+    if (e.custom) {
+      if (e.notes) out.push({ t: `Paul says: ${e.notes.split(/\n+/)[0].slice(0, 140)}`, w: 4 });
+      for (const st of e.steps) { if (st.cue) out.push({ t: st.cue, w: 2 }); if (st.warning) out.push({ t: `Watch out: ${st.warning}`, w: 1 }); }
+      if (out.length < 2) out.push(PAUL.brace, PAUL.goodBrace);
+      return out;
+    }
     for (const k of ['setup', 'execution', 'bracing', 'mistakes', 'safety']) {
-      for (const t of e.tips[k] || []) out.push({ t: k === 'mistakes' ? `Avoid: ${t.charAt(0).toLowerCase()}${t.slice(1)}` : t, w: 1 });
+      for (const t of e.tips?.[k] || []) out.push({ t: k === 'mistakes' ? `Avoid: ${t.charAt(0).toLowerCase()}${t.slice(1)}` : t, w: 1 });
     }
     return out;
   }
 
-  P.data = { EXERCISES, GENERAL_TIPS, CATEGORIES, STATES, LINES, PAUL, EXERCISE_LINES, SAFETY, exById, exName, cuesFor };
+  P.data = { EXERCISES, GENERAL_TIPS, CATEGORIES, STATES, LINES, PAUL, EXERCISE_LINES, SAFETY, exById, exName, cuesFor,
+    CUSTOM_ID, normalizeExercise, registerCustom, unregisterCustom, customExercises, customFor };
 })(window.Paulino);
 </script>
 <script>
@@ -1472,7 +1620,7 @@ window.Paulino = window.Paulino || {};
 
   // ---- content hash (revision): same content → same revision ----
   M.revisionOf = (program) => {
-    const body = JSON.stringify([program.name, program.athlete, program.startDate, program.notes, program.weeks]);
+    const body = JSON.stringify([program.name, program.athlete, program.startDate, program.notes, program.weeks, ...(program.custom?.length ? [program.custom.map((c) => [c.id, c.updatedAt])] : [])]);
     let h = 0x811c9dc5;
     for (let i = 0; i < body.length; i++) { h ^= body.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
     return h.toString(36);
@@ -1508,6 +1656,7 @@ window.Paulino = window.Paulino || {};
     if (!Array.isArray(p.weeks) || !p.weeks.length) { errs.push('The program needs at least one week'); return errs; }
     if (p.weeks.length > 104) errs.push('Maximum 104 weeks');
     const ids = new Set();
+    const custom = new Map((Array.isArray(p.custom) ? p.custom : []).map((c) => [c?.id, c]));
     const uniq = (id, what) => { if (typeof id !== 'string' || !id) errs.push(`${what}: missing id`); else if (ids.has(id)) errs.push(`${what}: duplicate id`); ids.add(id); };
     p.weeks.forEach((w, wi) => {
       const wl = M.weekLabel(p, wi);
@@ -1522,9 +1671,10 @@ window.Paulino = window.Paulino || {};
         if (!Array.isArray(d.exercises)) { errs.push(`${dl}: exercises missing`); return; }
         if (d.exercises.length > 20) errs.push(`${dl}: maximum 20 exercises`);
         d.exercises.forEach((e, ei) => {
-          const el = `${dl} › ${exById(e.exerciseId)?.name || `exercise ${ei + 1}`}`;
+          const known = exById(e.exerciseId) || custom.get(e.exerciseId);
+          const el = `${dl} › ${known?.name || `exercise ${ei + 1}`}`;
           uniq(e.id, el);
-          if (!exById(e.exerciseId)) errs.push(`${dl}: "${e.exerciseId}" is not in the approved exercise list`);
+          if (!known) errs.push(`${dl}: "${e.exerciseId}" is not in the exercise list`);
           errs.push(...M.validateSets(e.sets, el));
           if (e.rest !== null && e.rest !== undefined && (!isInt(e.rest) || e.rest < 0 || e.rest > 1800)) errs.push(`${el}: rest must be 0–30 minutes`);
         });
@@ -1541,6 +1691,7 @@ window.Paulino = window.Paulino || {};
     startDate: String(p.startDate || ''), durationWeeks: Number.isInteger(p.durationWeeks) ? p.durationWeeks : (p.weeks?.length || 1),
     notes: String(p.notes ?? '').slice(0, 4000),
     createdAt: p.createdAt || new Date().toISOString(), updatedAt: p.updatedAt || new Date().toISOString(),
+    ...(Array.isArray(p.custom) && p.custom.length ? { custom: p.custom.map(P.data.normalizeExercise).filter(Boolean).slice(0, 50) } : {}),
     weeks: (Array.isArray(p.weeks) ? p.weeks : []).map((w) => ({
       id: String(w.id || uid()), label: String(w.label ?? '').slice(0, 60), ...(w.gen ? { gen: { from: Number(w.gen.from) || 1, deload: Boolean(w.gen.deload) } } : {}),
       days: (Array.isArray(w.days) ? w.days : []).map((d) => ({
@@ -1826,6 +1977,8 @@ window.Paulino = window.Paulino || {};
    *   day      = [id, name, weekday, notes, exercises]
    *   exercise = [id, exerciseId, setGroups, rest, tempo, notes]
    *   setGroup = [count, reps, kg|null, bw(0/1), rpe|null, rir|null]  (consecutive identical sets)
+   *   [8] custom = Paul's own exercises used by the program (definitions + steps;
+   *       photos only when they keep the link a sensible size, see makeLink)
    * The link carries the whole program, so it works in any browser, independently
    * of Paul's storage. It is a snapshot: later edits need a new link.
    */
@@ -1851,13 +2004,14 @@ window.Paulino = window.Paulino || {};
   function toCompact(p) {
     return [1, p.id, p.name, p.athlete || '', p.startDate, p.durationWeeks || p.weeks.length, p.notes || '',
       p.weeks.map((w) => [w.id, w.label || '', w.days.map((d) => [d.id, d.name, d.weekday, d.notes || '',
-        d.exercises.map((e) => [e.id, e.exerciseId, groupSets(e.sets), e.rest ?? null, e.tempo || '', e.notes || ''])]), w.gen?.deload ? 1 : 0])];
+        d.exercises.map((e) => [e.id, e.exerciseId, groupSets(e.sets), e.rest ?? null, e.tempo || '', e.notes || ''])]), w.gen?.deload ? 1 : 0]),
+      ...(p.custom?.length ? [p.custom] : [])];
   }
   function fromCompact(c) {
     if (!Array.isArray(c) || c[0] !== 1) throw new Error('unsupported_version');
-    const [, id, name, athlete, startDate, durationWeeks, notes, weeks] = c;
+    const [, id, name, athlete, startDate, durationWeeks, notes, weeks, custom] = c;
     return M.normalize({
-      id, name, athlete, startDate, durationWeeks, notes,
+      id, name, athlete, startDate, durationWeeks, notes, custom,
       weeks: (weeks || []).map(([wid, label, days, deload]) => ({
         id: wid, label, ...(deload ? { gen: { from: 1, deload: true } } : {}), days: (days || []).map(([did, dname, weekday, dnotes, exs]) => ({
           id: did, name: dname, weekday, notes: dnotes,
@@ -1916,16 +2070,24 @@ window.Paulino = window.Paulino || {};
   }
 
   async function makeLink(program) {
-    const snap = snapshot(program);
-    const token = await encode(snap);
     const base = location.href.split('#')[0];
-    const url = `${base}#program=${token}`;
-    return { url, length: url.length, level: url.length <= LINK_OK ? 'ok' : url.length <= LINK_WARN ? 'warn' : 'long', compressed: token.startsWith('z') };
+    let snap = snapshot(program);
+    let url = `${base}#program=${await encode(snap)}`;
+    // Photos of Paul's own exercises make links huge: leave them out, the file keeps them.
+    let photosLeftOut = false;
+    if (url.length > LINK_WARN && snap.custom?.some((c) => c.steps.some((st) => st.photos.length))) {
+      snap = snapshot(program, { photos: false });
+      url = `${base}#program=${await encode(snap)}`;
+      photosLeftOut = true;
+    }
+    return { url, length: url.length, level: url.length <= LINK_OK ? 'ok' : url.length <= LINK_WARN ? 'warn' : 'long', compressed: url.includes('#program=z'), photosLeftOut };
   }
 
-  /** The version that gets shared: clean, with a content-based revision. */
-  function snapshot(program) {
+  /** The version that gets shared: clean, with Paul's exercises it uses, and a content-based revision. */
+  function snapshot(program, { photos = true } = {}) {
     const p = M.normalize(P.util.clone(program));
+    const custom = P.data.customFor(p, { photos });
+    if (custom.length) p.custom = custom; else delete p.custom;
     p.revision = M.revisionOf(p);
     return p;
   }
@@ -1968,8 +2130,8 @@ window.Paulino = window.Paulino || {};
    * If IndexedDB is unavailable (some private modes), data goes to
    * localStorage; if that fails too, to memory for this tab only.
    */
-  const STORES = ['paul', 'athlete', 'logs', 'mods', 'media'];
-  const KEYS = { paul: 'id', athlete: 'id', logs: 'key', mods: 'key', media: 'id' };
+  const STORES = ['paul', 'athlete', 'logs', 'mods', 'media', 'exercises'];
+  const KEYS = { paul: 'id', athlete: 'id', logs: 'key', mods: 'key', media: 'id', exercises: 'id' };
   let mode = 'memory';
   let db = null;
   const memory = Object.fromEntries(STORES.map((s) => [s, new Map()]));
@@ -1980,7 +2142,7 @@ window.Paulino = window.Paulino || {};
     return new Promise((resolve, reject) => {
       if (!('indexedDB' in window)) return reject(new Error('no indexedDB'));
       let req;
-      try { req = indexedDB.open('paulino', 2); } catch (e) { return reject(e); }
+      try { req = indexedDB.open('paulino', 3); } catch (e) { return reject(e); }
       req.onupgradeneeded = () => {
         const d = req.result;
         for (const s of STORES) if (!d.objectStoreNames.contains(s)) {
@@ -2345,7 +2507,14 @@ window.Paulino = window.Paulino || {};
     return `<svg class="annot" viewBox="0 0 ${w} ${h}" aria-hidden="true" style="--sw:${Math.max(2, w / 110)}px"><defs><marker id="ann-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>${parts}</svg>`;
   }
 
-  P.art = { MOODS, RECIPES, paulino, photo, annotate, src, has, loadManifest, importPack, clearPack, packCount, files, meta };
+  /** Paul's own photos for one step of a custom lesson (data URIs, stored with the exercise). */
+  function photoSet(list, alt = '') {
+    const ok = (list || []).filter((x) => /^data:image\/(webp|jpeg|png);base64,/.test(x));
+    if (!ok.length) return '';
+    return `<figure class="photo-slot has-photo photo-set${ok.length > 1 ? ' photo-multi' : ''}" data-photo-set="${ok.length}"><div class="photo-grid">${ok.map((x, i) => `<img src="${x}" alt="${P.util.esc(alt)}${ok.length > 1 ? ` (${i + 1} of ${ok.length})` : ''}" decoding="async">`).join('')}</div><figcaption><small>Photo by Paul</small></figcaption></figure>`;
+  }
+
+  P.art = { MOODS, RECIPES, paulino, photo, photoSet, annotate, src, has, loadManifest, importPack, clearPack, packCount, files, meta };
 })(window.Paulino);
 </script>
 <script>
@@ -2357,20 +2526,22 @@ window.Paulino = window.Paulino || {};
 
   // ---- palettes ----
   UI.PALETTES = [
-    { id: 'original', name: 'Original Collage', bg: '#F5EFE3', accent: '#F4B942' },
-    { id: 'pink', name: 'Electric Pink', bg: '#F7D6E5', accent: '#EF6497' },
-    { id: 'teal', name: 'Teal Power', bg: '#D5F0EA', accent: '#169E96' },
-    { id: 'blue', name: 'Blue Energy', bg: '#DCE9FA', accent: '#285BC7' },
+    { id: 'legday', name: 'NEVER SKIP LEG DAY', bg: '#F5EFE3', accent: '#F4B942', ink: '#141414' },
+    { id: 'brace', name: 'BRACE! BRACE! BRACE!', bg: '#F5F0E6', accent: '#F47B20', ink: '#171717' },
+    { id: 'protein', name: 'PROTEIN PANIC', bg: '#FAF1E4', accent: '#EF6497', ink: '#1F1F23' },
+    { id: 'floor', name: 'PUSH THE FLOOR', bg: '#F3EDDC', accent: '#169E96', ink: '#1D3F8F' },
+    { id: 'deeper', name: 'GO DEEPER!', bg: '#EDE2CC', accent: '#C8342A', ink: '#141414' },
   ];
-  UI.applyPalette = (id = P.store.pref.get('palette', 'original')) => {
-    const p = UI.PALETTES.find((x) => x.id === id) || UI.PALETTES[0];
+  const OLD_PALETTES = { original: 'legday', pink: 'protein', teal: 'floor', blue: 'floor' };   // names before v2.1
+  UI.applyPalette = (id = P.store.pref.get('palette', 'legday')) => {
+    const p = UI.PALETTES.find((x) => x.id === (OLD_PALETTES[id] || id)) || UI.PALETTES[0];
     document.documentElement.dataset.palette = p.id;
     document.querySelector('meta[name=theme-color]')?.setAttribute('content', p.bg);
   };
   UI.paletteCard = () => {
-    const cur = P.store.pref.get('palette', 'original');
+    const cur = document.documentElement.dataset.palette;
     return html`<div class="card"><h2>Colours</h2><div class="palettes" role="group" aria-label="Colour palette">
-      ${UI.PALETTES.map((p) => html`<button type="button" class="pal" data-pal="${p.id}" aria-pressed="${p.id === cur}" style="background:${p.bg}"><span class="sw"><i style="background:${p.bg}"></i><i style="background:${p.accent}"></i><i style="background:#141414"></i></span>${p.name}</button>`)}
+      ${UI.PALETTES.map((p) => html`<button type="button" class="pal" data-pal="${p.id}" aria-pressed="${p.id === cur}" style="background:${p.bg}"><span class="sw"><i style="background:${p.bg}"></i><i style="background:${p.accent}"></i><i style="background:${p.ink}"></i></span>${p.name}</button>`)}
     </div></div>`;
   };
 
@@ -2448,6 +2619,7 @@ window.Paulino = window.Paulino || {};
     program: svg('<rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M4 10h16M8 14h3M8 17h6"/>'),
     progress: svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
     library: svg('<path d="M4 4h4v16H4zM10 4h4v16h-4zM16 5l4 1-3 14-4-1z"/>'),
+    academy: svg('<path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5M22 9v6"/>'),
     settings: svg('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>'),
     check: svg('<path d="M5 12.5l4.5 4.5L19 7"/>'),
     share: svg('<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/>'),
@@ -2467,10 +2639,6 @@ window.Paulino = window.Paulino || {};
     print: svg('<path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z"/>'),
     edit: svg('<path d="M4 20h4L20 8l-4-4L4 16z"/>'),
     magic: svg('<path d="M4 20L16 8M14 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1zM19 11l.7 1.3L21 13l-1.3.7L19 15l-.7-1.3L17 13l1.3-.7z"/>'),
-  };
-  UI.athleteNav = (active) => {
-    const item = (key, href, icon, label) => html`<a href="#${href}" class="nav-item${active === key ? ' active' : ''}" ${active === key ? raw('aria-current="page"') : ''}><span class="nav-icon">${raw(UI.ICONS[icon])}</span><span>${label}</span></a>`;
-    return html`<nav class="bottom-nav" aria-label="Athlete">${item('home', '/a', 'home', 'Home')}${item('program', '/a/program', 'program', 'Program')}${item('history', '/a/history', 'progress', 'Progress')}${item('library', '/a/library', 'library', 'Programs')}</nav>`;
   };
 
   // ---- chart: heaviest set per session (+ estimated 1RM, dashed) ----
@@ -2701,7 +2869,23 @@ window.Paulino = window.Paulino || {};
 
   const A = {};
   A.LESSONS = LESSONS;
-  A.forExercise = (exerciseId) => LESSONS.find((l) => l.exercise === exerciseId) || null;
+
+  /** A lesson made from one of Paul's own exercises: same panels, his steps and photos. */
+  const customLesson = (e) => ({
+    id: e.id, custom: true, title: e.name, kicker: "Paul's lesson", exercise: e.id,
+    intro: e.description || '', instructions: e.instructions || '', notes: e.notes || '',
+    steps: e.steps.map((st, i) => ({
+      phase: `Step ${i + 1}`, title: st.title || `Step ${i + 1}`, body: st.body ? st.body.split(/\n+/).filter(Boolean) : [], why: '',
+      kind: 'principle', cues: st.cue ? [C(st.cue, 5), PL.brace, PL.goodBrace] : [PL.brace, PL.goodBrace, PL.floor],
+      photos: st.photos || [], warning: st.warning || '',
+    })),
+    mistakes: e.steps.map((st) => st.warning).filter(Boolean),
+    recap: e.steps.map((st, i) => st.title || `Step ${i + 1}`),
+    sources: [],
+  });
+  A.customLesson = customLesson;
+  A.all = () => [...LESSONS, ...P.data.customExercises().map(customLesson)];
+  A.forExercise = (exerciseId) => A.all().find((l) => l.exercise === exerciseId) || null;
   const readSet = () => new Set(S.pref.get('academy.read', []));
   const slotCount = () => LESSONS.reduce((a, l) => a + l.steps.length + (l.mistakesPhoto ? 1 : 0), 0);
   const filled = () => LESSONS.reduce((a, l) => a + l.steps.filter((s) => P.art.has(`lesson_${s.photo.id}`)).length + (l.mistakesPhoto && P.art.has(`lesson_${l.mistakesPhoto.id}`) ? 1 : 0), 0);
@@ -2710,20 +2894,21 @@ window.Paulino = window.Paulino || {};
   A.index = (root, app) => {
     const read = readSet();
     const pack = P.art.packCount();
-    root.innerHTML = String(html`<div class="page no-nav stack academy">
-      ${UI.topBar({ title: 'Lifting Academy', back: '/athlete' })}
+    const all = A.all();
+    root.innerHTML = String(html`<div class="page stack academy">
+      ${UI.topBar({ title: 'Lifting Academy' })}
       <header class="mag-head"><span class="mag-kicker">Paulino presents</span><h2 class="mag-title">LIFTING<br>ACADEMY</h2>
-        <p class="mag-deck">Five barbell lifts, one step at a time. Scroll, read, try it with the empty bar.</p>
+        <p class="mag-deck">${all.length > LESSONS.length ? "Five barbell lifts and Paul's own exercises" : 'Five barbell lifts'}, one step at a time. Scroll, read, try it with the empty bar.</p>
         <div class="mag-face">${raw(P.art.paulino('focused', { size: 'md' }))}</div></header>
-      <ol class="toc">${LESSONS.map((l, i) => html`<li><a class="toc-item plain" href="#/academy/${l.id}">
+      <ol class="toc">${all.map((l, i) => html`<li><a class="toc-item plain" href="#/academy/${l.id}" data-lesson-link="${l.id}">
         <span class="toc-num">${String(i + 1).padStart(2, '0')}</span>
-        <span class="grow"><b>${l.title}</b><span class="small muted">${l.intro}</span>${l.note ? html`<span class="chip chip-warn">ask Paul first</span>` : ''}</span>
+        <span class="grow"><b>${l.custom ? l.title : l.title}</b><span class="small muted">${l.intro || `${l.steps.length} steps`}</span>${l.note ? html`<span class="chip chip-warn">ask Paul first</span>` : ''}${l.custom ? html`<span class="chip chip-accent">Paul's exercise</span>` : ''}</span>
         ${read.has(l.id) ? html`<span class="chip chip-ok">read</span>` : ''}</a></li>`)}</ol>
       <div class="card"><h2>Illustrations</h2>
-        <p class="small">${filled()} of ${slotCount()} lesson panels have a picture. The deadlift shows Paul himself. The book figures are copyrighted, so they are <b>not on this website</b>: Paul can load his private illustration pack on his own device.</p>
+        <p class="small">${filled()} of ${slotCount()} panels in the five lifts have a picture. The deadlift shows Paul himself. The book figures are copyrighted, so they are <b>not on this website</b>: Paul can load them on his own device.</p>
         <div class="btn-row"><button class="btn btn-ghost" data-pack>${pack ? 'Replace private illustrations' : 'Load private illustrations'}</button>${pack ? html`<button class="btn btn-ghost" data-unpack>Remove them (${pack})</button>` : ''}</div>
-        <p class="small muted" style="margin-bottom:0">Stored only in this browser. Not for sharing: passing the pack on to others needs the publisher's permission.</p></div>
-      <p class="small muted">Lessons written from <i>Starting Strength</i> (Rippetoe) in our own words, waiting for Paul's review. Paul's coaching always comes first.</p>
+        <p class="small muted" style="margin-bottom:0">Stored only in this browser. Not for sharing.</p></div>
+      <p class="small muted">The five lifts are written from <i>Starting Strength</i> (Rippetoe) in our own words, waiting for Paul's review. Paul's coaching always comes first.</p>
     </div>`);
     const offs = [];
     offs.push(on(root, 'click', '[data-pack]', async () => {
@@ -2737,56 +2922,63 @@ window.Paulino = window.Paulino || {};
   };
 
   // ---- one lesson: vertical sequence of magazine pages ----
-  A.lesson = (root, app, params) => {
-    const l = LESSONS.find((x) => x.id === params.id);
-    if (!l) { app.navigate('/academy', { replace: true }); return; }
-    const i = LESSONS.indexOf(l);
-    const next = LESSONS[i + 1];
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function lessonHTML(l, { preview = false } = {}) {
+    const all = A.all();
+    const next = preview ? null : all[all.findIndex((x) => x.id === l.id) + 1];
     const slot = (ph, alt) => {
       const id = `lesson_${ph.id}`;
       return P.art.photo(id, { need: ph.need, alt, annotations: P.art.meta[id]?.annotations || [] });
     };
-    const step = (s, n) => html`<section class="lesson-step reveal ${n % 2 ? 'flip' : ''}" data-step="${n}" aria-labelledby="st-${n}">
-      <div class="step-photo">${raw(slot(s.photo, `${l.title}: ${s.title}`))}</div>
+    const picture = (s, alt) => (s.photos ? (s.photos.length ? P.art.photoSet(s.photos, alt) : '') : slot(s.photo, alt));
+    const step = (s, n) => {
+      const pic = picture(s, `${l.title}: ${s.title}`);
+      return html`<section class="lesson-step reveal ${n % 2 ? 'flip' : ''} ${pic ? '' : 'no-photo'}" data-step="${n}" aria-labelledby="st-${n}">
+      ${pic ? html`<div class="step-photo">${raw(pic)}</div>` : ''}
       <div class="step-text">
         <span class="step-num" aria-hidden="true">${String(n).padStart(2, '0')}</span>
         <span class="step-phase">${s.phase}</span>
         <h2 id="st-${n}">${s.title}</h2>
         ${s.body.map((p) => html`<p>${p}</p>`)}
-        <p class="why"><b>Why:</b> ${s.why}</p>
+        ${s.why ? html`<p class="why"><b>Why:</b> ${s.why}</p>` : ''}
+        ${s.warning ? html`<p class="warn-note"><b>Watch out:</b> ${s.warning}</p>` : ''}
         ${s.kind === 'preference' ? html`<p class="pref-note"><b>Coaching choice:</b> ${s.note}</p>` : ''}
         <div class="step-coach">${UI.mascot({ mood: n % 3 === 0 ? 'concerned' : 'focused', lines: s.cues, size: 'sm', key: `lesson.${l.id}.${n}`, bubble: 'callout', still: true })}</div>
       </div>
     </section>`;
+    };
     const nSteps = l.steps.length;
-    root.innerHTML = String(html`<div class="page no-nav lesson" data-lesson="${l.id}">
-      <div class="lesson-rail" aria-hidden="true"><span data-rail></span></div>
-      ${UI.topBar({ title: l.title, sub: `${l.kicker} · Lifting Academy`, back: '/academy' })}
+    const coverLines = P.data.EXERCISE_LINES[l.exercise] || (l.custom ? P.data.cuesFor(l.exercise) : P.data.LINES.happy.academy);
+    return html`
       <section class="lesson-cover reveal in">
         <span class="mag-kicker">${l.kicker}</span>
-        <h1 class="lesson-title">${l.title.replace(/^The /, '')}</h1>
-        <p class="mag-deck">${l.intro}</p>
-        <div class="lesson-cover-art">${UI.mascot({ mood: 'motivated', lines: P.data.EXERCISE_LINES[l.exercise] || P.data.LINES.happy.academy, size: 'lg', layout: 'stack', key: `lesson.${l.id}.cover` })}</div>
+        <h1 class="lesson-title${l.title.length > 14 ? ' long' : ''}">${l.title.replace(/^The /, '')}</h1>
+        ${l.intro ? html`<p class="mag-deck">${l.intro}</p>` : ''}
+        <div class="lesson-cover-art">${UI.mascot({ mood: 'motivated', lines: coverLines, size: 'lg', layout: 'stack', key: `lesson.${l.id}.cover` })}</div>
         ${l.note ? html`<p class="notice small">${l.note}</p>` : ''}
-        <p class="small muted">Scroll down: ${nSteps} steps, then mistakes and a recap.</p>
+        <p class="small muted">Scroll down: ${P.util.plural(nSteps, 'step')}${l.mistakes.length ? ', then mistakes and a recap' : ' and a recap'}.</p>
       </section>
+      ${l.custom && (l.instructions || l.notes) ? html`<section class="lesson-step lesson-howto reveal no-photo" data-step="0"><div class="step-text">
+        <span class="step-phase">How to do it</span><h2>The whole movement</h2>
+        ${l.instructions.split(/\n+/).filter(Boolean).map((p) => html`<p>${p}</p>`)}
+        ${l.notes ? html`<p class="pref-note"><b>Paul's notes:</b> ${l.notes}</p>` : ''}</div></section>` : ''}
       ${l.steps.map((s, n) => step(s, n + 1))}
-      <section class="lesson-step lesson-mistakes reveal ${l.mistakesPhoto ? '' : 'no-photo'}" data-step="${nSteps + 1}">
+      ${l.mistakes.length ? html`<section class="lesson-step lesson-mistakes reveal ${l.mistakesPhoto ? '' : 'no-photo'}" data-step="${nSteps + 1}">
         ${l.mistakesPhoto ? html`<div class="step-photo">${raw(slot(l.mistakesPhoto, `${l.title}: common mistakes`))}</div>` : ''}
         <div class="step-text"><span class="step-phase">Watch out</span><h2>Common mistakes</h2>
           <ul class="x-list">${l.mistakes.map((m) => html`<li>${m}</li>`)}</ul>
           <div class="step-coach">${UI.mascot({ mood: 'disappointed', lines: [{ t: 'NO EGO LIFTING!', w: 3 }, { t: 'YOU CALL THAT A BRACE?!', w: 2 }, PL.goodBrace], size: 'sm', still: true, bubble: 'callout', key: `lesson.${l.id}.mistakes` })}</div></div>
-      </section>
+      </section>` : ''}
       <section class="lesson-step lesson-recap reveal no-photo" data-step="${nSteps + 2}">
         <div class="step-text"><span class="step-phase">Recap</span><h2>Remember this</h2>
           <ol class="recap-list">${l.recap.map((m) => html`<li>${m}</li>`)}</ol>
           <div class="step-coach">${UI.mascot({ mood: 'happy', lines: [PL.protein, PL.legday, { t: "THAT'S A PROPER REP!", w: 2 }], size: 'sm', still: true, key: `lesson.${l.id}.recap` })}</div>
-          <p class="small muted">Written from ${l.sources.map((s) => `${s.book}, "${s.chapter}" (${s.section})`).join('; ')}, in original wording. Draft, waiting for Paul's review. Paul's coaching comes first.</p>
-          <div class="btn-row">${next ? html`<a class="btn" href="#/academy/${next.id}">Next: ${next.title} →</a>` : ''}<a class="btn btn-ghost" href="#/academy">All lessons</a></div></div>
-      </section>
-    </div>`);
-    const read = readSet(); read.add(l.id); S.pref.set('academy.read', [...read]);
+          ${l.sources.length ? html`<p class="small muted">Written from ${l.sources.map((s) => `${s.book}, "${s.chapter}" (${s.section})`).join('; ')}, in original wording. Draft, waiting for Paul's review. Paul's coaching comes first.</p>` : html`<p class="small muted">Written by Paul.</p>`}
+          ${preview ? '' : html`<div class="btn-row">${next ? html`<a class="btn" href="#/academy/${next.id}">Next: ${next.title} →</a>` : ''}<a class="btn btn-ghost" href="#/academy">All lessons</a></div>`}</div>
+      </section>`;
+  }
+
+  function animate(root, scroller = window) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const steps = [...root.querySelectorAll('.reveal')];
     let io = null;
     if (!reduce && 'IntersectionObserver' in window) {
@@ -2794,11 +2986,49 @@ window.Paulino = window.Paulino || {};
       steps.forEach((s) => io.observe(s));
     } else steps.forEach((s) => s.classList.add('in'));
     const rail = root.querySelector('[data-rail]');
-    const onScroll = () => { const h = document.documentElement.scrollHeight - innerHeight; rail.style.width = `${h > 0 ? Math.min(100, (scrollY / h) * 100) : 0}%`; };
-    addEventListener('scroll', onScroll, { passive: true });
+    const onScroll = () => {
+      if (!rail) return;
+      const el = scroller === window ? document.documentElement : scroller;
+      const h = el.scrollHeight - el.clientHeight;
+      const y = scroller === window ? scrollY : scroller.scrollTop;
+      rail.style.width = `${h > 0 ? Math.min(100, (y / h) * 100) : 0}%`;
+    };
+    scroller.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-    return () => { removeEventListener('scroll', onScroll); io?.disconnect(); };
+    return () => { scroller.removeEventListener('scroll', onScroll); io?.disconnect(); };
+  }
+
+  A.lesson = (root, app, params) => {
+    const l = A.all().find((x) => x.id === params.id);
+    if (!l) { app.navigate('/academy', { replace: true }); return; }
+    root.innerHTML = String(html`<div class="page lesson" data-lesson="${l.id}">
+      <div class="lesson-rail" aria-hidden="true"><span data-rail></span></div>
+      ${UI.topBar({ title: l.title, sub: `${l.kicker} · Lifting Academy`, back: '/academy' })}
+      ${lessonHTML(l)}
+    </div>`);
+    const read = readSet(); read.add(l.id); S.pref.set('academy.read', [...read]);
+    return animate(root);
   };
+
+  /** Full-screen preview of a lesson for one of Paul's exercises, before it is saved. */
+  A.preview = (def) => new Promise((resolve) => {
+    const d = P.data.normalizeExercise(def);
+    if (!d) { toast('Give the exercise a name first.', { kind: 'error' }); return resolve(); }
+    const l = customLesson(d);
+    const box = document.createElement('div');
+    box.className = 'preview-overlay';
+    box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Lesson preview');
+    box.innerHTML = String(html`<div class="preview-bar"><b>Preview: what athletes see</b><button class="btn btn-sm" data-close-preview>Close preview</button></div>
+      <div class="page lesson" data-lesson="${l.id}">${lessonHTML(l, { preview: true })}</div>`);
+    document.body.append(box);
+    document.body.classList.add('previewing');
+    const stop = animate(box, box);
+    const close = () => { stop(); box.remove(); document.body.classList.remove('previewing'); removeEventListener('keydown', esc); resolve(); };
+    const esc = (e) => { if (e.key === 'Escape') close(); };
+    addEventListener('keydown', esc);
+    box.querySelector('[data-close-preview]').onclick = close;
+    box.querySelector('[data-close-preview]').focus();
+  });
 
   P.academy = A;
 })(window.Paulino);
@@ -2829,8 +3059,7 @@ window.Paulino = window.Paulino || {};
       : String(b.updatedAt).localeCompare(String(a.updatedAt)));
     const draw = () => {
       root.innerHTML = String(html`<div class="page no-nav stack">
-        ${UI.topBar({ title: "Paul's programs", back: '/paul', right: '<a class="btn btn-sm btn-ghost" href="#/settings">Settings</a>' })}
-        <div class="card">${UI.mascot({ mood: 'motivated', context: 'paul', size: 'sm' })}</div>
+        ${UI.topBar({ title: 'Saved programs', right: '<a class="btn btn-sm btn-ghost" href="#/settings">Settings</a>' })}
         <div class="btn-row"><button class="btn btn-lg" data-new>${raw(I.plus)} New program</button><button class="btn btn-ghost" data-import>${raw(I.file)} Import .paulino</button></div>
         ${list.length ? html`<div class="row-between"><h2 style="margin:0">${list.length} saved</h2>
           <label class="inline-label">Sort <select data-sort>${[['updated', 'Last edited'], ['name', 'Name'], ['athlete', 'Athlete'], ['created', 'Created']].map(([k, l]) => html`<option value="${k}" ${k === sort ? raw('selected') : ''}>${l}</option>`)}</select></label></div>
@@ -2994,6 +3223,7 @@ window.Paulino = window.Paulino || {};
         <label>Tempo<input type="text" maxlength="20" placeholder="e.g. 3-1-1" value="${ex.tempo || ''}" data-f="tempo" data-id="${ex.id}"></label>
       </div>
       <label class="field" style="display:block;margin-top:8px">Instructions for the athlete<textarea rows="2" maxlength="2000" placeholder="Shown before Paulino's generic tips" data-f="notes" data-id="${ex.id}">${ex.notes || ''}</textarea></label>
+      <p class="small muted" style="margin:10px 0 0"><b>BW</b> = bodyweight. <b>RPE</b> = how hard the set feels, 1–10 (10 = nothing left). <b>RIR</b> = reps left in reserve.</p>
       <div class="set-edit set-edit-head"><span>#</span><span>Reps</span><span>kg</span><span>BW</span><span>RPE</span><span>RIR</span><span></span></div>
       ${ex.sets.map((s, i) => html`<div class="set-edit">
         <span class="n">${i + 1}</span>
@@ -3054,7 +3284,6 @@ window.Paulino = window.Paulino || {};
 
         ${w.days.map((d, di) => dayCard(d, di, w))}
         <button class="btn btn-block btn-ghost" data-addday ${w.days.length >= 7 ? raw('disabled') : ''}>${raw(I.plus)} Add training day</button>
-        <div class="card" style="margin-top:20px">${UI.mascot({ mood: 'focused', text: 'Build week 1. I do the boring part.', size: 'sm', still: true })}</div>
       </div>`);
       window.scrollTo(0, y);
     }
@@ -3168,7 +3397,7 @@ window.Paulino = window.Paulino || {};
       wi = Math.min(wi + 1, prog.weeks.length - 1);
       app.replaceQuery({ w: wi });
       draw();
-      UI.react('happy', `Done! ${r.report.generated} weeks generated.${r.report.keptEdits ? ` ${r.report.keptEdits} manual edits kept.` : ''}`, 4200);
+      toast(`Done: ${P.util.plural(r.report.generated, 'week')} generated.${r.report.keptEdits ? ` ${r.report.keptEdits} manual edits kept.` : ''}`, { kind: 'ok', ms: 4200 });
     }));
     offs.push(on(root, 'click', '[data-weekmenu]', async () => {
       const w = prog.weeks[wi];
@@ -3257,8 +3486,9 @@ window.Paulino = window.Paulino || {};
       body.innerHTML = String(html`${Object.entries(CATEGORIES).map(([cat, label]) => {
         const list = EXERCISES.filter((e) => e.category === cat);
         return list.length ? html`<h3 class="pick-h">${label}</h3><div class="choices">${list.map((e) => html`<button class="choice-btn" data-pick="${e.id}">${e.name}<small>${e.description}</small></button>`)}</div>` : '';
-      })}<p class="small muted" style="margin-top:14px">Only the approved exercises from Paul's program can be selected.</p>`);
+      })}<p class="small muted" style="margin-top:14px">Missing one? <a href="#/paul/exercises/new" data-close-sheet>Add an exercise</a>.</p>`);
       body.querySelectorAll('[data-pick]').forEach((b) => (b.onclick = () => close(b.dataset.pick)));
+      body.querySelector('[data-close-sheet]')?.addEventListener('click', () => close(null));
     });
   }
   function pickWeek(prog, current, title) {
@@ -3306,7 +3536,7 @@ window.Paulino = window.Paulino || {};
         <p class="small muted" id="hint-${r.id}" style="margin:4px 0 0">${r.op === 'deload' ? `Weeks ${[1, 2, 3].map((k) => k * r.every).filter((n) => n <= st.from + 1 + st.count).join(', ') || '–'}${st.from + 1 + st.count > 3 * r.every ? '…' : ''} (counting the template as week 1). Four weeks is a block, not a calendar month.`
           : `Changes from week ${st.from + 1 + Number(r.every)} on, then every ${Number(r.every) === 1 ? 'week' : `${r.every} weeks`} (template = week ${st.from + 1}).`}</p>` : ''}
       ${r.op === 'deload' ? html`<div class="ed-grid" style="margin-top:8px"><label>Fewer sets<input type="number" inputmode="numeric" min="0" max="10" value="${r.deloadSets || 0}" data-r="deloadSets"></label>
-        <label class="check" style="align-self:end"><input type="checkbox" data-r="reset" ${r.reset ? raw('checked') : ''}> Restart progression after it</label></div>` : ''}
+        <label class="check" style="align-self:end"><input type="checkbox" data-r="reset" ${r.reset ? raw('checked') : ''}> Start the weight increases again after it</label></div>` : ''}
       ${r.op !== 'repeat' ? html`<fieldset class="scope"><legend class="label">Applies to</legend>
         <select data-r="scopeType" aria-label="Applies to">${[['all', 'All exercises'], ['lifts', 'Selected exercises'], ['days', 'Selected days'], ['items', 'Single entries']].map(([k, l]) => html`<option value="${k}" ${(r.scope?.type || 'all') === k ? raw('selected') : ''}>${l}</option>`)}</select>
         ${r.scope?.type === 'lifts' ? html`<div class="chips">${lifts().map((id) => html`<label class="chip-check"><input type="checkbox" data-scope="${id}" ${r.scope.ids.includes(id) ? raw('checked') : ''}> ${exName(id)}</label>`)}</div>` : ''}
@@ -3441,14 +3671,17 @@ window.Paulino = window.Paulino || {};
     body.innerHTML = '<p>Preparing link…</p>';
     const link = await P.share.makeLink(p);
     const lvl = { ok: ['chip-ok', 'Short link: works everywhere'], warn: ['chip-warn', 'Long link: fine in browsers and most apps'], long: ['chip-danger', 'Very long link: some apps will cut it. Send the file instead.'] }[link.level];
+    const own = P.data.customFor(p);
     body.innerHTML = String(html`
       <p class="small">Sharing creates a <b>snapshot</b>. If you edit the program later, send a new link or file; old ones keep showing the old version.</p>
       <h3>Link</h3>
       <div class="link-box"><input type="text" readonly value="${link.url}" aria-label="Share link" data-link><button class="btn btn-sm" data-copy>${raw(I.copy)} Copy</button></div>
       <p class="small" style="margin:6px 0 0"><span class="chip ${lvl[0]}">${link.length.toLocaleString()} characters</span> ${lvl[1]}</p>
+      ${own.length ? html`<p class="small" data-own-ex>Includes your own ${own.length === 1 ? 'exercise' : 'exercises'}: <b>${own.map((e) => e.name).join(', ')}</b>, with ${own.length === 1 ? 'its' : 'their'} lesson.</p>` : ''}
+      ${link.photosLeftOut ? html`<p class="notice small" data-photos-left-out><b>The lesson photos don't fit in a link.</b> The link has the text only. Send the file to include the photos.</p>` : ''}
       ${navigator.share ? html`<button class="btn btn-ghost" data-native style="margin-top:10px">${raw(I.share)} Send via…</button>` : ''}
       <h3 style="margin-top:18px">File</h3>
-      <p class="small muted" style="margin-top:0">A <b>.paulino</b> file contains the whole program. The athlete opens Paulino and taps <i>Import program</i>.</p>
+      <p class="small muted" style="margin-top:0">A <b>.paulino</b> file has the whole program${own.length ? ', your exercises and their photos' : ''}. The athlete opens Paulino and taps <i>Import</i>.</p>
       <button class="btn" data-file>${raw(I.file)} Download .paulino file</button>
       <h3 style="margin-top:18px">Print / PDF</h3>
       <button class="btn btn-ghost" data-print>${raw(I.print)} Printable version</button>
@@ -3467,7 +3700,7 @@ window.Paulino = window.Paulino || {};
     const week = (w, wi) => html`<section class="print-week"><h2>${M.weekLabel(prog, wi)} <span class="muted small">${M.weekDates(prog, wi)}${w.gen?.deload ? ' · deload' : ''}</span></h2>
       ${w.days.map((d) => html`<div class="print-day"><h3>${d.name} <span class="muted small">${fmtDate(M.dayDate(prog, wi, d))}</span></h3>
         ${d.notes ? html`<p class="small">${d.notes}</p>` : ''}
-        <table class="print-table"><thead><tr><th>Exercise</th><th>Prescription</th><th>Rest</th><th>Notes</th><th class="tick">Done</th></tr></thead>
+        <table class="print-table"><thead><tr><th>Exercise</th><th>Planned</th><th>Rest</th><th>Notes</th><th class="tick">Done</th></tr></thead>
         <tbody>${d.exercises.map((e) => html`<tr><td><b>${exName(e.exerciseId)}</b></td><td>${M.summarize(e.sets)}${e.tempo ? ` · tempo ${e.tempo}` : ''}</td><td>${restText(e.rest)}</td><td>${e.notes}</td><td class="tick">☐</td></tr>`)}</tbody></table></div>`)}
       ${w.days.length ? '' : html`<p class="muted">No training days.</p>`}</section>`;
     root.innerHTML = String(html`<div class="page no-nav print-page">
@@ -3483,6 +3716,136 @@ window.Paulino = window.Paulino || {};
         <footer class="print-foot small">Made with Paulino · ${P.data.SAFETY.disclaimer}</footer>
       </article></div>`);
     root.querySelector('[data-print-now]').onclick = () => window.print();
+  };
+
+
+  // ---------------------------------------------------------------- Paul's exercises
+  const usedIn = async (exId) => (await S.all('paul')).filter((p) => p.weeks.some((w) => w.days.some((d) => d.exercises.some((e) => e.exerciseId === exId))));
+  const blankStep = () => ({ id: uid('s').slice(0, 10), title: '', body: '', photos: [], cue: '', warning: '' });
+
+  Paul.exercises = async (root) => {
+    const mine = P.data.customExercises().sort((a, b) => a.name.localeCompare(b.name));
+    const builtIn = EXERCISES.filter((e) => !e.custom);
+    const photos = (e) => e.steps.reduce((a, st) => a + st.photos.length, 0);
+    root.innerHTML = String(html`<div class="page stack">
+      ${UI.topBar({ title: 'Exercises' })}
+      <a class="btn btn-lg btn-block" href="#/paul/exercises/new">${raw(I.plus)} Add an exercise</a>
+      <section><h2>Your exercises</h2>
+        ${mine.length ? html`<div class="stack-sm">${mine.map((e) => html`<a class="card list-card plain" href="#/paul/exercises/${e.id}" data-custom-ex="${e.id}">
+          <span class="grow"><h3>${e.name}</h3><p class="small">${CATEGORIES[e.category]} · ${P.util.plural(e.steps.length, 'step')} · ${P.util.plural(photos(e), 'photo')}</p></span>
+          <span class="chip">Edit</span></a>`)}</div>`
+        : html`<p class="muted">None yet. Add one: it shows up in the program editor and gets its own Academy lesson.</p>`}
+      </section>
+      <section><h2>Built in</h2>
+        <ul class="plain-list">${builtIn.map((e) => html`<li class="row-between"><span>${e.name}</span>${P.academy.forExercise(e.id) ? html`<a class="small" href="#/academy/${P.academy.forExercise(e.id).id}">Lesson</a>` : html`<span class="small muted">no lesson</span>`}</li>`)}</ul>
+      </section>
+    </div>`);
+  };
+
+  Paul.exerciseEditor = async (root, app, params) => {
+    const isNew = params.id === 'new';
+    const stored = isNew ? null : (await S.get('exercises', params.id)) || P.data.exById(params.id);
+    if (!isNew && !stored?.custom) { app.navigate('/paul/exercises', { replace: true }); return; }
+    const ex = isNew ? { id: uid('cx_'), name: '', category: 'other', description: '', instructions: '', notes: '', steps: [blankStep(), blankStep(), blankStep()] } : clone(stored);
+    let dirty = false;
+    const mark = () => { dirty = true; const s = root.querySelector('[data-ex-state]'); if (s) { s.textContent = 'Not saved yet'; s.classList.add('dirty'); } };
+    app.setGuard(() => (dirty ? 'Your changes to this exercise are not saved.' : null));
+
+    const stepCard = (st, i) => html`<div class="card step-ed" data-si="${i}">
+      <div class="row-between"><h3 style="margin:0">Step ${i + 1}</h3>
+        <span class="tools"><button class="icon-btn sq" data-move="-1" data-i="${i}" aria-label="Move step ${i + 1} up" ${i === 0 ? raw('disabled') : ''}>${raw(I.up)}</button><button class="icon-btn sq" data-move="1" data-i="${i}" aria-label="Move step ${i + 1} down" ${i === ex.steps.length - 1 ? raw('disabled') : ''}>${raw(I.down)}</button><button class="icon-btn sq" data-delstep="${i}" aria-label="Delete step ${i + 1}">${raw(I.trash)}</button></span></div>
+      <div class="field"><label for="st-t-${i}">Step title</label><input id="st-t-${i}" type="text" maxlength="80" value="${st.title}" data-sf="title" data-i="${i}" placeholder="e.g. Grip the bar"></div>
+      <div class="field"><label for="st-b-${i}">What to do</label><textarea id="st-b-${i}" rows="3" maxlength="1500" data-sf="body" data-i="${i}">${st.body}</textarea></div>
+      <div class="field"><span class="label">Photos</span>
+        <div class="photo-edit">${st.photos.length ? st.photos.map((src, k) => html`<figure class="ph-thumb"><img src="${src}" alt="Step ${i + 1}, photo ${k + 1}">
+            <div class="btn-row"><button class="btn btn-sm btn-ghost" data-replace="${k}" data-i="${i}">Replace</button><button class="btn btn-sm btn-ghost" data-rmphoto="${k}" data-i="${i}" aria-label="Remove photo ${k + 1} of step ${i + 1}">Remove</button></div></figure>`)
+          : html`<div class="ph-empty">No photo yet. Without one, athletes only see the text for this step.</div>`}</div>
+        ${st.photos.length < 4 ? html`<button class="btn btn-ghost" data-addphoto="${i}">${raw(I.plus)} Add a photo for this step</button>` : ''}</div>
+      <div class="field"><label for="st-c-${i}">Paulino's cue (optional)</label><input id="st-c-${i}" type="text" maxlength="120" value="${st.cue}" data-sf="cue" data-i="${i}" placeholder="e.g. Push the floor away!"></div>
+      <div class="field"><label for="st-w-${i}">Watch out for (optional)</label><input id="st-w-${i}" type="text" maxlength="300" value="${st.warning}" data-sf="warning" data-i="${i}" placeholder="a common mistake"></div>
+    </div>`;
+
+    const draw = () => {
+      const y = scrollY;
+      root.innerHTML = String(html`<div class="page stack ex-editor">
+        ${UI.topBar({ title: isNew ? 'New exercise' : ex.name || 'Exercise', back: '/paul/exercises', right: `<span class="save-state${dirty ? ' dirty' : ''}" data-ex-state>${dirty ? 'Not saved yet' : isNew ? 'New' : 'Saved'}</span>` })}
+        <div class="card">
+          <div class="field"><label for="ex-name">Exercise name</label><input id="ex-name" type="text" maxlength="60" value="${ex.name}" data-f="name" placeholder="e.g. Romanian deadlift"></div>
+          <div class="field"><label for="ex-cat">Category (optional)</label><select id="ex-cat" data-f="category">${Object.entries(CATEGORIES).map(([k, l]) => html`<option value="${k}" ${k === ex.category ? raw('selected') : ''}>${l}</option>`)}</select></div>
+          <div class="field"><label for="ex-desc">Short description</label><input id="ex-desc" type="text" maxlength="400" value="${ex.description}" data-f="description" placeholder="One sentence: what is it?"></div>
+          <div class="field"><label for="ex-ins">How to do it</label><textarea id="ex-ins" rows="4" maxlength="3000" data-f="instructions">${ex.instructions}</textarea></div>
+          <div class="field"><label for="ex-notes">Coaching notes (optional)</label><textarea id="ex-notes" rows="2" maxlength="1500" data-f="notes">${ex.notes}</textarea></div>
+        </div>
+        <div class="row-between"><h2 style="margin:0">Exercise steps</h2>
+          <label class="inline-label">Number of steps <input type="number" min="1" max="20" inputmode="numeric" value="${ex.steps.length}" data-count style="width:4.5em"></label></div>
+        ${ex.steps.map(stepCard)}
+        <button class="btn btn-block btn-ghost" data-addstep ${ex.steps.length >= 20 ? raw('disabled') : ''}>${raw(I.plus)} Add a step</button>
+        <div class="btn-row form-actions"><button class="btn btn-lg" data-save-ex>Save exercise</button><button class="btn btn-ghost" data-preview>Preview lesson</button></div>
+        ${isNew ? '' : html`<p><button class="link-btn choice-danger" data-del-ex>Delete this exercise</button></p>`}
+      </div>`);
+      window.scrollTo(0, y);
+    };
+    draw();
+
+    const offs = [];
+    offs.push(on(root, 'input', '[data-f]', (e, el) => { ex[el.dataset.f] = el.value; mark(); }));
+    offs.push(on(root, 'change', 'select[data-f]', (e, el) => { ex[el.dataset.f] = el.value; mark(); }));
+    offs.push(on(root, 'input', '[data-sf]', (e, el) => { ex.steps[Number(el.dataset.i)][el.dataset.sf] = el.value; mark(); }));
+    const hasContent = (st) => st.title || st.body || st.photos.length || st.cue || st.warning;
+    offs.push(on(root, 'change', '[data-count]', async (e, el) => {
+      const n = Math.max(1, Math.min(20, Math.round(Number(el.value)) || 1));
+      if (n === ex.steps.length) return;
+      if (n < ex.steps.length) {
+        const cut = ex.steps.slice(n);
+        if (cut.some(hasContent) && !(await confirm({ title: 'Remove steps?', text: `Steps ${n + 1}–${ex.steps.length} will be deleted, with their text and photos.`, ok: 'Remove', danger: true }))) { el.value = ex.steps.length; return; }
+        ex.steps = ex.steps.slice(0, n);
+      } else while (ex.steps.length < n) ex.steps.push(blankStep());
+      mark(); setTimeout(draw);   // not inside the blur that fired "change"
+    }));
+    offs.push(on(root, 'click', '[data-addstep]', () => { if (ex.steps.length < 20) { ex.steps.push(blankStep()); mark(); draw(); root.querySelector(`#st-t-${ex.steps.length - 1}`)?.focus(); } }));
+    offs.push(on(root, 'click', '[data-delstep]', async (e, b) => {
+      const i = Number(b.dataset.delstep);
+      if (ex.steps.length <= 1) { toast('An exercise needs at least one step.'); return; }
+      if (hasContent(ex.steps[i]) && !(await confirm({ title: `Delete step ${i + 1}?`, text: 'Its text and photos will be removed.', ok: 'Delete', danger: true }))) return;
+      ex.steps.splice(i, 1); mark(); draw();
+    }));
+    offs.push(on(root, 'click', '[data-move]', (e, b) => {
+      const i = Number(b.dataset.i), j = i + Number(b.dataset.move);
+      if (j < 0 || j >= ex.steps.length) return;
+      [ex.steps[i], ex.steps[j]] = [ex.steps[j], ex.steps[i]]; mark(); draw();
+    }));
+    const addPhoto = async (i, k = null) => {
+      const src = await P.util.pickImage();
+      if (!src) return;
+      if (k === null) ex.steps[i].photos.push(src); else ex.steps[i].photos[k] = src;
+      mark(); draw();
+    };
+    offs.push(on(root, 'click', '[data-addphoto]', (e, b) => addPhoto(Number(b.dataset.addphoto))));
+    offs.push(on(root, 'click', '[data-replace]', (e, b) => addPhoto(Number(b.dataset.i), Number(b.dataset.replace))));
+    offs.push(on(root, 'click', '[data-rmphoto]', (e, b) => { ex.steps[Number(b.dataset.i)].photos.splice(Number(b.dataset.rmphoto), 1); mark(); draw(); }));
+    offs.push(on(root, 'click', '[data-preview]', () => P.academy.preview(ex)));
+    offs.push(on(root, 'click', '[data-save-ex]', async () => {
+      if (!ex.name.trim()) { toast('Give the exercise a name.', { kind: 'error' }); root.querySelector('#ex-name').focus(); return; }
+      const clash = EXERCISES.find((x) => x.id !== ex.id && x.name.toLowerCase() === ex.name.trim().toLowerCase());
+      if (clash) { toast(`"${clash.name}" already exists.`, { kind: 'error' }); return; }
+      const d = P.data.normalizeExercise({ ...ex, updatedAt: new Date().toISOString() });
+      try { await S.put('exercises', d); } catch { toast("Couldn't save: this browser's storage may be full. Try smaller photos.", { kind: 'error', ms: 6000 }); return; }
+      P.data.registerCustom([d]);
+      dirty = false;
+      toast('Exercise saved. It is in the program editor and the Academy.', { kind: 'ok' });
+      if (isNew) app.navigate(`/paul/exercises/${d.id}`, { replace: true }); else { Object.assign(ex, clone(d)); draw(); }
+    }));
+    offs.push(on(root, 'click', '[data-del-ex]', async () => {
+      const progs = await usedIn(ex.id);
+      if (progs.length) { toast(`Used in ${progs.map((p) => p.name).join(', ')}. Take it out of ${progs.length === 1 ? 'that program' : 'those programs'} first.`, { kind: 'error', ms: 7000 }); return; }
+      if (!(await confirm({ title: `Delete ${ex.name || 'this exercise'}?`, text: 'Its lesson disappears from the Academy on this device. Athletes who already received it keep their copy.', ok: 'Delete', danger: true }))) return;
+      await S.del('exercises', ex.id);
+      P.data.unregisterCustom(ex.id);
+      dirty = false;
+      toast('Exercise deleted.');
+      app.navigate('/paul/exercises', { replace: true });
+    }));
+    return () => offs.forEach((f) => f());
   };
 
   P.paul = Paul;
@@ -3529,6 +3892,7 @@ window.Paulino = window.Paulino || {};
       <p>${program.athlete ? html`For <b>${program.athlete}</b> · ` : ''}${program.weeks.length} ${program.weeks.length === 1 ? 'week' : 'weeks'} · ${days.length} ${days.length === 1 ? 'workout' : 'workouts'} · starts ${fmtDate(program.startDate, { year: true })}</p>
       ${program.notes ? html`<p class="paul-note">${program.notes}</p>` : ''}</div>`;
     const save = async (keepProgress = true) => {
+      await A.keepExercises(program);
       await S.put('athlete', { ...program, savedAt: new Date().toISOString(), source });
       if (!keepProgress) await S.delProgramData(program.id);
       setCurrent(program.id);
@@ -3551,13 +3915,29 @@ window.Paulino = window.Paulino || {};
     draw(html`${summary}<div class="card">${UI.mascot({ mood: 'motivated', text: 'A fresh program! Ready?', size: 'sm' })}
       <p style="margin-top:10px">Save it on this device to follow it and log your training. Nothing is sent to anyone.</p>
       <button class="btn btn-block btn-lg" data-save>Save & start training</button></div>
-      <p class="center small"><button class="link-btn" data-paul>I'm Paul: copy it into my programs instead</button></p>`);
+      <p class="center small"><button class="link-btn" data-paul>Coach? Copy it into Paul's programs instead</button></p>`);
     root.querySelector('[data-save]').onclick = () => save(true);
     root.querySelector('[data-paul]').onclick = async () => {
+      await A.keepExercises(program);
       const c = M.reId(program, 'program');
       await S.put('paul', c);
       app.navigate(`/paul/p/${c.id}`, { replace: true });
     };
+  };
+
+  /** Store the custom exercises a received program brings along (never overwriting Paul's own originals). */
+  A.keepExercises = async (program) => {
+    for (const d of program.custom || []) {
+      const mine = await S.get('exercises', d.id);
+      if (mine && mine.origin !== 'shared') continue;
+      const n = P.data.normalizeExercise(d);
+      if (!n) continue;
+      if (mine && mine.updatedAt > n.updatedAt) continue;
+      // a link without photos must not wipe photos a file delivered earlier
+      if (mine) n.steps.forEach((st) => { const old = mine.steps.find((o) => o.id === st.id); if (!st.photos.length && old?.photos.length) st.photos = old.photos; });
+      await S.put('exercises', { ...n, origin: 'shared' });
+      P.data.registerCustom([n]);
+    }
   };
 
   A.importFile = async (app) => {
@@ -3580,13 +3960,16 @@ window.Paulino = window.Paulino || {};
   A.home = async (root, app) => {
     const prog = await A.current();
     const logs = await allLogs();
+    const hero = html`<div class="home-top"><a class="btn btn-sm btn-ghost" href="#/settings">Settings</a></div>
+      <section class="home-hero-wrap" aria-label="Paulino"><h1 class="home-title">PAULINO<span>!</span></h1>
+        <div class="home-hero">${UI.mascot({ mood: 'motivated', context: 'home', size: 'cover', layout: 'cover' })}</div></section>`;
     if (!prog) {
-      root.innerHTML = String(html`<div class="page stack">${UI.topBar({})}
-        <section class="hero"><h1>Ready to <span class="hero-name">train</span>?</h1></section>
-        <div class="card">${UI.mascot({ mood: 'motivated', context: 'empty', size: 'md' })}</div>
-        <div class="card"><h2>Get your program</h2><p><b>Got a link from Paul?</b> Just open it: the program loads automatically.</p>
-          <p><b>Got a .paulino file?</b> Import it here.</p><button class="btn btn-block" data-import>${raw(I.file)} Import program file</button></div>
-      </div>${UI.athleteNav('home')}`);
+      root.innerHTML = String(html`<div class="page stack athlete-home">${hero}
+        <p class="home-tag">Your coach's programs, and his voice in your head.</p>
+        <div class="card"><h2>Get your program</h2><p><b>Got a link from Paul?</b> Open it: the program loads by itself.</p>
+          <p><b>Got a .paulino file?</b> Import it here.</p><button class="btn btn-block btn-lg" data-import>${raw(I.file)} Import a .paulino file</button></div>
+        <a class="card door-card plain" href="#/academy"><h2>Lifting Academy</h2><p>Learn the lifts step by step. No program needed.</p></a>
+      </div>`);
       root.querySelector('[data-import]').onclick = () => A.importFile(app);
       return;
     }
@@ -3606,11 +3989,10 @@ window.Paulino = window.Paulino || {};
         <ul class="plain-list">${items.map((x) => html`<li class="row-between"><b>${exName(x.exerciseId)}</b><span class="mono small">${M.summarize(x.sets)}</span></li>`)}</ul>
         <a class="btn btn-block btn-lg" href="#/a/p/${prog.id}/d/${next.day.id}">${next.inProgress ? 'Continue workout' : "Let's train"}</a></div>`;
     }
-    root.innerHTML = String(html`<div class="page stack">
-      ${UI.topBar({ right: '<a class="btn btn-sm btn-ghost" href="#/settings">Settings</a>' })}
-      <section class="hero"><span class="scrap scrap-1" aria-hidden="true"></span><h1>Hey <span class="hero-name">${prog.athlete || 'champ'}</span>!</h1>
-        <p class="muted" style="position:relative">${prog.name} · ${M.weekLabel(prog, cw)} of ${prog.weeks.length}</p></section>
-      <div class="card">${UI.mascot({ mood: 'motivated', context: next && next.date > today && !next.inProgress ? 'rest_day' : 'home', size: 'md' })}</div>
+    root.innerHTML = String(html`<div class="page stack athlete-home">
+      ${hero}
+      <h2 class="home-hi">Hey <span class="hero-name">${prog.athlete || 'champ'}</span>! <span class="muted small">${prog.name} · ${M.weekLabel(prog, cw)} of ${prog.weeks.length}</span></h2>
+      ${next && next.date > today && !next.inProgress ? html`<div class="card">${UI.mascot({ mood: 'happy', context: 'rest_day', size: 'sm' })}</div>` : ''}
       ${nextCard}
       <div class="card"><div class="row-between"><b>Program progress</b><span class="mono">${pr.handled}/${pr.total} workouts</span></div>
         <div class="progress" style="margin-top:8px" role="progressbar" aria-label="Program progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pr.pct}"><span style="width:${pr.pct}%"></span></div>
@@ -3618,9 +4000,9 @@ window.Paulino = window.Paulino || {};
           <div class="stat"><div class="stat-label">${raw(I.check)} Done</div><div class="stat-value">${pr.done}</div></div>
           <div class="stat"><div class="stat-label">${raw(I.trophy)} PRs</div><div class="stat-value">${events.length}</div></div>
         </div></div>
-      <p class="center"><a href="#/a/program">See the whole program →</a></p>
+      <p class="center"><a href="#/a/program">See the whole program →</a> · <a href="#/a/library">Saved programs</a></p>
       ${S.mode !== 'indexeddb' ? html`<p class="notice small">${S.mode === 'memory' ? "This browser isn't letting Paulino store data: your progress disappears when you close the tab." : 'Saved in this browser.'} Export a backup in Programs.</p>` : ''}
-    </div>${UI.athleteNav('home')}`);
+    </div>`);
   };
 
   // ------------------------------------------------------------- program overview
@@ -3655,7 +4037,7 @@ window.Paulino = window.Paulino || {};
               <span class="status-dot ${st ? st[0] : ''}" aria-label="${st ? st[2] : date && date < today ? 'Not logged' : 'Upcoming'}" title="${st ? st[2] : ''}">${st ? st[1] : ''}</span></a></li>`;
           })}${w.days.length ? '' : html`<li class="muted small" style="padding:12px 16px">Rest week</li>`}</ul></details>`;
       })}
-    </div>${UI.athleteNav('program')}`);
+    </div>`);
   };
 
   // ------------------------------------------------------------- workout (view + log)
@@ -3743,6 +4125,7 @@ window.Paulino = window.Paulino || {};
             <span class="counter" data-counter>${c.done}/${c.total} sets</span></div>
           <div class="progress" style="margin-top:8px" role="progressbar" aria-label="Sets completed" aria-valuemin="0" aria-valuemax="${c.total}" aria-valuenow="${c.done}" data-progress><span style="width:${c.total ? (c.done / c.total) * 100 : 0}%"></span></div>
         </div>
+        ${items.some((x) => x.sets.some((st) => st.rpe != null || st.rir != null)) ? html`<p class="small muted" style="margin:10px 0 0" data-effort-help><b>RPE</b> = how hard a set should feel (10 = max effort). <b>RIR</b> = reps you could still do.</p>` : ''}
         ${status === 'done' ? html`<p class="notice notice-ok" style="margin-top:14px">Completed. You can still correct your numbers. <a href="#/a/p/${prog.id}/d/${day.id}/done">See results</a></p>` : ''}
         ${status === 'skipped' ? html`<p class="notice" style="margin-top:14px">Skipped (${log.skipReason}). <button class="link-btn" data-unskip>Train it after all</button></p>` : ''}
         ${day.notes ? html`<p class="paul-note" style="margin-top:14px">${day.notes}</p>` : ''}
@@ -4057,7 +4440,7 @@ window.Paulino = window.Paulino || {};
       <div class="card"><h2>Lifts</h2><div data-lift-body>${raw(liftHtml())}</div></div>
       <div class="card"><h2>Personal records</h2>${events.length ? html`<ul class="pr-list">${events.slice().reverse().map((e) => html`<li class="pr-item">${raw(I.trophy)}<span class="grow"><b>${exName(e.exerciseId)}</b> · <span class="mono small">${e.kind === 'reps' ? `${e.reps} reps` : `${fmtKg(e.kg)} kg × ${e.reps}`}${e.kind === 'e1rm' ? ` (est. 1RM ${fmtKg(e.value)})` : ''}</span></span><span class="chip">${fmtDate(e.date, { weekday: false })}</span></li>`)}</ul>` : html`<p class="muted">No PRs yet. Your first session sets the baseline.</p>`}</div>
       <div class="card"><h2>Completed workouts</h2>${done.length ? html`<table class="table"><tbody>${done.map((l) => html`<tr><td>${fmtDate(St.logDate(l), { weekday: false })}</td><td><a href="#/a/p/${l.programId}/d/${l.dayId}/done">${dname(l)}</a><br><span class="small muted">${pname(l.programId)}</span></td><td class="num">${P.util.plural(St.setsDone(l), 'set')}${l.pain ? ' · pain' : ''}</td></tr>`)}</tbody></table>` : html`<p class="muted">Nothing completed yet.</p>`}</div>
-    </div>${UI.athleteNav('history')}`);
+    </div>`);
     const offs = [UI.bindCharts(root), on(root, 'click', '[data-lift]', (e, el) => { lift = el.dataset.lift; root.querySelector('[data-lift-body]').innerHTML = liftHtml(); })];
     return () => offs.forEach((f) => f());
   };
@@ -4068,7 +4451,7 @@ window.Paulino = window.Paulino || {};
     const logs = await allLogs();
     const cur = (await A.current())?.id;
     root.innerHTML = String(html`<div class="page stack">${UI.topBar({ title: 'My programs' })}
-      <div class="btn-row"><button class="btn" data-import>${raw(I.file)} Import program file</button></div>
+      <div class="btn-row"><button class="btn" data-import>${raw(I.file)} Import a .paulino file</button></div>
       <p class="small muted">Got a link from Paul? Just open it on this device: the program is added here.</p>
       ${list.length ? list.map((p) => { const pr = St.progress(p, logs); return html`<div class="card list-card">
         <div class="grow"><h3>${p.name} ${p.id === cur ? html`<span class="chip chip-accent">Current</span>` : ''}</h3>
@@ -4078,7 +4461,7 @@ window.Paulino = window.Paulino || {};
         : html`<div class="card"><p>No programs saved on this device yet.</p></div>`}
       <div class="card"><h2>Keep your data safe</h2><p class="small">Programs and progress are stored <b>only in this browser</b>. Clearing browser data, using private mode or changing phone loses them. Export a backup now and then.</p>
         <div class="btn-row"><button class="btn btn-ghost" data-backup>Export backup</button><button class="btn btn-ghost" data-restore>Restore backup</button></div></div>
-    </div>${UI.athleteNav('library')}`);
+    </div>`);
     const offs = [];
     offs.push(on(root, 'click', '[data-import]', () => A.importFile(app)));
     offs.push(on(root, 'click', '[data-open]', (e, el) => { setCurrent(el.dataset.open); app.navigate(`/a/p/${el.dataset.open}`); }));
@@ -4114,64 +4497,24 @@ window.Paulino = window.Paulino || {};
 <script>
 /* ===== 12. app: routing & boot ============================================= */
 (function (P) {
-  const { html, raw, on, toast } = P.util;
+  const { html, raw, on, toast, confirm } = P.util;
   const S = P.store, UI = P.ui, A = P.athlete, Paul = P.paul;
   const root = document.getElementById('app');
-  const app = { version: '2.0.0' };
+  const app = { version: '2.1.0' };
   P.app = app;
 
-  // ---- start screen: title, Paul, one line, two doors ----
-  function home(el) {
-    el.innerHTML = String(html`<div class="page no-nav home">
-      <h1 class="home-title">PAULINO<span>!</span></h1>
-      <div class="home-hero">${UI.mascot({ mood: 'motivated', context: 'home', size: 'cover', layout: 'cover' })}</div>
-      <p class="home-tag">Your coach's programs, and his voice in your head.</p>
-      <nav class="home-doors" aria-label="Who are you?">
-        <a class="door door-athlete" href="#/athlete" data-mode="athlete" aria-label="I'm an athlete"><span>I'M AN</span>ATHLETE</a>
-        <a class="door door-paul" href="#/paul" data-mode="paul" aria-label="I'm Paul"><span>I'M</span>PAUL</a>
-      </nav>
-    </div>`);
-  }
-
-  // ---- athlete landing: my program or the academy ----
-  async function athleteLanding(el) {
-    const [mine, cur] = await Promise.all([S.all('athlete'), A.current()]);
-    const logs = cur ? await S.all('logs') : [];
-    const next = cur ? P.stats.next(cur, logs) : null;
-    el.innerHTML = String(html`<div class="page no-nav stack landing">
-      ${UI.topBar({ title: 'Athlete', back: '/' })}
-      <div class="landing-hi">${UI.mascot({ mood: 'motivated', context: 'athlete', size: 'sm' })}</div>
-      <section class="card door-card">
-        <span class="door-kicker">01</span><h2>My Training Program</h2>
-        ${cur ? html`<p><b>${cur.name}</b>${next ? html`<br><span class="small">Next: ${next.day.name}${next.date ? `, ${P.util.relDay(next.date) || ''}` : ''}</span>` : ''}</p>
-          <a class="btn btn-block btn-lg" href="#/a">${next?.inProgress ? 'Continue workout' : 'Open my program'}</a>`
-        : html`<p>Got a link from Paul? Just open it: the program loads by itself. Got a <b>.paulino</b> file? Import it.</p>`}
-        <div class="btn-row"><button class="btn ${cur ? 'btn-ghost' : 'btn-lg'}" data-import>${raw(UI.ICONS.file)} Import a .paulino file</button>
-          ${mine.length ? html`<a class="btn btn-ghost" href="#/a/library">Saved programs (${mine.length})</a>` : ''}</div>
-      </section>
-      <a class="card door-card plain" href="#/academy" data-academy>
-        <span class="door-kicker">02</span><h2>Lifting Academy</h2>
-        <p>Squat, overhead press, deadlift, bench press and power clean, one step at a time. No program needed.</p>
-        <span class="btn btn-ghost">Open the Academy →</span>
-      </a>
-      <p class="small muted center">No accounts: everything stays in this browser. <a href="#/settings">Settings</a></p>
-    </div>`);
-    el.querySelector('[data-import]').onclick = () => A.importFile(app);
-  }
-
-  // ---- Paul landing: create or open ----
-  async function paulLanding(el) {
+  // ---- coach home: three actions, no pep talk ----
+  async function coachHome(el) {
     const list = await S.all('paul');
-    el.innerHTML = String(html`<div class="page no-nav stack landing">
-      ${UI.topBar({ title: 'Paul', back: '/' })}
-      <div class="landing-hi">${UI.mascot({ mood: 'focused', context: 'paul', size: 'sm' })}</div>
-      <button class="card door-card door-btn" data-new>
-        <span class="door-kicker">01</span><h2>Create New Program</h2>
-        <p>Build week 1, then let Repeat / Progress write the rest.</p></button>
-      <a class="card door-card plain" href="#/paul/library" data-open>
-        <span class="door-kicker">02</span><h2>Open Saved Program</h2>
-        <p>${list.length ? `${list.length} saved ${list.length === 1 ? 'program' : 'programs'} in this browser.` : 'Nothing saved yet. You can also import a .paulino file there.'}</p></a>
-      <p class="small muted center">A mode, not a login: anyone on this device sees the same programs. <a href="#/settings">Settings</a></p>
+    const own = P.data.customExercises().length;
+    el.innerHTML = String(html`<div class="page stack coach-home">
+      <header class="coach-head"><div class="coach-face">${raw(P.art.paulino('focused', { size: 'sm' }))}</div>
+        <div><span class="mag-kicker">Coach</span><h1>Paul's desk</h1></div>
+        <a class="btn btn-sm btn-ghost" href="#/settings">Settings</a></header>
+      <button class="card door-card door-btn" data-new><span class="door-kicker">01</span><h2>Create Program</h2><p>Start with week 1.</p></button>
+      <a class="card door-card plain" href="#/paul/library"><span class="door-kicker">02</span><h2>Saved Programs</h2><p>${list.length ? P.util.plural(list.length, 'program') : 'None yet'} in this browser.</p></a>
+      <a class="card door-card plain" href="#/paul/exercises"><span class="door-kicker">03</span><h2>Manage Exercises</h2><p>${own ? `${P.util.plural(own, 'exercise')} of your own.` : 'Add your own exercises and lessons.'}</p></a>
+      <p class="small muted">This page is a separate address, not a login: anyone with this link can open it. Programs stay in this browser until you share them.</p>
     </div>`);
     el.querySelector('[data-new]').onclick = async () => { const p = await Paul.createDialog(list); if (p) { history.replaceState(history.state, '', '#/paul/library'); app.navigate(`/paul/p/${p.id}`); } };
   }
@@ -4179,7 +4522,7 @@ window.Paulino = window.Paulino || {};
   async function settings(el) {
     const prefs = P.store.pref.get('timer.prefs', { auto: true, sound: true });
     const modeText = { indexeddb: 'Saved in this browser (IndexedDB).', localstorage: 'Saved in this browser (basic storage: IndexedDB is unavailable).', memory: "This browser blocks storage: data is kept only until you close the tab." }[S.mode];
-    el.innerHTML = String(html`<div class="page no-nav stack">${UI.topBar({ title: 'Settings', back: '/' })}
+    el.innerHTML = String(html`<div class="page stack">${UI.topBar({ title: 'Settings', back: mode() === 'coach' ? '/coach' : '/' })}
       ${UI.paletteCard()}
       <div class="card"><h2>Rest timer</h2>
         <label class="check"><input type="checkbox" data-pref="auto" ${prefs.auto ? raw('checked') : ''}> Start the rest timer when I tick off a set</label>
@@ -4187,9 +4530,7 @@ window.Paulino = window.Paulino || {};
       <div class="card"><h2>Your data</h2><p>${modeText}</p>
         <p class="small">Nothing is sent anywhere. Clearing browser data, private windows or a new phone means starting empty, so <b>export a backup</b> now and then. A backup contains Paul's programs, received programs, workout logs and changes.</p>
         <div class="btn-row"><button class="btn btn-ghost" data-backup>Export backup</button><button class="btn btn-ghost" data-restore>Restore backup</button></div></div>
-      <div class="card"><h2>Meet Paulino</h2><p class="small muted">Tap him for more. These are all his moods.</p>
-        <div class="stack-sm">${P.art.MOODS.map((m) => UI.mascot({ mood: m, context: { motivated: 'home', focused: 'generic', happy: 'saved', celebrating: 'finish', disappointed: 'deviate', concerned: 'pain' }[m], size: 'sm', still: true }))}</div>
-        <p class="small muted" style="margin-top:12px">${P.data.SAFETY.disclaimer}</p></div>
+      <p class="small muted">${P.data.SAFETY.disclaimer}</p>
       <p class="small muted center">Paulino ${app.version}</p>
     </div>`);
     const offs = [];
@@ -4202,16 +4543,19 @@ window.Paulino = window.Paulino || {};
 
   // ---- router: hash routes driven by pushState/popstate ----
   const routes = [
-    ['/', home],
+    ['/', (el) => A.home(el, app)],
     ['/settings', settings],
-    ['/athlete', athleteLanding],
+    ['/coach', coachHome],
+    ['/athlete', () => app.navigate('/', { replace: true })],
     ['/academy', (el) => P.academy.index(el, app)],
     ['/academy/:id', (el, p) => P.academy.lesson(el, app, p)],
-    ['/paul', paulLanding],
+    ['/paul', () => app.navigate('/coach', { replace: true })],
     ['/paul/library', (el) => Paul.library(el, app)],
+    ['/paul/exercises', (el) => Paul.exercises(el, app)],
+    ['/paul/exercises/:id', (el, p) => Paul.exerciseEditor(el, app, p)],
     ['/paul/p/:id', (el, p, q) => Paul.editor(el, app, p, q)],
     ['/paul/p/:id/print', async (el, p) => { const prog = await S.get('paul', p.id); if (!prog) return app.navigate('/paul/library', { replace: true }); Paul.printView(el, app, prog, `/paul/p/${p.id}`); }],
-    ['/a', (el) => A.home(el, app)],
+    ['/a', () => app.navigate('/', { replace: true })],
     ['/a/program', (el, p) => A.program(el, app, p)],
     ['/a/history', (el, p, q) => A.history(el, app, p, q)],
     ['/a/library', (el) => A.library(el, app)],
@@ -4227,6 +4571,40 @@ window.Paulino = window.Paulino || {};
   });
 
   let cleanup = null, seq = 0, depth = history.state?.depth ?? 0, keepScroll = false;
+
+  // ---- which interface: coach (Paul) or athlete; decided by the address, not by a login ----
+  const COACH_RE = /^\/(coach|paul)(\/|$)/;
+  const mode = () => S.pref.get('mode', 'athlete');
+  const NAV = {
+    athlete: [['home', '/', 'home', 'Home', /^\/(a)?$/], ['program', '/a/program', 'program', 'My Program', /^\/a\/(program|p\/|library|import)/], ['academy', '/academy', 'academy', 'Academy', /^\/academy/], ['history', '/a/history', 'progress', 'History', /^\/a\/history/]],
+    coach: [['home', '/coach', 'home', 'Home', /^\/coach$/], ['programs', '/paul/library', 'library', 'Programs', /^\/paul\/(library|p\/)/], ['exercises', '/paul/exercises', 'academy', 'Exercises', /^\/paul\/exercises/]],
+  };
+  const navRoot = document.getElementById('nav-root');
+  function renderNav(path) {
+    if (COACH_RE.test(path)) S.pref.set('mode', 'coach');
+    else if (path !== '/settings') S.pref.set('mode', 'athlete');
+    const m = /\/print$/.test(path) ? null : mode();
+    document.body.classList.toggle('has-nav', Boolean(m));
+    if (!m) { navRoot.innerHTML = ''; return; }
+    const items = NAV[m];
+    navRoot.innerHTML = String(html`<nav class="bottom-nav" style="--n:${items.length}" aria-label="${m === 'coach' ? 'Coach' : 'Athlete'}" data-nav="${m}">${items.map(([key, href, icon, label, re]) => {
+      const active = re.test(path);
+      return html`<a href="#${href}" class="nav-item${active ? ' active' : ''}" data-nav-item="${key}" ${active ? raw('aria-current="page"') : ''}><span class="nav-icon">${raw(UI.ICONS[icon])}</span><span>${label}</span></a>`;
+    })}</nav>`);
+  }
+
+  // ---- unsaved changes: a screen registers a check; leaving asks first ----
+  let guard = null;
+  app.setGuard = (fn) => { guard = fn; };
+  const pendingLeave = () => { try { return guard?.() || null; } catch { return null; } };
+  async function okToLeave() {
+    const msg = pendingLeave();
+    if (!msg) return true;
+    const leave = await confirm({ title: 'Leave without saving?', text: msg, ok: 'Leave', cancel: 'Stay here', danger: true });
+    if (leave) guard = null;
+    return leave;
+  }
+  window.addEventListener('beforeunload', (e) => { if (pendingLeave()) { e.preventDefault(); e.returnValue = ''; } });
   const current = () => { const h = location.hash.replace(/^#/, '') || '/'; const [path, q = ''] = h.split('?'); return { path, query: new URLSearchParams(q) }; };
 
   async function resolve() {
@@ -4247,6 +4625,8 @@ window.Paulino = window.Paulino || {};
     const { path, query } = current();
     const y = window.scrollY;
     teardown();
+    guard = null;
+    renderNav(path);
     let r = null, params = {};
     for (const x of routes) { const m = path.match(x.re); if (m) { r = x; params = Object.fromEntries(x.keys.map((k, i) => [k, decodeURIComponent(m[i + 1])])); break; } }
     try {
@@ -4261,11 +4641,13 @@ window.Paulino = window.Paulino || {};
     document.title = h1 && h1.textContent.trim() ? `${h1.textContent.trim()} · Paulino` : 'Paulino';
     window.scrollTo(0, keepScroll ? y : 0);
     keepScroll = false;
+    here = location.href; hereState = history.state;
   }
   function teardown() { if (cleanup) { try { cleanup(); } catch { /* ignore */ } cleanup = null; } }
   const notFound = (el) => { el.innerHTML = '<div class="page no-nav"><div class="card"><h1>Page not found</h1><a class="btn" href="#/">Home</a></div></div>'; };
 
-  app.navigate = (path, { replace = false } = {}) => {
+  app.navigate = async (path, { replace = false, force = false } = {}) => {
+    if (!force && !replace && !(await okToLeave())) return;
     const url = `#${path}`;
     if (replace) history.replaceState({ depth }, '', url);
     else history.pushState({ depth: ++depth }, '', url);
@@ -4280,15 +4662,30 @@ window.Paulino = window.Paulino || {};
     history.replaceState(history.state, '', `#${path}?${query}`);
   };
 
-  window.addEventListener('popstate', (e) => { depth = e.state?.depth ?? 0; resolve(); });
+  let here = location.href, hereState = history.state;
+  window.addEventListener('popstate', async (e) => {
+    if (pendingLeave()) {
+      const target = location.href, targetState = e.state;
+      history.pushState(hereState, '', here);          // stay put while asking
+      if (!(await okToLeave())) return;
+      history.replaceState(targetState, '', target);
+      e = { state: targetState };
+    }
+    depth = e.state?.depth ?? 0; resolve();
+  });
   window.addEventListener('hashchange', () => { if (location.hash.startsWith('#program=')) resolve(); });
-  on(document, 'click', '[data-action=back]', (e, el) => { e.preventDefault(); app.back(el.dataset.fallback || '/'); });
+  on(document, 'click', '[data-action=back]', async (e, el) => { e.preventDefault(); if (await okToLeave()) app.back(el.dataset.fallback || '/'); });
   on(document, 'click', 'a[href^="#/"]', (e, el) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
     e.preventDefault();
     app.navigate(el.getAttribute('href').slice(1));
   });
   UI.bindMascots(document);
+  // the on-screen keyboard shrinks the visual viewport: hide the bottom bar while it is open
+  if (window.visualViewport) {
+    const fullH = () => Math.max(innerHeight, document.documentElement.clientHeight);
+    visualViewport.addEventListener('resize', () => document.body.classList.toggle('kb-open', visualViewport.height < fullH() * 0.72));
+  }
 
   // The previous Paulino version installed a service worker. Remove it so this
   // version always loads fresh from the host.
@@ -4301,6 +4698,10 @@ window.Paulino = window.Paulino || {};
     UI.applyPalette();
     await S.init();
     await P.art.loadManifest();
+    try {
+      P.data.registerCustom(await S.all('exercises'));
+      for (const prog of [...await S.all('athlete'), ...await S.all('paul')]) P.data.registerCustom(prog.custom || [], { onlyMissing: true });
+    } catch { /* storage unavailable */ }
     if (!history.state) history.replaceState({ depth: 0 }, '', location.href);
     if (!location.hash) history.replaceState({ depth: 0 }, '', '#/');
     await resolve();
