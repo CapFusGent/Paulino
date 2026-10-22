@@ -4645,15 +4645,28 @@ window.Paulino = window.Paulino || {};
     renderNav(path);
     let r = null, params = {};
     for (const x of routes) { const m = path.match(x.re); if (m) { r = x; params = Object.fromEntries(x.keys.map((k, i) => [k, decodeURIComponent(m[i + 1])])); break; } }
+    // Each navigation draws into its own container. A view that finishes late (it
+    // awaited storage while the user already moved on) draws into a container that
+    // is no longer shown, so it can never cover the current page. The previous page
+    // stays visible until the new one draws, so there is no blank flash.
+    const stage = document.createElement('div');
+    stage.className = 'view';
+    root.append(stage);
+    const swap = new MutationObserver(() => {
+      swap.disconnect();
+      if (my === seq) for (const c of [...root.children]) if (c !== stage) c.remove();
+    });
+    swap.observe(stage, { childList: true });
     try {
-      const out = await (r ? r.fn(root, params, query) : notFound(root));
-      if (my !== seq) { if (typeof out === 'function') out(); return; }
+      const out = await (r ? r.fn(stage, params, query) : notFound(stage));
+      if (my !== seq) { if (typeof out === 'function') out(); stage.remove(); return; }
       cleanup = typeof out === 'function' ? out : null;
     } catch (e) {
       console.error(e);
-      root.innerHTML = String(html`<div class="page no-nav"><div class="card error-card"><h2>Something went wrong</h2><p>${e.message}</p><a class="btn" href="#/">Home</a></div></div>`);
+      if (my !== seq) return;
+      stage.innerHTML = String(html`<div class="page no-nav"><div class="card error-card"><h2>Something went wrong</h2><p>${e.message}</p><a class="btn" href="#/">Home</a></div></div>`);
     }
-    const h1 = root.querySelector('h1');
+    const h1 = stage.querySelector('h1');
     document.title = h1 && h1.textContent.trim() ? `${h1.textContent.trim()} · Paulino` : 'Paulino';
     window.scrollTo(0, keepScroll ? y : 0);
     keepScroll = false;

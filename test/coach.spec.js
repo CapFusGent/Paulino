@@ -347,3 +347,19 @@ test('five funny palettes, orange-and-black included; text stays readable, photo
   await page.evaluate(() => { localStorage.setItem('paulino:palette', JSON.stringify('pink')); window.Paulino.ui.applyPalette(); });
   await expect(page.locator('html')).toHaveAttribute('data-palette', 'protein');
 });
+
+test('a page that loads slowly never draws over the page you moved on to', async ({ page }) => {
+  await open(page, '#/academy');
+  // make the coach home's storage read slow, then leave it before it finishes
+  await page.evaluate(() => {
+    const S = window.Paulino.store, all = S.all.bind(S);
+    S.all = async (s) => { if (s === 'paul') await new Promise((r) => setTimeout(r, 600)); return all(s); };
+    window.Paulino.app.navigate('/coach');
+    setTimeout(() => window.Paulino.app.navigate('/academy/squat'), 50);
+  });
+  await expect(page.locator('.lesson-title')).toHaveText('Squat');
+  await page.waitForTimeout(900);   // the slow coach page has finished by now
+  await expect(page.locator('.lesson-title')).toHaveText('Squat');
+  await expect(page.getByRole('heading', { name: "Paul's desk" })).toHaveCount(0);
+  await expect(page.locator('#app > .view')).toHaveCount(1);
+});
