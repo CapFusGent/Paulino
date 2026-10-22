@@ -30,16 +30,16 @@ Four palettes (Original, Pink, Teal, Blue) swap `--bg` and `--accent`. Text pair
 ## Paulino, the character kit
 Paulino is a photomontage of Paul's real photos. The cut-outs are in `assets/paulino/` and are produced by `tools/build_cutouts.py`: hand-placed scissor outlines with a white paper edge, cut so only Paul appears.
 
-| Mood | Composition |
-|---|---|
-| motivated | big smiling head on Paul's own body (montage), mustard + pink paper, burst marks, "GO!" |
-| focused | direct-look head in B&W, teal paper, dashed target circle |
-| happy | full outdoor figure in colour, pink paper, star |
-| celebrating | montage in colour, confetti, stars, "YES!" |
-| disappointed | calm head in B&W, tilted −11°, grey/blue paper, drip and squiggle, "sigh…" |
-| concerned | direct head tilted, orange paper, sweat drop, "?!" |
+| Mood | Composition | Where |
+|---|---|---|
+| motivated | Paul's grinning head on his own beach double-biceps body (B&W), mustard + pink paper, burst, "GO!" | home (large), athlete landing (small), workout (compact), lesson covers |
+| focused | direct-look head, B&W, teal paper, target circle | Paul landing, tips, lessons |
+| happy | smiling head in colour, pink paper, star | set done, plan restored, recaps |
+| celebrating | gym flex with the big grin, colour, confetti, "YES!" | workout completion |
+| disappointed | unimpressed stare, B&W, tilted, grey/blue paper, "sigh…" | changes to Paul's plan, lesson mistakes |
+| concerned | mid-sentence look, eyebrows up, orange paper, "?!" | pain, fatigue, safety notes |
 
-There are no genuine sad or worried photos of Paul, so those moods come from framing, tilt, colour and marks. Expressions are never altered.
+Each mood uses the photo whose real expression fits it best; there is no genuinely sad or worried photo, so those two lean on framing, tilt, colour and marks. Expressions are never altered.
 
 ## Composition templates
 - **A · Cover** (home): masthead, issue strip, dominant montage, two colour blocks, bubble, headline, cover lines, call to action.

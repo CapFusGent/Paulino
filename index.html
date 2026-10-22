@@ -770,6 +770,27 @@ details[open] > .summary-h::before { content: '▾'; }
 .cover-lines a { text-decoration-thickness: 2px; }
 @media (min-width: 640px) { .cover { margin: 0; } .cover-block-1 { height: 420px; } }
 
+/* ---- home: title, Paul, two doors ---- */
+.home { display: flex; flex-direction: column; min-height: 100svh; padding-top: 14px; padding-bottom: 22px; overflow-x: clip; }
+.home-title { margin: 0; font: 800 clamp(3.6rem, 22vw, 9rem)/.82 var(--font-head); letter-spacing: -.05em; text-transform: uppercase; text-align: center; transform: rotate(-2deg); }
+.home-title span { color: var(--accent-strong); }
+.home-hero { position: relative; margin: 6px auto 0; width: 100%; max-width: 520px; }
+.home-hero .layout-cover .paulino-figure { width: min(330px, 80vw); margin: 0 auto; }
+.home-hero .layout-cover .bubble { top: auto; bottom: 6%; left: 0; max-width: 54%; }
+.home-tag { text-align: center; font: 700 1.05rem var(--font-body); margin: 12px auto 16px; max-width: 30ch; }
+.home-doors { display: grid; gap: 14px; margin-top: auto; }
+@media (min-width: 640px) { .home-doors { grid-template-columns: 1fr 1fr; } }
+.door { display: block; text-decoration: none; text-align: center; padding: 16px 12px; border: var(--b) solid var(--ink); box-shadow: var(--shadow-lg); font: 800 clamp(2rem, 11vw, 3rem)/.95 var(--font-head); letter-spacing: -.02em; color: var(--ink); background: var(--accent); }
+.door span { display: block; font: 700 .8rem var(--font-mono); letter-spacing: .14em; }
+.door-athlete { transform: rotate(-1deg); background: var(--pop-2); }
+.door-paul { transform: rotate(1deg); }
+.door:active { transform: translate(3px, 3px); box-shadow: none; }
+.landing-hi { margin: 0 0 4px; }
+.door-card { position: relative; display: block; text-align: left; width: 100%; color: inherit; font: inherit; cursor: pointer; }
+.door-card h2 { font-size: clamp(1.5rem, 7.5vw, 2rem); text-transform: uppercase; margin: 4px 0 8px; }
+.door-kicker { font: 800 2.2rem/1 var(--font-head); -webkit-text-stroke: 2px var(--ink); color: transparent; }
+.door-btn { appearance: none; }
+
 /* ---- magazine sections ---- */
 .mag-head { position: relative; padding: 8px 0 0; }
 .mag-kicker { display: inline-block; font: 700 .72rem var(--font-mono); letter-spacing: .14em; text-transform: uppercase; background: var(--ink); color: var(--white); padding: 2px 8px; transform: rotate(-1.5deg); }
@@ -815,8 +836,16 @@ details[open] > .summary-h::before { content: '▾'; }
 .photo-slot { position: relative; margin: 0; background: var(--white); border: var(--b) solid var(--ink); box-shadow: var(--shadow-lg); padding: 10px; transform: rotate(-1.2deg); }
 .lesson-step.flip .photo-slot { transform: rotate(1.2deg); }
 .photo-slot img { display: block; width: 100%; height: auto; filter: grayscale(1) contrast(1.15); }
-.photo-slot .annot { position: absolute; inset: 10px; width: calc(100% - 20px); height: calc(100% - 20px); color: var(--danger); fill: none; stroke: currentColor; stroke-width: .8; overflow: visible; }
-.photo-slot .annot text { fill: var(--ink); stroke: none; font: 4px var(--font-hand); }
+.photo-frame { position: relative; }
+.photo-slot .annot { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--danger); fill: none; stroke: currentColor; stroke-width: var(--sw); stroke-linecap: round; overflow: visible; pointer-events: none; }
+.photo-slot .annot .dot { fill: currentColor; }
+.photo-slot .annot text { fill: var(--white); stroke: var(--ink); stroke-width: calc(var(--sw) * 1.6); paint-order: stroke; font-family: var(--font-hand); }
+.has-photo figcaption { display: grid; gap: 4px; padding: 8px 2px 0; font-size: .9rem; }
+.has-photo figcaption small { font: .72rem var(--font-mono); color: var(--ink-2); }
+.is-private { border-color: var(--danger); }
+.is-private::before { content: 'PRIVATE REFERENCE'; position: absolute; z-index: 3; top: -12px; right: 10px; font: 700 .64rem var(--font-mono); letter-spacing: .1em; background: var(--danger); color: var(--white); padding: 2px 6px; }
+.why { background: var(--paper); border: 2px solid var(--ink); padding: 8px 10px; box-shadow: 3px 3px 0 var(--ink); }
+.no-photo { min-height: 0; }
 .needs-photo { display: grid; place-items: center; gap: 10px; min-height: 260px; text-align: center; color: var(--ink-2);
   background: repeating-linear-gradient(-45deg, var(--paper) 0 14px, var(--paper-2) 14px 28px); border-style: dashed; }
 .needs-photo figcaption { display: grid; gap: 6px; max-width: 30ch; }
@@ -1256,39 +1285,69 @@ window.Paulino = window.Paulino || {};
   const CATEGORIES = { squat: 'Squat', bench: 'Bench press', deadlift: 'Deadlift', accessory: 'Accessory' };
 
   const STATES = ['motivated', 'focused', 'happy', 'celebrating', 'disappointed', 'concerned'];
+
+  /*
+   * Paulino's dialogue. A line is a string (weight 1) or { t, w, real }.
+   *   real: true  → one of Paul's own catchphrases (supplied by Paul). These get a
+   *                 high weight so they come up far more often than generic lines.
+   *   other lines → written for the app in Paul's spirit; never presented as quotes.
+   * Selection: weighted random, never the same line twice in a row (see ui.pick).
+   */
+  const R = (t, w = 5) => ({ t, w, real: true });
+  const PAUL = {
+    brace: R('BRACE! BRACE! BRACE!', 6),
+    floor: R('Push the floor away!'),
+    legday: R('Never skip leg day!'),
+    goodBrace: R('A good brace is the most important!'),
+    deeper: R('You can go deeper!'),
+    protein: R('How many grams of protein did you have today?'),
+  };
+  const X = (t, w = 2) => ({ t, w });   // inspired by Paul, not a quote
   const LINES = {
     motivated: {
-      home: ['COME ON, CHAMP!', 'Bar is loaded. Ego is not.', 'Today we lift. Tomorrow we brag.', 'Paul planned it. You crush it.', 'Strong is a habit. Show up!', 'Chalk up, champ!', 'One session at a time.'],
-      rest_day: ['Rest day! Muscles grow while you chill.', 'Recovery is training too.', 'Sleep, eat, repeat. Then lift.'],
-      empty: ['No program yet. Ask Paul for a link!', 'Open the link or file Paul sent you.'],
-      paul: ['Who are we making stronger today?', 'Build week 1. I do the boring part.', 'Spreadsheets are so last season.'],
-      workout: ['Warm-up first: empty bar for 10!', 'Perfect reps beat heavy reps.', "Let's get this one done!"],
+      home: [PAUL.brace, PAUL.floor, PAUL.legday, PAUL.goodBrace, PAUL.deeper, PAUL.protein],   // the home bubble only uses Paul's real lines
+      athlete: [PAUL.brace, PAUL.legday, PAUL.protein, X('Did you eat your protein, champ?'), X('Today we lift. Tomorrow we brag.', 1)],
+      rest_day: [PAUL.protein, X('Rest day! Muscles grow while you chill.', 1), X('Recovery is training too.', 1)],
+      empty: [X('No program yet. Ask Paul for a link!'), X('Open the link or file Paul sent you.')],
+      paul: [PAUL.brace, X('Who are we making stronger today?'), X('Build week 1. I do the boring part.'), PAUL.legday],
+      workout: [PAUL.brace, PAUL.legday, PAUL.protein, X('Warm-up first: empty bar for 10!'), X('Perfect reps beat heavy reps.', 1)],
     },
     focused: {
-      generic: ['Brace before you lift!', 'Control that descent!', 'No ego lifting today!', 'Leave one or two reps in the tank.', 'Breathe, brace, go.', 'Same groove every rep.'],
+      generic: [PAUL.goodBrace, PAUL.brace, X('DID YOU BRACE?!'), X('YOU CALL THAT A BRACE?!'), X('NO EGO LIFTING!'), X('Leave one or two reps in the tank.', 1)],
     },
     happy: {
-      set: ['Clean rep!', 'Smooth!', 'Textbook!'],
-      restored: ['Thank you! Paul will be so proud.', 'The plan lives! Good call.', 'Back to the plan, champ!'],
-      saved: ['Saved! Paul, you legend.', 'Program locked and loaded.', 'Looking strong already.'],
+      set: [X("THAT'S A PROPER REP!"), X('Clean rep!', 1)],
+      restored: [X('PAUL WROTE THIS FOR A REASON!'), X('Thank you! Paul will be so proud.'), X('Back to the plan, champ!')],
+      saved: [X('Saved! Paul, you legend.'), X('Program locked and loaded.')],
+      academy: [PAUL.goodBrace, PAUL.deeper, PAUL.floor, X('Learn it with the empty bar first!')],
     },
     celebrating: {
-      finish: ["THAT'S MY ATHLETE!", 'Nice work. Paul approves!', 'BOOM! Session done!', 'Another one in the books!'],
-      pr: ['NEW PR! Who even are you?!', 'PERSONAL RECORD!', 'The bar got lighter. Or you got stronger!'],
+      finish: [R('GOOD! NOW, HOW MANY GRAMS OF PROTEIN DID YOU HAVE TODAY?', 7), X("THAT'S MY ATHLETE!", 3), X("THAT'S A PROPER REP!"), PAUL.legday],
+      pr: [X('NEW PR! NOW EAT YOUR PROTEIN!', 3), X('PERSONAL RECORD!'), X('The bar got lighter. Or you got stronger!', 1)],
     },
     disappointed: {
-      sets: ['WHAT?! Paul made this program for a reason!', 'Fewer sets?! Paul is crying somewhere.'],
-      replace: ['WHAT?! YOU CHANGED MY MASTERPIECE?!', "You're changing Paul's masterpiece?! I'm disappointed!", 'A different exercise?! Paul picked that one!'],
-      deviate: ['WHAT?! YOU CHANGED MY MASTERPIECE?!', 'NOOO! Paul spent hours planning this!', "Paul's spreadsheet is crying right now."],
-      after: ["I'm disappointed... but I still believe in you!", 'Fine. Your call, champ.', "OK... I'll be here, sulking."],
+      sets: [X('WHAT?! YOU CHANGED MY PROGRAM?!', 5), X('PAUL WROTE THIS FOR A REASON!', 4), X('Fewer sets?! Paul is crying somewhere.', 1)],
+      replace: [X('WHAT?! YOU CHANGED MY PROGRAM?!', 5), X('PAUL WROTE THIS FOR A REASON!', 4), X('A different exercise?! Paul picked that one!', 1)],
+      deviate: [X('WHAT?! YOU CHANGED MY PROGRAM?!', 5), X('PAUL WROTE THIS FOR A REASON!', 4), X('NOOO! Paul spent hours planning this!', 1)],
+      after: [X("I'm disappointed... but I still believe in you!"), X('Fine. But you still have to brace.'), X("OK... I'll be here, sulking.")],
     },
     concerned: {
       pain: ['Sharp pain? Stop that exercise now.', 'Your body comes first. Always.', 'No set is worth an injury.'],
       fatigue: ['Feeling run down? Smart to adjust.', 'Listen to your body today.', 'Easy days count. Truly.'],
-      heavy: ["Heavier than Paul's plan. Is that wise?", 'Easy, tiger. Stick to the plan.'],
+      heavy: ["Heavier than Paul's plan. Is that wise?", 'NO EGO LIFTING!'],
       skip: ['Rest up and get well soon!', 'Skipping when sick is smart, not lazy.'],
       storage: ['Your data lives in this browser only. Back it up!'],
     },
+  };
+
+  /** Exercise-specific lines (workout tips and lessons), on top of the technique cues. */
+  const EXERCISE_LINES = {
+    squat: [PAUL.brace, PAUL.deeper, PAUL.floor, PAUL.legday],
+    deadlift: [PAUL.floor, PAUL.goodBrace, X('KEEP IT CLOSE!')],
+    'bench-press': [PAUL.goodBrace, X('CONTROL THAT BAR!'), X('DID YOU BRACE?!')],
+    'overhead-press': [PAUL.goodBrace, X('Squeeze everything!'), X('DID YOU BRACE?!')],
+    'barbell-row': [PAUL.goodBrace, X('Flat back, champ!')],
+    'pull-up': [X('Chin over the bar!'), PAUL.protein],
   };
 
   const SAFETY = {
@@ -1301,19 +1360,20 @@ window.Paulino = window.Paulino || {};
   const exById = (id) => EXERCISES.find((e) => e.id === id) || null;
   const exName = (id) => exById(id)?.name || id;
 
-  /** All cues for an exercise as plain strings (Paul's note first). */
+  /** Lines for an exercise: Paul's own note (strongest), his catchphrases for that lift, then technique cues. */
   function cuesFor(exerciseId, paulNote = '') {
     const e = exById(exerciseId);
     const out = [];
-    if (paulNote) out.push(`Paul says: ${paulNote}`);
+    if (paulNote) out.push({ t: `Paul says: ${paulNote}`, w: 8 });
+    out.push(...(EXERCISE_LINES[exerciseId] || []));
     if (!e) return out;
     for (const k of ['setup', 'execution', 'bracing', 'mistakes', 'safety']) {
-      for (const t of e.tips[k] || []) out.push(k === 'mistakes' ? `Avoid: ${t.charAt(0).toLowerCase()}${t.slice(1)}` : t);
+      for (const t of e.tips[k] || []) out.push({ t: k === 'mistakes' ? `Avoid: ${t.charAt(0).toLowerCase()}${t.slice(1)}` : t, w: 1 });
     }
     return out;
   }
 
-  P.data = { EXERCISES, GENERAL_TIPS, CATEGORIES, STATES, LINES, SAFETY, exById, exName, cuesFor };
+  P.data = { EXERCISES, GENERAL_TIPS, CATEGORIES, STATES, LINES, PAUL, EXERCISE_LINES, SAFETY, exById, exName, cuesFor };
 })(window.Paulino);
 </script>
 <script>
@@ -1908,8 +1968,8 @@ window.Paulino = window.Paulino || {};
    * If IndexedDB is unavailable (some private modes), data goes to
    * localStorage; if that fails too, to memory for this tab only.
    */
-  const STORES = ['paul', 'athlete', 'logs', 'mods'];
-  const KEYS = { paul: 'id', athlete: 'id', logs: 'key', mods: 'key' };
+  const STORES = ['paul', 'athlete', 'logs', 'mods', 'media'];
+  const KEYS = { paul: 'id', athlete: 'id', logs: 'key', mods: 'key', media: 'id' };
   let mode = 'memory';
   let db = null;
   const memory = Object.fromEntries(STORES.map((s) => [s, new Map()]));
@@ -1920,7 +1980,7 @@ window.Paulino = window.Paulino || {};
     return new Promise((resolve, reject) => {
       if (!('indexedDB' in window)) return reject(new Error('no indexedDB'));
       let req;
-      try { req = indexedDB.open('paulino', 1); } catch (e) { return reject(e); }
+      try { req = indexedDB.open('paulino', 2); } catch (e) { return reject(e); }
       req.onupgradeneeded = () => {
         const d = req.result;
         for (const s of STORES) if (!d.objectStoreNames.contains(s)) {
@@ -1994,7 +2054,7 @@ window.Paulino = window.Paulino || {};
     /** Backup of everything on this device (both roles). */
     async exportBackup() {
       const out = { format: 'paulino-backup', v: 1, exportedAt: new Date().toISOString() };
-      for (const s of STORES) out[s] = await S.all(s);
+      for (const s of STORES) if (s !== 'media') out[s] = await S.all(s);   // the private illustration pack is never exported
       return JSON.stringify(out, null, 1);
     },
     /** Merge a backup in. Existing records with the same key are replaced. Returns counts. */
@@ -2004,7 +2064,7 @@ window.Paulino = window.Paulino || {};
       if (data?.format !== 'paulino-backup') throw new Error(data?.format === P.model.FORMAT ? 'That is a program file. Use "Import program" instead.' : "That file isn't a Paulino backup.");
       if (data.v > 1) throw new Error('This backup was made by a newer version of Paulino.');
       const counts = {};
-      for (const s of STORES) {
+      for (const s of STORES.filter((x) => x !== 'media')) {
         counts[s] = 0;
         for (const rec of Array.isArray(data[s]) ? data[s] : []) {
           if (!rec || typeof rec !== 'object' || !rec[KEYS[s]]) continue;
@@ -2135,6 +2195,11 @@ window.Paulino = window.Paulino || {};
     paul_head_calm: 'assets/paulino/paul_head_calm.webp',
     paul_figure_outdoor: 'assets/paulino/paul_figure_outdoor.webp',
     paul_body_outdoor: 'assets/paulino/paul_body_outdoor.webp',
+    paul_flex_beach: 'assets/paulino/paul_flex_beach.webp',
+    paul_flex_beach_body: 'assets/paulino/paul_flex_beach_body.webp',
+    paul_flex_gym: 'assets/paulino/paul_flex_gym.webp',
+    paul_head_stare: 'assets/paulino/paul_head_stare.webp',
+    paul_head_talking: 'assets/paulino/paul_head_talking.webp',
   };
   const files = { ...BUILTIN };
   const meta = {};
@@ -2147,7 +2212,41 @@ window.Paulino = window.Paulino || {};
       for (const img of m.images || []) if (img.id && img.file) { files[img.id] = img.file; meta[img.id] = img; }
       for (const [id, slot] of Object.entries(m.lesson_photo_slots || {})) if (slot?.file) { files[id] = slot.file; meta[id] = slot; }
     } catch { /* offline / file:// → built-in list */ }
+    await loadPack();
   }
+
+  /*
+   * Private illustration pack (book figures). Copyrighted, so it is never part of
+   * the website: Paul loads the .json file on his own device, it is stored in
+   * this browser's IndexedDB ("media" store) and only fills empty lesson slots.
+   */
+  const PACK_FORMAT = 'paulino-image-pack';
+  async function loadPack() {
+    try {
+      for (const rec of await P.store.all('media')) {
+        if (!files[rec.id]) { files[rec.id] = rec.data; meta[rec.id] = { caption: rec.caption, source: rec.source, private: true }; }
+      }
+    } catch { /* no media store */ }
+  }
+  async function importPack(text) {
+    let pack;
+    try { pack = JSON.parse(text); } catch { throw new Error("That file isn't an illustration pack."); }
+    if (pack?.format !== PACK_FORMAT || pack.v !== 1 || typeof pack.images !== 'object') throw new Error("That file isn't a Paulino illustration pack.");
+    let n = 0;
+    for (const [id, img] of Object.entries(pack.images)) {
+      if (!/^lesson_[a-z0-9_]+$/.test(id) || !/^data:image\/(webp|png|jpeg);base64,/.test(img?.data || '')) continue;
+      await P.store.put('media', { id, data: img.data, caption: String(img.caption || ''), source: String(img.source || pack.book || ''), rights: String(img.rights || pack.rights || '') });
+      n++;
+    }
+    for (const k of Object.keys(files)) if (meta[k]?.private) { delete files[k]; delete meta[k]; }
+    await loadPack();
+    return n;
+  }
+  async function clearPack() {
+    for (const rec of await P.store.all('media')) await P.store.del('media', rec.id);
+    for (const k of Object.keys(files)) if (meta[k]?.private) { delete files[k]; delete meta[k]; }
+  }
+  const packCount = () => Object.values(meta).filter((m) => m.private).length;
   const src = (id) => files[id] || null;
   const has = (id) => Boolean(files[id]);
 
@@ -2159,12 +2258,13 @@ window.Paulino = window.Paulino || {};
    *   paper: flat torn scraps (palette tokens), marks: SVG annotation set
    */
   const RECIPES = {
-    motivated:    { body: 'paul_body_outdoor', bodyBox: [8, 39, 84], head: 'paul_head_smiling', headBox: [21, 0, 56], rot: -4, bw: true,  paper: ['accent', 'pop-1'], marks: 'burst', label: 'Paulino, big grin, ready to lift' },
+    // Paul's own double-biceps body with his big grinning head on top: the hero montage.
+    motivated:    { body: 'paul_flex_beach_body', bodyBox: [2, 27, 96], head: 'paul_head_smiling', headBox: [28, 0, 44], rot: -3, bw: true, paper: ['accent', 'pop-1'], marks: 'burst', label: "Paulino flexing, with Paul's big grin" },
     focused:      { head: 'paul_head_direct', headBox: [22, 8, 58], rot: 2, bw: true, paper: ['pop-2', 'accent'], marks: 'focus', label: 'Paulino, focused' },
-    happy:        { head: 'paul_figure_outdoor', headBox: [12, 4, 74], rot: 3, bw: false, paper: ['pop-1', 'accent'], marks: 'spark', label: 'Paulino, happy' },
-    celebrating:  { body: 'paul_body_outdoor', bodyBox: [6, 38, 86], head: 'paul_head_smiling', headBox: [18, 0, 60], rot: 7, bw: false, paper: ['accent', 'pop-2'], marks: 'confetti', label: 'Paulino celebrating' },
-    disappointed: { head: 'paul_head_calm', headBox: [20, 14, 58], rot: -11, bw: true, paper: ['grey', 'pop-3'], marks: 'sigh', label: 'Paulino, disappointed' },
-    concerned:    { head: 'paul_head_direct', headBox: [24, 12, 54], rot: 7, bw: true, paper: ['pop-4', 'paper'], marks: 'worry', label: 'Paulino, concerned' },
+    happy:        { head: 'paul_head_smiling', headBox: [20, 6, 60], rot: 3, bw: false, paper: ['pop-1', 'accent'], marks: 'spark', label: 'Paulino, happy' },
+    celebrating:  { head: 'paul_flex_gym', headBox: [0, 20, 100], rot: -3, bw: false, paper: ['accent', 'pop-2'], marks: 'confetti', label: 'Paulino flexing and grinning' },
+    disappointed: { head: 'paul_head_stare', headBox: [21, 10, 58], rot: -9, bw: true, paper: ['grey', 'pop-3'], marks: 'sigh', label: 'Paulino, unimpressed' },
+    concerned:    { head: 'paul_head_talking', headBox: [26, 6, 50], rot: 5, bw: true, paper: ['pop-4', 'paper'], marks: 'worry', label: 'Paulino, asking a question' },
   };
 
   // Torn paper outlines (deterministic, hand-tuned point lists → CSS polygon).
@@ -2189,13 +2289,14 @@ window.Paulino = window.Paulino || {};
    * @param mood    one of MOODS
    * @param size    'xs' (face only, inline) | 'sm' | 'md' | 'lg' | 'hero'
    */
+  const XS_FACE = { motivated: 'paul_head_smiling', focused: 'paul_head_direct', happy: 'paul_head_smiling', celebrating: 'paul_head_smiling', disappointed: 'paul_head_stare', concerned: 'paul_head_talking' };
   function paulino(mood = 'motivated', { size = 'md', decor = true } = {}) {
     const r = RECIPES[mood] || RECIPES.motivated;
     const img = (id, box, cls, rot = 0) => has(id)
       ? `<img class="${cls}" src="${src(id)}" alt="" draggable="false" loading="lazy" decoding="async" style="left:${box[0]}%;top:${box[1]}%;width:${box[2]}%;--rot:${rot}deg" onerror="this.closest('.cl').classList.add('cl-missing')">`
       : '';
     if (size === 'xs') {
-      return `<span class="cl cl-xs cl-${mood}${r.bw ? ' cl-bw' : ''}" role="img" aria-label="${r.label}"><span class="cl-paper" style="background:var(--${r.paper[0]});clip-path:${TORN[2]}"></span>${img(r.head === 'paul_figure_outdoor' ? 'paul_head_smiling' : r.head, [6, 6, 88], 'cl-head', r.rot / 2)}<span class="cl-fallback" aria-hidden="true">P</span></span>`;
+      return `<span class="cl cl-xs cl-${mood}${r.bw ? ' cl-bw' : ''}" role="img" aria-label="${r.label}"><span class="cl-paper" style="background:var(--${r.paper[0]});clip-path:${TORN[2]}"></span>${img(XS_FACE[mood] || 'paul_head_smiling', [6, 6, 88], 'cl-head', r.rot / 2)}<span class="cl-fallback" aria-hidden="true">P</span></span>`;
     }
     return `<span class="cl cl-${size} cl-${mood}${r.bw ? ' cl-bw' : ''}${r.body ? ' cl-tall' : ''}" role="img" aria-label="${r.label}">
       ${decor ? `<span class="cl-paper" style="background:var(--${r.paper[0]});clip-path:${TORN[0]}"></span>
@@ -2209,10 +2310,18 @@ window.Paulino = window.Paulino || {};
     </span>`;
   }
 
-  /** Photo slot: a real photo if the manifest has one, otherwise a clearly labelled placeholder. */
+  /**
+   * Photo slot: the real photo for this lesson step (public manifest or Paul's
+   * private pack), with its caption and source; otherwise a PHOTO NEEDED slot.
+   * Annotations are drawn in the photo's own pixel space (meta.w x meta.h), so
+   * they stay on the right spot at any size.
+   */
   function photo(id, { need = '', alt = '', annotations = [] } = {}) {
     if (has(id)) {
-      return `<figure class="photo-slot has-photo"><img src="${src(id)}" alt="${P.util.esc(alt)}" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-broken')">${annotate(annotations)}</figure>`;
+      const m = meta[id] || {};
+      const credit = m.private ? `Private reference: ${m.source || 'book figure'}. Not for sharing.` : m.credit || '';
+      return `<figure class="photo-slot has-photo${m.private ? ' is-private' : ''}" data-photo="${P.util.esc(id)}"><div class="photo-frame"><img src="${src(id)}" alt="${P.util.esc(alt)}" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-broken')">${m.w && m.h ? annotate(annotations, m.w, m.h) : ''}</div>
+        ${m.caption || credit ? `<figcaption>${m.caption ? `<span>${P.util.esc(m.caption)}</span>` : ''}${credit ? `<small>${P.util.esc(credit)}</small>` : ''}</figcaption>` : ''}</figure>`;
     }
     return `<figure class="photo-slot needs-photo" data-photo-needed="${P.util.esc(id)}">
       <span class="tape-strip" aria-hidden="true"></span>
@@ -2220,20 +2329,23 @@ window.Paulino = window.Paulino || {};
       <figcaption><b>PHOTO NEEDED</b><span>${P.util.esc(need)}</span><small>Only a real photo of this exact position will go here.</small></figcaption></figure>`;
   }
 
-  /** SVG annotations in % coordinates of the photo (only drawn on real photos). */
-  function annotate(list) {
+  /** SVG annotations; coordinates in % of the photo, drawn in its pixel space. */
+  function annotate(list, w = 100, h = 100) {
     if (!list?.length) return '';
+    const X = (v) => (v * w) / 100, Y = (v) => (v * h) / 100;
+    const fs = Math.round(w / 17);
+    const t = (x, y, label, anchor = 'start') => `<text x="${X(x)}" y="${Y(y)}" text-anchor="${anchor}" style="font-size:${fs}px">${P.util.esc(label)}</text>`;
     const parts = list.map((a) => {
-      if (a.type === 'arrow') return `<line x1="${a.from[0]}" y1="${a.from[1]}" x2="${a.to[0]}" y2="${a.to[1]}" marker-end="url(#ann-head)"/>${a.label ? `<text x="${a.to[0] + 1}" y="${a.to[1] - 1}">${P.util.esc(a.label)}</text>` : ''}`;
-      if (a.type === 'path') return `<polyline points="${a.points.map((p) => p.join(',')).join(' ')}" stroke-dasharray="3 2"/>${a.label ? `<text x="${a.points[0][0] + 1}" y="${a.points[0][1]}">${P.util.esc(a.label)}</text>` : ''}`;
-      if (a.type === 'circle') return `<circle cx="${a.at[0]}" cy="${a.at[1]}" r="${a.r || 6}"/>${a.label ? `<text x="${a.at[0] + (a.r || 6) + 1}" y="${a.at[1]}">${P.util.esc(a.label)}</text>` : ''}`;
-      if (a.type === 'label') return `<text x="${a.at[0]}" y="${a.at[1]}">${P.util.esc(a.label)}</text>`;
+      if (a.type === 'arrow') return `<line x1="${X(a.from[0])}" y1="${Y(a.from[1])}" x2="${X(a.to[0])}" y2="${Y(a.to[1])}" marker-end="url(#ann-head)"/>${a.label ? t(a.from[0], a.from[1] + 4, a.label, a.anchor) : ''}`;
+      if (a.type === 'path') return `<polyline points="${a.points.map((pt) => `${X(pt[0])},${Y(pt[1])}`).join(' ')}" stroke-dasharray="${fs / 2} ${fs / 3}"/>${a.points.map((pt) => `<circle cx="${X(pt[0])}" cy="${Y(pt[1])}" r="${fs / 4}" class="dot"/>`).join('')}${a.label ? t(a.at?.[0] ?? a.points[0][0], a.at?.[1] ?? a.points[0][1], a.label, a.anchor) : ''}`;
+      if (a.type === 'circle') return `<circle cx="${X(a.at[0])}" cy="${Y(a.at[1])}" r="${X(a.r || 6)}"/>${a.label ? t(a.at[0] + (a.r || 6) + 1, a.at[1], a.label, a.anchor) : ''}`;
+      if (a.type === 'label') return t(a.at[0], a.at[1], a.label, a.anchor);
       return '';
     }).join('');
-    return `<svg class="annot" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="ann-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>${parts}</svg>`;
+    return `<svg class="annot" viewBox="0 0 ${w} ${h}" aria-hidden="true" style="--sw:${Math.max(2, w / 110)}px"><defs><marker id="ann-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>${parts}</svg>`;
   }
 
-  P.art = { MOODS, RECIPES, paulino, photo, annotate, src, has, loadManifest, files, meta };
+  P.art = { MOODS, RECIPES, paulino, photo, annotate, src, has, loadManifest, importPack, clearPack, packCount, files, meta };
 })(window.Paulino);
 </script>
 <script>
@@ -2263,23 +2375,27 @@ window.Paulino = window.Paulino || {};
   };
 
   // ---- Paulino ----
-  const bags = new Map();
   const registry = new Map();
   let counter = 0;
   UI.linesFor = (mood, ctx) => { const g = LINES[mood] || {}; return g[ctx] || Object.values(g).flat(); };
-  /** Next line for `key` without repeating until all were shown. */
+  /**
+   * Weighted random line for `key`; never the same line twice in a row (and,
+   * with enough lines, not one of the last two). Lines: string or { t, w }.
+   */
+  const recent = new Map();
   UI.pick = (key, lines) => {
-    if (!lines?.length) return '';
-    let bag = bags.get(key);
-    const src = lines.join('|');
-    if (!bag || !bag.items.length || bag.src !== src) {
-      const items = [...lines.keys()].sort(() => Math.random() - 0.5);
-      if (bag?.last !== undefined && items.length > 1 && items[items.length - 1] === bag.last) items.unshift(items.pop());
-      bag = { items, src, last: bag?.last };
-      bags.set(key, bag);
-    }
-    bag.last = bag.items.pop();
-    return lines[bag.last];
+    const items = (lines || []).map((l) => (typeof l === 'string' ? { t: l, w: 1 } : { t: l.t, w: l.w ?? 1 })).filter((l) => l.t);
+    if (!items.length) return '';
+    const last = recent.get(key) || [];
+    const k = items.length > 3 ? 2 : items.length > 1 ? 1 : 0;
+    const avoid = new Set(k ? last.slice(-k) : []);   // slice(-0) would be everything
+    const pool = items.filter((l) => !avoid.has(l.t));
+    const total = pool.reduce((a, l) => a + l.w, 0);
+    let r = Math.random() * total;
+    let pick = pool[pool.length - 1];
+    for (const l of pool) { r -= l.w; if (r < 0) { pick = l; break; } }
+    recent.set(key, [...last, pick.t].slice(-3));
+    return pick.t;
   };
   const art = (mood, size = 'md') => P.art.paulino(mood, { size });
   /** Template D: small face cut-out on paper, for inline coaching. */
@@ -2480,97 +2596,103 @@ window.Paulino = window.Paulino || {};
 <script>
 /* ===== 10. academy: scrolling technique lessons =========================== */
 (function (P) {
-  const { html, raw, esc, on } = P.util;
+  const { html, raw, esc, on, toast, pickFile } = P.util;
   const UI = P.ui, S = P.store;
+  const PL = P.data.PAUL;
 
   /*
-   * Lifting Academy. Original, short teaching text written from the supplied
-   * Starting Strength chapters (private references, never deployed) — no
-   * quotations or figures from the book. Status: DRAFT until Paul reviews it.
+   * Lifting Academy: squat, overhead press, deadlift, bench press, power clean.
+   * Text: original, short, written from the Starting Strength chapters (private
+   * reference, never deployed); no quotations. Paul's own coaching comes first.
    *
-   * Step fields:
-   *   phase, title, body[]  – text
-   *   kind                  – 'principle' (generally accepted) | 'preference' (one coaching approach; Paul may coach it differently)
-   *   cues[]                – Paulino's bubble (tap for the next one)
-   *   photo { id, need }    – real photo of exactly this phase; shown when the manifest has it, otherwise a PHOTO NEEDED slot
-   *   annotations[]         – drawn only on a real photo (coordinates in % of the photo); add them together with the photo
-   * The candidate list (squat, press, deadlift, bench press, power clean) follows
-   * the book's five chapters and still has to be confirmed by Paul.
+   * Step fields
+   *   phase, title, body[] (what to do), why (why it matters)
+   *   kind      'principle' | 'preference' (one coaching approach; note explains)
+   *   cues[]    Paulino's bubble: Paul's real catchphrases weigh most
+   *   photo     { id, need }  id → lesson_<id> in the asset manifest (public) or
+   *             in Paul's private illustration pack; otherwise PHOTO NEEDED.
+   *             Annotations come with the photo's manifest entry.
+   * Image manifest per panel: assets/asset-manifest.json (public photos) and
+   * private/pack-manifest.json (book figures: page file + crop box + caption).
    */
-  const SRC = (chapter, section) => ({ book: 'Starting Strength: Basic Barbell Training (Rippetoe)', chapter, section, pages: 'to verify against the print edition' });
+  const SRC = (chapter, section) => ({ book: 'Starting Strength: Basic Barbell Training (Rippetoe)', chapter, section });
+  const C = (t, w = 1) => ({ t, w });
 
   const LESSONS = [
     {
-      id: 'squat', title: 'The Squat', kicker: 'Lesson 1', exercise: 'squat', mood: 'focused',
-      intro: 'Hips and knees bend together, the bar stays over the middle of your foot, and your hips drive you back up.',
-      sources: [SRC('The Squat', 'Learning to Squat')],
+      id: 'squat', title: 'The Squat', kicker: 'Lesson 1', exercise: 'squat',
+      intro: 'Hips and knees bend together, the bar stays over the middle of your foot, and your hips drive you back up. Never skip leg day!',
+      sources: [SRC('The Squat', 'Learning to Squat; Balance; Squat depth')],
       steps: [
-        { phase: 'Stance', title: 'Feet first, no bar yet', kind: 'principle', body: ['Heels about shoulder-width apart, toes turned out roughly 30°.', 'Look down at your feet and remember the picture. You will use this exact stance under the bar.'], cues: ['TOES OUT, CHAMP!', 'Shoulder width. Not a sumo party.'], photo: { id: 'squat_stance', need: 'Top or front view of the feet: heels at shoulder width, toes out about 30°.' } },
-        { phase: 'Bottom position', title: 'Visit the bottom first', kind: 'principle', body: ['Without a bar, squat all the way down. Put your elbows inside your knees, palms together, and push the knees out.', 'Feet flat, knees in line with the toes and slightly in front of them, back flat and leaning forward. That lean is normal.'], cues: ['KNEES OUT!', 'Stay here. Breathe. Stretch.'], photo: { id: 'squat_bottom_unloaded', need: 'Side view, no bar: deep bottom position with elbows pushing the knees out, feet flat.' } },
-        { phase: 'Bar position', title: 'Put the bar on the shelf', kind: 'preference', note: 'Low-bar position, as taught in Starting Strength. Many coaches use a high-bar position on top of the traps. Paul decides.', body: ['Set the bar at about mid-chest height in the rack. Grip as narrow as your shoulders comfortably allow, thumbs over the bar, wrists straight.', 'The bar sits on your back just below the bony ridge of the shoulder blades. Lift elbows and chest together to lock it in place.'], cues: ['SHELF, NOT NECK!', 'Wrists straight, champ.'], photo: { id: 'squat_bar_position', need: 'Rear view, close-up: bar resting just below the ridge of the shoulder blades, hands and wrists visible.' } },
-        { phase: 'Unrack', title: 'Tight first, then step back', kind: 'principle', body: ['Get tight under the bar with both feet under it, then stand straight up to lift it off the hooks.', 'One or two short steps back are enough. Set the same stance as before.'], cues: ['BOTH FEET UNDER!', 'No long walks with the bar.'], photo: { id: 'squat_unrack', need: 'Side view: lifter standing up with the bar in the rack, both feet under the bar.' } },
-        { phase: 'Descent', title: 'Breathe, look down, sit back', kind: 'principle', body: ['Take a big breath and hold it. Fix your eyes on the floor about 1.5 m in front of you.', 'Send the hips back and the knees out as you go down. The bar stays over the middle of your foot the whole way.'], cues: ['BRACE, CHAMP!', 'Control that descent!', 'Eyes on the floor.'], photo: { id: 'squat_descent', need: 'Side view sequence, middle of the descent: hips going back, knees out, bar over mid-foot.' } },
-        { phase: 'Depth', title: 'Below parallel', kind: 'principle', body: ['Go down until the crease of your hip is just below the top of your knee.', 'Feet stay flat, weight over the middle of the foot.'], cues: ['DEEPER!', 'Hip crease below the knee.'], photo: { id: 'squat_bottom_loaded', need: 'Side view: bottom position with the bar, hip crease just below the knee.' } },
-        { phase: 'Drive up', title: 'Hips straight up', kind: 'principle', body: ['Drive your hips straight up out of the bottom. Up, not forward. The chest comes up with them.', 'Finish standing tall, then breathe before the next rep.'], cues: ['HIPS UP!', 'Drive, drive, drive!'], photo: { id: 'squat_ascent', need: 'Side view sequence, coming out of the bottom: hips rising, back angle kept.' } },
+        { phase: 'Stance', title: 'Feet first', kind: 'principle', body: ['Heels about shoulder-width apart, toes turned out roughly 30°. Use the same stance every rep.'], why: 'Turned-out feet let the knees travel out over the toes, which makes room for the hips to get deep.', cues: [PL.legday, C('TOES OUT!', 2)], photo: { id: 'squat_stance', need: 'Front view: stance, knees following the toes.' } },
+        { phase: 'Bottom position', title: 'Visit the bottom first', kind: 'principle', body: ['Without a bar, squat all the way down. Elbows inside the knees, palms together, push the knees out.', 'Feet flat, knees in line with the feet, back flat and leaning forward. That lean is supposed to be there.'], why: 'If you know where the bottom is before there is weight on your back, finding it under the bar is easy.', cues: [PL.deeper, C('KNEES OUT!', 2)], photo: { id: 'squat_bottom_unloaded', need: 'Bottom position without a bar, elbows pushing the knees out.' } },
+        { phase: 'Bar position', title: 'Put the bar on the shelf', kind: 'preference', note: 'Low-bar position, as the book teaches it. Many coaches use a high-bar position on top of the traps. Paul decides.', body: ['Bar in the rack at mid-chest height. Grip as narrow as your shoulders allow, thumbs over the bar, wrists straight.', 'The bar sits just below the bony ridge of the shoulder blades. Lift elbows and chest together to lock it in.'], why: 'A tight upper back holds the bar on muscle, not on your wrists or your neck.', cues: [C('SHELF, NOT NECK!', 2), C('Wrists straight!')], photo: { id: 'squat_bar_position', need: 'Rear view close-up: bar just below the ridge of the shoulder blades.' } },
+        { phase: 'Unrack', title: 'Tight first, then step back', kind: 'principle', body: ['Get tight under the bar with both feet under it, then stand straight up.', 'One or two short steps back. Set the same stance as before.'], why: 'Taking the bar out tight and balanced means you never fight a heavy weight before the first rep.', cues: [PL.brace, C('BOTH FEET UNDER!', 2)], photo: { id: 'squat_unrack', need: 'Side view: standing up with the bar in the rack, both feet under it.' } },
+        { phase: 'Descent', title: 'Breathe, look down, sit back', kind: 'principle', body: ['Big breath, hold it, brace. Eyes on the floor about 1.5 m ahead.', 'Hips back, knees out, chest towards the floor.'], why: 'The held breath and braced trunk make your spine a solid pillar under the bar. That brace is what lets you squat heavy.', cues: [PL.brace, PL.goodBrace, C('Control that descent!')], photo: { id: 'squat_descent', need: 'Side view sequence of the descent.' } },
+        { phase: 'Balance', title: 'Bar over the middle of the foot', kind: 'principle', body: ['Seen from the side, the bar travels up and down in a straight line over the middle of your foot.'], why: 'Any distance between the bar and the mid-foot is leverage working against you. Balanced means stronger.', cues: [C('Mid-foot, champ!', 2), PL.floor], photo: { id: 'squat_balance', need: 'Diagram or side photo: bar over the mid-foot.' } },
+        { phase: 'Depth', title: 'Below parallel', kind: 'principle', body: ['Go down until the crease of your hip is just below the top of your knee. Feet stay flat.'], why: 'Full depth trains the hamstrings and glutes through their whole range: a partial squat leaves most of that strength on the table. How deep you can go comfortably depends on your hips and mobility.', cues: [PL.deeper, C('Hip crease below the knee!')], photo: { id: 'squat_bottom_loaded', need: 'Side view: bottom position with the bar, hip crease below the knee.' } },
+        { phase: 'Drive up', title: 'Hips straight up', kind: 'principle', body: ['Drive your hips straight up out of the bottom. Up, not forward. Push the floor away and let the chest come up with you.'], why: 'Leading with the hips keeps the bar over the mid-foot and puts the strongest muscles in charge.', cues: [PL.floor, C('HIPS UP!', 2)], photo: { id: 'squat_ascent', need: 'Hip-drive drill or side view coming out of the bottom.' } },
       ],
-      mistakes: ['Knees falling inwards on the way up.', 'Heels lifting: weight drifting to the toes.', 'Looking up at the ceiling.', 'Stopping above parallel.', 'Starting with weight before the empty bar feels right.'],
-      recap: ['Shoulder-width heels, toes out.', 'Bar on the shelf, elbows and chest up.', 'Breathe, look down, hips back, knees out.', 'Below parallel, then hips straight up.'],
+      mistakes: ['Knees falling inwards on the way up.', 'Heels lifting: weight drifts to the toes.', 'Looking up at the ceiling.', 'Stopping above parallel.', 'Losing the brace halfway down.'],
+      recap: ['Shoulder-width heels, toes out.', 'Bar on the shelf, elbows and chest up.', 'BRACE! Look down, hips back, knees out.', 'Below parallel, then hips straight up.'],
     },
     {
-      id: 'press', title: 'The Press', kicker: 'Lesson 2', exercise: 'overhead-press', mood: 'focused',
-      intro: 'Standing, strict, from the shoulders to straight arms overhead. Legs stay still: this is not a push press.',
-      sources: [SRC('The Press', 'Learning to Press')],
+      id: 'press', title: 'The Overhead Press', kicker: 'Lesson 2', exercise: 'overhead-press',
+      intro: 'Standing, strict, from the shoulders to straight arms overhead. The legs stay still: this is not a push press.',
+      sources: [SRC('The Press', 'Learning to Press; Faults and Corrections')],
       steps: [
-        { phase: 'Grip', title: 'Forearms vertical', kind: 'principle', body: ['Hands just outside the shoulders, so your forearms are vertical seen from the front.', 'The bar sits low in the palm, right over the forearm bones, with the thumbs around.'], cues: ['WRISTS STACKED!', 'Bar in the heel of the hand.'], photo: { id: 'press_grip', need: 'Front view: grip width with vertical forearms, bar at the shoulders.' } },
-        { phase: 'Start position', title: 'Elbows a little in front', kind: 'principle', body: ['Take the bar out of the rack. It rests on the front of the shoulders, elbows slightly in front of the bar.', 'Stance about squat width. Look straight ahead and lift your chest.'], cues: ['CHEST UP!', 'Eyes on the wall.'], photo: { id: 'press_start', need: 'Side view: bar on the front of the shoulders, elbows just in front of the bar.' } },
-        { phase: 'Lockout', title: 'Learn the finish first', kind: 'principle', body: ['Press the bar up once to find the top: bar over the back of the neck, in a vertical line with your shoulders and the middle of your feet.', 'Lock the elbows and shrug the shoulders up to hold it there.'], cues: ['LOCK IT OUT!', 'Bar over your ears, not in front.'], photo: { id: 'press_lockout', need: 'Side view: lockout with the bar, shoulder joint and mid-foot in one vertical line.' } },
-        { phase: 'Bar path', title: 'Straight up, close to the face', kind: 'principle', body: ['Big breath and hold. Move your head back just enough to let the bar pass and press it straight up.', 'As soon as the bar passes your forehead, get under it: head and chest come forward.'], cues: ['CONTROL THAT BAR!', 'Head through!'], photo: { id: 'press_bar_path', need: 'Side view sequence: bar passing the face, head back, then head moving forward under the bar.' } },
-        { phase: 'Lower', title: 'Back to the shoulders', kind: 'principle', body: ['Bring the bar back down to the shoulders under control, elbows again slightly in front.', 'Breathe at the top or in the start position. Keep everything tight.'], cues: ['Stay tight!', 'Same start every rep.'], photo: { id: 'press_lower', need: 'Side view: bar returning to the shoulders, elbows in front.' } },
+        { phase: 'Grip', title: 'Forearms vertical', kind: 'principle', body: ['Hands just outside the shoulders, so the forearms are vertical from the front. Bar low in the palm, over the forearm bones, thumbs around.'], why: 'Force goes straight up through the forearm into the bar instead of bending the wrist back.', cues: [C('WRISTS STACKED!', 2), PL.goodBrace], photo: { id: 'press_grip', need: 'Grip width and rack position, front and side.' } },
+        { phase: 'Start position', title: 'Elbows a little in front', kind: 'principle', body: ['Bar on the front of the shoulders, elbows slightly in front of the bar. Squat-width stance, eyes straight ahead, chest up.'], why: 'Elbows in front of the bar point the forearms straight up, so the press starts in the right direction.', cues: [C('CHEST UP!', 2), PL.brace], photo: { id: 'press_start', need: 'Side view: bar on the shoulders, elbows just in front of it.' } },
+        { phase: 'Lockout', title: 'Learn the finish first', kind: 'principle', body: ['Press once to find the top: bar over the back of the neck, in a vertical line with the shoulders and the middle of the feet. Lock the elbows, shrug up.'], why: 'When bar, shoulder and mid-foot line up, the weight sits on a column of bone instead of hanging on leverage.', cues: [C('LOCK IT OUT!', 2), C('Bar over your ears!')], photo: { id: 'press_lockout', need: 'Lockout from the side: bar, shoulder, mid-foot in a line.' } },
+        { phase: 'Bar path', title: 'Straight up, close to the face', kind: 'principle', body: ['Big breath, brace. Move your head back just enough to let the bar pass and press it straight up.', 'Once it passes your forehead, get under it: head and chest come forward.'], why: 'A straight, close bar path is the shortest and best-balanced one. Every centimetre the bar drifts forward costs strength.', cues: [PL.goodBrace, C('Head through!', 2)], photo: { id: 'press_bar_path', need: 'Sequence: bar passing the face, body moving under it.' } },
+        { phase: 'Reps', title: 'Back to the shoulders, again', kind: 'principle', body: ['Lower the bar under control to the shoulders, elbows back in front. Breathe at the top, keep everything tight.'], why: 'Starting every rep from the same position makes the groove automatic.', cues: [C('Same start every rep!', 2), PL.brace], photo: { id: 'press_lower', need: 'A complete press, frame by frame.' } },
       ],
-      mistakes: ['Leaning back a lot to turn it into an incline press.', 'Bar drifting forward away from the face.', 'Elbows behind the bar at the start.', 'Soft elbows at the top.', 'Bending the knees to help.'],
-      recap: ['Vertical forearms, bar in the heel of the hand.', 'Elbows a little in front, chest up.', 'Straight up, head through.', 'Lock out over the mid-foot.'],
+      mistakesPhoto: { id: 'press_mistakes', need: 'Bar too far in front of the shoulder vs close.' },
+      mistakes: ['Leaning far back to turn it into an incline press.', 'Bar drifting forward away from the face.', 'Elbows behind the bar at the start.', 'Soft elbows at the top.', 'Bending the knees to help (that is a push press).'],
+      recap: ['Vertical forearms, bar in the heel of the hand.', 'Elbows a little in front, chest up, brace.', 'Straight up, head through.', 'Lock out over the mid-foot.'],
     },
     {
-      id: 'deadlift', title: 'The Deadlift', kicker: 'Lesson 3', exercise: 'deadlift', mood: 'focused',
-      intro: 'From the floor to standing tall, back locked flat, the bar travelling in a straight vertical line over the middle of your foot.',
-      sources: [SRC('The Deadlift', 'Learning to Deadlift')],
+      id: 'deadlift', title: 'The Deadlift', kicker: 'Lesson 3', exercise: 'deadlift',
+      intro: 'From the floor to standing tall, back locked flat, the bar travelling in a straight line over the middle of your foot. Push the floor away!',
+      sources: [SRC('The Deadlift', 'Learning to Deadlift; Back Position; Pulling Mechanics')],
       steps: [
-        { phase: 'Stance', title: 'Bar over the middle of the foot', kind: 'principle', body: ['Heels about 20–30 cm apart, toes slightly out, like a standing jump.', 'Walk in until the bar is over the middle of your foot: a few centimetres from your shins.'], cues: ['Mid-foot, champ!', 'Narrower than your squat.'], photo: { id: 'deadlift_stance', need: 'Side view: bar over the middle of the foot, shins a few cm from the bar.' } },
-        { phase: 'Grip', title: 'Bend over, don\'t move the bar', kind: 'preference', note: 'The five-step setup follows Starting Strength. Other coaches set up differently; the principles (bar over mid-foot, flat back) stay.', body: ['Keep your legs straight and bend over to take a double overhand grip just outside your legs.', 'The bar must not move. You just put it in the right place.'], cues: ['DON\'T MOVE THE BAR!', 'Hands just outside the legs.'], photo: { id: 'deadlift_grip', need: 'Side view: lifter bent over with straight legs, gripping the bar, bar still over mid-foot.' } },
-        { phase: 'Shins', title: 'Knees forward to the bar', kind: 'principle', body: ['Bend your knees until your shins touch the bar. The hips stay where they are.', 'Push the knees out a little so they line up with your feet.'], cues: ['Shins to the bar!', 'Hips stay up.'], photo: { id: 'deadlift_shins', need: 'Side view: shins touching the bar, hips still high.' } },
-        { phase: 'Chest up', title: 'Lock the back flat', kind: 'principle', body: ['Squeeze your chest up between your arms until your whole back is flat and tight. Don\'t drop the hips to do it.', 'Look at the floor a few metres in front of you.'], cues: ['CHEST UP!', 'Set your brace before pulling.'], photo: { id: 'deadlift_set', need: 'Side view: start position with flat back, shoulders slightly in front of the bar.' } },
-        { phase: 'Pull', title: 'Drag it up your legs', kind: 'principle', body: ['Big breath, then push the floor away. The bar stays in contact with your legs all the way up.', 'Build tension first: no jerking the bar off the floor.'], cues: ['KEEP IT CLOSE!', 'Push the floor away!'], photo: { id: 'deadlift_pull', need: 'Side view sequence: bar at knee height and at mid-thigh, still touching the legs.' } },
-        { phase: 'Lockout & down', title: 'Stand tall, then reverse it', kind: 'principle', body: ['Finish with knees and hips straight and chest up. No leaning back.', 'Lower the bar the same way: hips back first, bar down the thighs, then the knees bend once the bar has passed them.'], cues: ['Stand tall!', 'Same path down.'], photo: { id: 'deadlift_lockout', need: 'Side view: standing lockout, knees and hips straight, no backward lean.' } },
+        { phase: 'Stance', title: 'Bar over the middle of the foot', kind: 'principle', body: ['Heels about 20–30 cm apart, toes slightly out, like a standing jump. The bar is over the middle of your foot, a few centimetres from your shins.'], why: 'The bar will travel straight up from where it starts. Start it over the mid-foot and it stays in balance.', cues: [C('Mid-foot, champ!', 2), PL.floor], photo: { id: 'deadlift_paul_setup', need: 'Start position with the bar over the mid-foot.' } },
+        { phase: 'Grip & shins', title: 'Grip, then shins to the bar', kind: 'preference', note: 'This step-by-step setup follows the book. Other coaches set up differently; the principles (bar over mid-foot, flat back) stay the same.', body: ['Bend over with straight legs and grip the bar just outside your legs, double overhand.', 'Bend the knees until the shins touch the bar. Hips stay up. The bar does not move.'], why: 'Building the position around a bar that never moves keeps it exactly where it balances.', cues: [C("DON'T MOVE THE BAR!", 2), C('Shins to the bar!')], photo: { id: 'deadlift_grip', need: 'The setup steps: stance, grip, shins to the bar.' } },
+        { phase: 'Chest up', title: 'Lock the back flat', kind: 'principle', body: ['Squeeze your chest up between your arms until the whole back is flat and tight. Don\'t drop the hips to do it. Eyes on the floor a few metres ahead.', 'Then: big breath, brace.'], why: 'A flat, braced back passes the force from your legs to the bar. A round back leaks it, and puts load where you don\'t want it.', cues: [PL.goodBrace, PL.brace, C('CHEST UP!')], photo: { id: 'deadlift_set', need: 'Chest up: back flat, shoulders slightly in front of the bar.' } },
+        { phase: 'Pull', title: 'Push the floor away', kind: 'principle', body: ['Push the floor away and drag the bar up your legs. It stays in contact the whole way. Build tension first: no jerking it off the floor.'], why: 'A bar that leaves the legs swings forward of the mid-foot and gets heavier for your back.', cues: [PL.floor, C('KEEP IT CLOSE!', 3)], photo: { id: 'deadlift_paul_pull', need: 'Mid-pull: bar touching the legs.' } },
+        { phase: 'Lockout & down', title: 'Stand tall, then reverse it', kind: 'principle', body: ['Finish with knees and hips straight and chest up. No leaning back.', 'Lower the same way: hips back first, bar down the thighs, then bend the knees once it has passed them.'], why: 'Leaning back at the top adds nothing to the lift, it only loads the lower back.', cues: [C('Stand tall!', 2), PL.goodBrace], photo: { id: 'deadlift_paul_lockout', need: 'Standing lockout.' } },
       ],
-      mistakes: ['Bar drifting away from the legs.', 'Dropping the hips and pushing the bar forward before pulling.', 'Back rounding more than in the set-up.', 'Jerking the bar off the floor.', 'Leaning back at the top.'],
-      recap: ['Bar over mid-foot, narrow stance.', 'Grip, shins to the bar, chest up, without moving the bar.', 'Drag it up the legs.', 'Stand tall, lower the same way.'],
+      mistakesPhoto: { id: 'deadlift_mistakes', need: 'Correct start vs hips too low.' },
+      mistakes: ['Bar drifting away from the legs.', 'Dropping the hips "to squat it up": the bar rolls forward.', 'Back rounding more than in the setup.', 'Jerking the bar off the floor.', 'Leaning back at the top.'],
+      recap: ['Bar over mid-foot, narrow stance.', 'Grip, shins, chest up, without moving the bar.', 'BRACE, then push the floor away.', 'Stand tall, lower the same way.'],
     },
     {
-      id: 'bench', title: 'The Bench Press', kicker: 'Lesson 4', exercise: 'bench-press', mood: 'focused',
+      id: 'bench', title: 'The Bench Press', kicker: 'Lesson 4', exercise: 'bench-press',
       intro: 'Lying on the bench, lower the bar to the chest and press it back to the same spot over your shoulders.',
-      sources: [SRC('The Bench Press', 'Learning to Bench Press')],
+      sources: [SRC('The Bench Press', 'Learning to Bench Press; Common Problems')],
       steps: [
-        { phase: 'Safety', title: 'Spotter or safeties', kind: 'principle', body: ['Use a competent spotter or a rack with safety arms set just below chest height.', 'Start every session with the empty bar.'], cues: ['Safety first, ego later!', 'Empty bar to start.'], photo: { id: 'bench_safety', need: 'Wide view: bench inside a rack with safety arms set, or a spotter in position.' } },
-        { phase: 'On the bench', title: 'Eyes just past the bar', kind: 'principle', body: ['Lie down so your eyes are just past the bar, toward your feet.', 'Feet flat on the floor, upper back tight on the bench, glutes down.'], cues: ['Feet flat, champ!', 'Shoulder blades on the bench.'], photo: { id: 'bench_setup', need: 'Side view: lifter lying on the bench, eyes just past the bar, feet flat.' } },
-        { phase: 'Grip', title: 'Forearms vertical at the bottom', kind: 'principle', body: ['Grip so your forearms will be vertical when the bar touches your chest.', 'Bar in the heel of the hand over the forearm bones, thumbs around. Never thumbless.'], cues: ['WRISTS STACKED!', 'Thumbs around the bar.'], photo: { id: 'bench_grip', need: 'Close-up from above: hand position on the bar, wrist straight, thumb around.' } },
-        { phase: 'Unrack', title: 'Bar over the shoulders', kind: 'principle', body: ['Lock your elbows and move the bar out until it is right over your shoulder joints.', 'Look at the ceiling above the bar: that spot is your target for every rep.'], cues: ['Over the shoulders!', 'Eyes on the ceiling.'], photo: { id: 'bench_unrack', need: 'Side view: bar locked out directly over the shoulder joints.' } },
-        { phase: 'Lower', title: 'Under control to the chest', kind: 'principle', body: ['Lower the bar under control to touch the middle of your chest, elbows under the bar.', 'No bouncing. Touch and go.'], cues: ['CONTROL THAT BAR!', 'Touch, don\'t bounce.'], photo: { id: 'bench_bottom', need: 'Side view: bar touching the mid-chest, forearms vertical.' } },
-        { phase: 'Press', title: 'Back to the same spot', kind: 'principle', body: ['Drive the bar back up to the same place on the ceiling, over the shoulders.', 'Don\'t follow the bar with your eyes. Rack it only after locking out.'], cues: ['DRIVE!', 'Same spot every rep.'], photo: { id: 'bench_press_up', need: 'Side view sequence: bar travelling from the chest back over the shoulders.' } },
+        { phase: 'Safety', title: 'Spotter or safeties', kind: 'principle', body: ['Use a competent spotter, or a rack with safety arms just below chest height. Start every session with the empty bar.'], why: 'The bench is the one lift where a missed rep can land on you. Plan for it.', cues: [C('Safety first, ego later!', 2), C('NO EGO LIFTING!', 2)], photo: { id: 'bench_safety', need: 'Bench with a spotter or safety arms in place.' } },
+        { phase: 'On the bench', title: 'Eyes just past the bar', kind: 'principle', body: ['Lie down so your eyes are just past the bar, toward your feet. Upper back tight on the bench, glutes down.'], why: 'This distance lets you unrack without banging the hooks and lands the bar over your chest.', cues: [C('Shoulder blades on the bench!', 2), PL.goodBrace], photo: { id: 'bench_setup', need: 'Getting into position on the bench.' } },
+        { phase: 'Feet', title: 'Feet flat, planted', kind: 'principle', body: ['Feet flat on the floor, about squat width, shins close to vertical. Drive them into the floor.'], why: 'Your legs make the whole body a stable base. Feet up or on tiptoes lose that connection.', cues: [PL.floor, C('Feet flat, champ!')], photo: { id: 'bench_feet', need: 'Foot placement compared.' } },
+        { phase: 'Grip', title: 'Forearms vertical at the bottom', kind: 'principle', body: ['Grip so your forearms will be vertical when the bar touches your chest. Bar in the heel of the hand, thumbs around. Never thumbless.'], why: 'Vertical forearms push straight up. A thumbless grip is how bars roll out of hands.', cues: [C('WRISTS STACKED!', 2), C('Thumbs around!')], photo: { id: 'bench_grip', need: 'Forearm and elbow position under the bar.' } },
+        { phase: 'Unrack', title: 'Bar over the shoulders', kind: 'principle', body: ['Lock your elbows and bring the bar out until it is right over your shoulder joints. Pick a spot on the ceiling above it.'], why: 'Over the shoulder joint the bar balances: no leverage against you. The ceiling spot is your target for every rep.', cues: [C('Over the shoulders!', 2), PL.brace], photo: { id: 'bench_unrack', need: 'Bar balanced over the shoulder joint.' } },
+        { phase: 'Down & up', title: 'Touch, then back to the spot', kind: 'principle', body: ['Lower under control to touch the middle of the chest, elbows under the bar. No bounce.', 'Drive it back to the same spot on the ceiling. Don\'t follow the bar with your eyes.'], why: 'Same path every rep, controlled at the bottom: that is what makes it repeatable and safe.', cues: [C('CONTROL THAT BAR!', 3), C("THAT'S A PROPER REP!")], photo: { id: 'bench_bottom', need: 'A complete bench press, frame by frame.' } },
       ],
-      mistakes: ['Bouncing the bar off the chest.', 'Glutes coming off the bench.', 'Wrists bent back.', 'Thumbless grip.', 'Looking at the bar instead of the ceiling.'],
-      recap: ['Spotter or safeties, empty bar first.', 'Eyes past the bar, feet flat.', 'Vertical forearms, thumbs around.', 'Down to mid-chest, back over the shoulders.'],
+      mistakes: ['Bouncing the bar off the chest.', 'Glutes coming off the bench.', 'Wrists bent back.', 'Thumbless grip.', 'Feet floating or on tiptoes.'],
+      recap: ['Spotter or safeties, empty bar first.', 'Eyes past the bar, feet flat, back tight.', 'Vertical forearms, thumbs around.', 'Down to mid-chest, back over the shoulders.'],
     },
     {
-      id: 'clean', title: 'The Power Clean', kicker: 'Lesson 5', exercise: null, mood: 'focused', candidate: 'Not in Paul\'s current exercise list. Kept as a candidate lesson until Paul confirms.',
+      id: 'clean', title: 'The Power Clean', kicker: 'Lesson 5', exercise: null,
       intro: 'An explosive jump with the bar, caught on the shoulders. It is learned from the top down.',
-      sources: [SRC('The Power Clean', 'Learning the Power Clean')],
+      note: 'Not in Paul\'s current exercise list: ask Paul before adding it to your training.',
+      sources: [SRC('The Power Clean', 'Learning the Power Clean; Correcting Problems')],
       steps: [
-        { phase: 'Stance & grip', title: 'Jumping stance', kind: 'principle', body: ['Feet like for a standing jump, about 20–30 cm apart, toes slightly out.', 'Grip about one hand-width wider on each side than your deadlift grip.'], cues: ['Jump stance!', 'A bit wider grip.'], photo: { id: 'clean_stance', need: 'Front view: jumping stance and clean grip width.' } },
-        { phase: 'Hang', title: 'Straight arms', kind: 'principle', body: ['Deadlift the empty bar to standing. Arms straight, elbows turned in, chest up.', 'The arms are just ropes. They don\'t pull.'], cues: ['ARMS STRAIGHT!', 'Ropes, not hooks.'], photo: { id: 'clean_hang', need: 'Side view: hang position with straight elbows and chest up.' } },
-        { phase: 'Rack', title: 'Elbows high', kind: 'principle', body: ['Get the bar onto the front of your shoulders with the elbows pointing forward, high.', 'The shoulders hold the bar, not the hands.'], cues: ['ELBOWS UP!', 'Shoulders hold it.'], photo: { id: 'clean_rack', need: 'Side view: rack position with high elbows, bar on the front of the shoulders.' } },
-        { phase: 'Jumping position', title: 'Bar at mid-thigh', kind: 'principle', body: ['From the hang, slide the bar down to mid-thigh: knees slightly bent, bar touching the thighs, chest up.'], cues: ['Bar on the thighs!', 'Chest up.'], photo: { id: 'clean_jump_position', need: 'Side view: jumping position, bar at mid-thigh touching the legs.' } },
-        { phase: 'Jump & catch', title: 'Jump, then elbows', kind: 'principle', body: ['Jump explosively with straight arms. As the bar rises, whip the elbows around into the rack and land in your squat stance.'], cues: ['JUMP!', 'Fast elbows!'], photo: { id: 'clean_catch', need: 'Side view sequence: extension (jump) and the catch in the rack position.' } },
-        { phase: 'From the floor', title: 'Slow first, then fast', kind: 'principle', body: ['Later, start from the floor: pull like a deadlift to mid-thigh, under control, then jump.', 'Speed comes at the top, not off the floor.'], cues: ['Slow, then BOOM.', 'Patience off the floor.'], photo: { id: 'clean_floor', need: 'Side view sequence: from the floor to mid-thigh, deadlift-style.' } },
+        { phase: 'Stance & grip', title: 'Jumping stance', kind: 'principle', body: ['Feet like for a standing jump, about 20–30 cm apart, toes slightly out. Grip about a hand-width wider than your deadlift.'], why: 'The power clean is a jump. You pull from the stance you jump best from.', cues: [C('JUMP STANCE!', 2), PL.legday], photo: { id: 'clean_stance', need: 'The jumping stance.' } },
+        { phase: 'Hang', title: 'Straight arms', kind: 'principle', body: ['Deadlift the empty bar to standing. Arms straight, elbows rotated in, chest up. The arms are ropes, not hooks.'], why: 'Bent arms pull too early and steal power from the jump.', cues: [C('ARMS STRAIGHT!', 3), PL.goodBrace], photo: { id: 'clean_hang', need: 'Hang position, straight elbows.' } },
+        { phase: 'Rack', title: 'Elbows high', kind: 'principle', body: ['Get the bar onto the front of the shoulders with the elbows pointing forward, high. The shoulders hold the bar, not the hands.'], why: 'High elbows make a shelf. Low elbows put the weight on your wrists.', cues: [C('ELBOWS UP!', 3)], photo: { id: 'clean_rack', need: 'Rack position: high elbows, bar on the front of the shoulders.' } },
+        { phase: 'Jumping position', title: 'Bar on the thighs', kind: 'principle', body: ['From the hang, slide the bar to mid-thigh: knees slightly bent, bar touching the thighs, chest up.'], why: 'This is where the jump happens. Feeling the bar on the thighs means it is in balance.', cues: [C('Bar on the thighs!', 2)], photo: { id: 'clean_jump_position', need: 'Jumping position, bar at mid-thigh.' } },
+        { phase: 'Jump & catch', title: 'Jump, then fast elbows', kind: 'principle', body: ['Jump explosively with straight arms. As the bar rises, whip the elbows around into the rack and land in your squat stance.'], why: 'The bar goes up because you jumped, not because you curled it.', cues: [C('JUMP!', 3), C('Fast elbows!'), PL.floor], photo: { id: 'clean_catch', need: 'A complete power clean, frame by frame.' } },
+        { phase: 'From the floor', title: 'Slow first, then fast', kind: 'principle', body: ['Later, start from the floor: pull like a deadlift to mid-thigh, under control, then jump.'], why: 'Speed belongs at the top. Rushing off the floor throws the bar out of position.', cues: [C('Slow, then BOOM!', 2), PL.goodBrace], photo: { id: 'clean_floor', need: 'From the floor to the jumping position.' } },
       ],
       mistakes: ['Pulling with bent arms too early.', 'Catching with the elbows pointing down.', 'Bar swinging away from the body.', 'Jumping forward instead of up.'],
       recap: ['Jump stance, wider grip.', 'Learn hang, rack, jumping position.', 'Jump with straight arms, fast elbows.', 'Add the floor last.'],
@@ -2581,21 +2703,37 @@ window.Paulino = window.Paulino || {};
   A.LESSONS = LESSONS;
   A.forExercise = (exerciseId) => LESSONS.find((l) => l.exercise === exerciseId) || null;
   const readSet = () => new Set(S.pref.get('academy.read', []));
+  const slotCount = () => LESSONS.reduce((a, l) => a + l.steps.length + (l.mistakesPhoto ? 1 : 0), 0);
+  const filled = () => LESSONS.reduce((a, l) => a + l.steps.filter((s) => P.art.has(`lesson_${s.photo.id}`)).length + (l.mistakesPhoto && P.art.has(`lesson_${l.mistakesPhoto.id}`) ? 1 : 0), 0);
 
-  // ---- contents page (magazine table of contents) ----
-  A.index = (root) => {
+  // ---- contents page ----
+  A.index = (root, app) => {
     const read = readSet();
+    const pack = P.art.packCount();
     root.innerHTML = String(html`<div class="page no-nav stack academy">
-      ${UI.topBar({ title: 'Lifting Academy', back: '/' })}
+      ${UI.topBar({ title: 'Lifting Academy', back: '/athlete' })}
       <header class="mag-head"><span class="mag-kicker">Paulino presents</span><h2 class="mag-title">LIFTING<br>ACADEMY</h2>
         <p class="mag-deck">Five barbell lifts, one step at a time. Scroll, read, try it with the empty bar.</p>
         <div class="mag-face">${raw(P.art.paulino('focused', { size: 'md' }))}</div></header>
-      <p class="notice small">Draft lessons written from <i>Starting Strength</i> (Rippetoe), waiting for Paul's review. The lesson list is a proposal Paul still has to confirm. Photos are added as real, cleared photos of each position become available.</p>
       <ol class="toc">${LESSONS.map((l, i) => html`<li><a class="toc-item plain" href="#/academy/${l.id}">
         <span class="toc-num">${String(i + 1).padStart(2, '0')}</span>
-        <span class="grow"><b>${l.title}</b><span class="small muted">${l.intro}</span>${l.candidate ? html`<span class="chip chip-warn">candidate</span>` : ''}</span>
+        <span class="grow"><b>${l.title}</b><span class="small muted">${l.intro}</span>${l.note ? html`<span class="chip chip-warn">ask Paul first</span>` : ''}</span>
         ${read.has(l.id) ? html`<span class="chip chip-ok">read</span>` : ''}</a></li>`)}</ol>
+      <div class="card"><h2>Illustrations</h2>
+        <p class="small">${filled()} of ${slotCount()} lesson panels have a picture. The deadlift shows Paul himself. The book figures are copyrighted, so they are <b>not on this website</b>: Paul can load his private illustration pack on his own device.</p>
+        <div class="btn-row"><button class="btn btn-ghost" data-pack>${pack ? 'Replace private illustrations' : 'Load private illustrations'}</button>${pack ? html`<button class="btn btn-ghost" data-unpack>Remove them (${pack})</button>` : ''}</div>
+        <p class="small muted" style="margin-bottom:0">Stored only in this browser. Not for sharing: passing the pack on to others needs the publisher's permission.</p></div>
+      <p class="small muted">Lessons written from <i>Starting Strength</i> (Rippetoe) in our own words, waiting for Paul's review. Paul's coaching always comes first.</p>
     </div>`);
+    const offs = [];
+    offs.push(on(root, 'click', '[data-pack]', async () => {
+      const f = await pickFile();
+      if (!f) return;
+      try { const n = await P.art.importPack(f.text); toast(`${n} private illustrations loaded on this device.`, { kind: 'ok' }); app.refresh(); }
+      catch (e) { toast(e.message, { kind: 'error', ms: 6000 }); }
+    }));
+    offs.push(on(root, 'click', '[data-unpack]', async () => { await P.art.clearPack(); toast('Private illustrations removed from this device.'); app.refresh(); }));
+    return () => offs.forEach((f) => f());
   };
 
   // ---- one lesson: vertical sequence of magazine pages ----
@@ -2605,17 +2743,23 @@ window.Paulino = window.Paulino || {};
     const i = LESSONS.indexOf(l);
     const next = LESSONS[i + 1];
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const slot = (ph, alt) => {
+      const id = `lesson_${ph.id}`;
+      return P.art.photo(id, { need: ph.need, alt, annotations: P.art.meta[id]?.annotations || [] });
+    };
     const step = (s, n) => html`<section class="lesson-step reveal ${n % 2 ? 'flip' : ''}" data-step="${n}" aria-labelledby="st-${n}">
-      <div class="step-photo">${raw(P.art.photo(`lesson_${s.photo.id}`, { need: s.photo.need, alt: `${l.title}: ${s.title}`, annotations: s.annotations }))}</div>
+      <div class="step-photo">${raw(slot(s.photo, `${l.title}: ${s.title}`))}</div>
       <div class="step-text">
         <span class="step-num" aria-hidden="true">${String(n).padStart(2, '0')}</span>
         <span class="step-phase">${s.phase}</span>
         <h2 id="st-${n}">${s.title}</h2>
         ${s.body.map((p) => html`<p>${p}</p>`)}
+        <p class="why"><b>Why:</b> ${s.why}</p>
         ${s.kind === 'preference' ? html`<p class="pref-note"><b>Coaching choice:</b> ${s.note}</p>` : ''}
-        <div class="step-coach">${UI.mascot({ mood: n === l.steps.length ? 'happy' : 'focused', lines: s.cues, size: 'sm', key: `lesson.${l.id}.${n}`, bubble: 'callout', still: true })}</div>
+        <div class="step-coach">${UI.mascot({ mood: n % 3 === 0 ? 'concerned' : 'focused', lines: s.cues, size: 'sm', key: `lesson.${l.id}.${n}`, bubble: 'callout', still: true })}</div>
       </div>
     </section>`;
+    const nSteps = l.steps.length;
     root.innerHTML = String(html`<div class="page no-nav lesson" data-lesson="${l.id}">
       <div class="lesson-rail" aria-hidden="true"><span data-rail></span></div>
       ${UI.topBar({ title: l.title, sub: `${l.kicker} · Lifting Academy`, back: '/academy' })}
@@ -2623,36 +2767,34 @@ window.Paulino = window.Paulino || {};
         <span class="mag-kicker">${l.kicker}</span>
         <h1 class="lesson-title">${l.title.replace(/^The /, '')}</h1>
         <p class="mag-deck">${l.intro}</p>
-        <div class="lesson-cover-art">${raw(P.art.paulino('motivated', { size: 'lg' }))}</div>
-        ${l.candidate ? html`<p class="notice small">${l.candidate}</p>` : ''}
-        <p class="small muted">Scroll down: ${l.steps.length} steps, then mistakes and a recap.</p>
+        <div class="lesson-cover-art">${UI.mascot({ mood: 'motivated', lines: P.data.EXERCISE_LINES[l.exercise] || P.data.LINES.happy.academy, size: 'lg', layout: 'stack', key: `lesson.${l.id}.cover` })}</div>
+        ${l.note ? html`<p class="notice small">${l.note}</p>` : ''}
+        <p class="small muted">Scroll down: ${nSteps} steps, then mistakes and a recap.</p>
       </section>
       ${l.steps.map((s, n) => step(s, n + 1))}
-      <section class="lesson-step lesson-mistakes reveal" data-step="${l.steps.length + 1}">
+      <section class="lesson-step lesson-mistakes reveal ${l.mistakesPhoto ? '' : 'no-photo'}" data-step="${nSteps + 1}">
+        ${l.mistakesPhoto ? html`<div class="step-photo">${raw(slot(l.mistakesPhoto, `${l.title}: common mistakes`))}</div>` : ''}
         <div class="step-text"><span class="step-phase">Watch out</span><h2>Common mistakes</h2>
           <ul class="x-list">${l.mistakes.map((m) => html`<li>${m}</li>`)}</ul>
-          <div class="step-coach">${UI.mascot({ mood: 'concerned', text: 'No ego lifting today!', size: 'sm', still: true })}</div></div>
+          <div class="step-coach">${UI.mascot({ mood: 'disappointed', lines: [{ t: 'NO EGO LIFTING!', w: 3 }, { t: 'YOU CALL THAT A BRACE?!', w: 2 }, PL.goodBrace], size: 'sm', still: true, bubble: 'callout', key: `lesson.${l.id}.mistakes` })}</div></div>
       </section>
-      <section class="lesson-step lesson-recap reveal" data-step="${l.steps.length + 2}">
+      <section class="lesson-step lesson-recap reveal no-photo" data-step="${nSteps + 2}">
         <div class="step-text"><span class="step-phase">Recap</span><h2>Remember this</h2>
           <ol class="recap-list">${l.recap.map((m) => html`<li>${m}</li>`)}</ol>
-          <p class="small muted">Sources (internal): ${l.sources.map((s) => `${s.book}, chapter "${s.chapter}", section "${s.section}"`).join('; ')}. Original wording; not yet reviewed by Paul. Paul's coaching always comes first.</p>
+          <div class="step-coach">${UI.mascot({ mood: 'happy', lines: [PL.protein, PL.legday, { t: "THAT'S A PROPER REP!", w: 2 }], size: 'sm', still: true, key: `lesson.${l.id}.recap` })}</div>
+          <p class="small muted">Written from ${l.sources.map((s) => `${s.book}, "${s.chapter}" (${s.section})`).join('; ')}, in original wording. Draft, waiting for Paul's review. Paul's coaching comes first.</p>
           <div class="btn-row">${next ? html`<a class="btn" href="#/academy/${next.id}">Next: ${next.title} →</a>` : ''}<a class="btn btn-ghost" href="#/academy">All lessons</a></div></div>
       </section>
     </div>`);
     const read = readSet(); read.add(l.id); S.pref.set('academy.read', [...read]);
-    // reveal pages as they scroll in; progress rail
     const steps = [...root.querySelectorAll('.reveal')];
     let io = null;
     if (!reduce && 'IntersectionObserver' in window) {
-      io = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.18 });
+      io = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.15 });
       steps.forEach((s) => io.observe(s));
     } else steps.forEach((s) => s.classList.add('in'));
     const rail = root.querySelector('[data-rail]');
-    const onScroll = () => {
-      const h = document.documentElement.scrollHeight - innerHeight;
-      rail.style.width = `${h > 0 ? Math.min(100, (scrollY / h) * 100) : 0}%`;
-    };
+    const onScroll = () => { const h = document.documentElement.scrollHeight - innerHeight; rail.style.width = `${h > 0 ? Math.min(100, (scrollY / h) * 100) : 0}%`; };
     addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => { removeEventListener('scroll', onScroll); io?.disconnect(); };
@@ -2687,7 +2829,7 @@ window.Paulino = window.Paulino || {};
       : String(b.updatedAt).localeCompare(String(a.updatedAt)));
     const draw = () => {
       root.innerHTML = String(html`<div class="page no-nav stack">
-        ${UI.topBar({ title: "Paul's programs", back: '/', right: '<a class="btn btn-sm btn-ghost" href="#/settings">Settings</a>' })}
+        ${UI.topBar({ title: "Paul's programs", back: '/paul', right: '<a class="btn btn-sm btn-ghost" href="#/settings">Settings</a>' })}
         <div class="card">${UI.mascot({ mood: 'motivated', context: 'paul', size: 'sm' })}</div>
         <div class="btn-row"><button class="btn btn-lg" data-new>${raw(I.plus)} New program</button><button class="btn btn-ghost" data-import>${raw(I.file)} Import .paulino</button></div>
         ${list.length ? html`<div class="row-between"><h2 style="margin:0">${list.length} saved</h2>
@@ -2797,7 +2939,7 @@ window.Paulino = window.Paulino || {};
   // ---------------------------------------------------------------- editor
   Paul.editor = async (root, app, params, query) => {
     const prog = await S.get('paul', params.id);
-    if (!prog) { root.innerHTML = String(html`<div class="page no-nav">${UI.topBar({ title: 'Not found', back: '/paul' })}<div class="card"><p>This program isn't saved in this browser.</p><a class="btn" href="#/paul">Your programs</a></div></div>`); return; }
+    if (!prog) { root.innerHTML = String(html`<div class="page no-nav">${UI.topBar({ title: 'Not found', back: '/paul/library' })}<div class="card"><p>This program isn't saved in this browser.</p><a class="btn" href="#/paul/library">Your programs</a></div></div>`); return; }
     let wi = Math.min(prog.weeks.length - 1, Math.max(0, Number(query.get('w')) || 0));
     const openDetails = new Set();
     let saveTimer = null;
@@ -2886,7 +3028,7 @@ window.Paulino = window.Paulino || {};
       const y = window.scrollY;
       root.innerHTML = String(html`<div class="page no-nav editor">
         <div class="editor-bar">
-          <button class="icon-btn" data-action="back" data-fallback="/paul" aria-label="Back to programs">←</button>
+          <button class="icon-btn" data-action="back" data-fallback="/paul/library" aria-label="Back to programs">←</button>
           <div class="grow"><b class="ellipsis">${prog.name || 'Untitled'}</b><span class="save-state" data-save-state>Saved on this device</span></div>
           <button class="btn btn-sm" data-share>${raw(I.share)} Share</button>
         </div>
@@ -3978,38 +4120,60 @@ window.Paulino = window.Paulino || {};
   const app = { version: '2.0.0' };
   P.app = app;
 
-  // ---- start screen ----
-  async function home(el) {
-    const [paul, mine, logs] = await Promise.all([S.all('paul'), S.all('athlete'), S.all('logs')]);
-    const cur = await A.current();
+  // ---- start screen: title, Paul, one line, two doors ----
+  function home(el) {
+    el.innerHTML = String(html`<div class="page no-nav home">
+      <h1 class="home-title">PAULINO<span>!</span></h1>
+      <div class="home-hero">${UI.mascot({ mood: 'motivated', context: 'home', size: 'cover', layout: 'cover' })}</div>
+      <p class="home-tag">Your coach's programs, and his voice in your head.</p>
+      <nav class="home-doors" aria-label="Who are you?">
+        <a class="door door-athlete" href="#/athlete" data-mode="athlete" aria-label="I'm an athlete"><span>I'M AN</span>ATHLETE</a>
+        <a class="door door-paul" href="#/paul" data-mode="paul" aria-label="I'm Paul"><span>I'M</span>PAUL</a>
+      </nav>
+    </div>`);
+  }
+
+  // ---- athlete landing: my program or the academy ----
+  async function athleteLanding(el) {
+    const [mine, cur] = await Promise.all([S.all('athlete'), A.current()]);
+    const logs = cur ? await S.all('logs') : [];
     const next = cur ? P.stats.next(cur, logs) : null;
-    const issue = String(new Date().getMonth() + 1).padStart(2, '0');
-    el.innerHTML = String(html`<div class="page no-nav">
-      <section class="cover" aria-label="Paulino">
-        <div class="cover-strip"><span>Nº ${issue} · Strength special</span><span>Free · No accounts</span></div>
-        <h1 class="masthead"><span>Paulino</span></h1>
-        <span class="cover-block-1" aria-hidden="true"></span><span class="cover-block-2" aria-hidden="true"></span>
-        <div class="cover-mascot">${UI.mascot({ mood: 'motivated', context: 'home', size: 'lg', layout: 'cover' })}</div>
-        <h2 class="cover-headline">Lift heavy. <em>Laugh</em> harder.</h2>
-        <ul class="cover-lines">
-          ${next ? html`<li><a href="#/a/p/${cur.id}/d/${next.day.id}">Your next workout: ${next.day.name}, ${P.util.relDay(next.date) || ''}</a></li>` : ''}
-          <li><a href="#/academy">Lifting Academy: five lifts, step by step</a></li>
-          <li><a href="#/paul">Paul's desk: build, progress &amp; share programs</a></li>
-        </ul>
+    el.innerHTML = String(html`<div class="page no-nav stack landing">
+      ${UI.topBar({ title: 'Athlete', back: '/' })}
+      <div class="landing-hi">${UI.mascot({ mood: 'motivated', context: 'athlete', size: 'sm' })}</div>
+      <section class="card door-card">
+        <span class="door-kicker">01</span><h2>My Training Program</h2>
+        ${cur ? html`<p><b>${cur.name}</b>${next ? html`<br><span class="small">Next: ${next.day.name}${next.date ? `, ${P.util.relDay(next.date) || ''}` : ''}</span>` : ''}</p>
+          <a class="btn btn-block btn-lg" href="#/a">${next?.inProgress ? 'Continue workout' : 'Open my program'}</a>`
+        : html`<p>Got a link from Paul? Just open it: the program loads by itself. Got a <b>.paulino</b> file? Import it.</p>`}
+        <div class="btn-row"><button class="btn ${cur ? 'btn-ghost' : 'btn-lg'}" data-import>${raw(UI.ICONS.file)} Import a .paulino file</button>
+          ${mine.length ? html`<a class="btn btn-ghost" href="#/a/library">Saved programs (${mine.length})</a>` : ''}</div>
       </section>
-      <div class="stack" style="margin-top:8px">
-        ${cur ? html`<a class="btn btn-block btn-lg" href="${next ? `#/a/p/${cur.id}/d/${next.day.id}` : '#/a'}">${next?.inProgress ? 'Continue workout' : 'Next workout'}: ${cur.name}</a>` : ''}
-        <a class="card choice" href="#/paul" data-mode="paul"><span class="choice-icon" aria-hidden="true">P</span>
-          <span class="grow"><h3>I'm Paul: create programs</h3><p>${paul.length ? `${paul.length} saved ${paul.length === 1 ? 'program' : 'programs'}` : 'Build a week, repeat & progress it, share a link.'}</p></span></a>
-        <a class="card choice" href="#/a" data-mode="athlete"><span class="choice-icon" aria-hidden="true" style="background:var(--pop-2)">★</span>
-          <span class="grow"><h3>I'm training</h3><p>${mine.length ? `${mine.length} ${mine.length === 1 ? 'program' : 'programs'} on this device` : 'Open the link Paul sent you, or import his .paulino file.'}</p></span></a>
-        <a class="card choice" href="#/academy"><span class="choice-icon" aria-hidden="true" style="background:var(--pop-1)">A</span>
-          <span class="grow"><h3>Lifting Academy</h3><p>Squat, press, deadlift, bench, clean: scroll through each lift.</p></span></a>
-        <div class="btn-row"><button class="btn btn-ghost" data-import>${raw(UI.ICONS.file)} Import a .paulino file</button><a class="btn btn-ghost" href="#/settings">Settings</a></div>
-        <p class="small muted center">No accounts, no cloud: everything stays in this browser.</p>
-      </div>
+      <a class="card door-card plain" href="#/academy" data-academy>
+        <span class="door-kicker">02</span><h2>Lifting Academy</h2>
+        <p>Squat, overhead press, deadlift, bench press and power clean, one step at a time. No program needed.</p>
+        <span class="btn btn-ghost">Open the Academy →</span>
+      </a>
+      <p class="small muted center">No accounts: everything stays in this browser. <a href="#/settings">Settings</a></p>
     </div>`);
     el.querySelector('[data-import]').onclick = () => A.importFile(app);
+  }
+
+  // ---- Paul landing: create or open ----
+  async function paulLanding(el) {
+    const list = await S.all('paul');
+    el.innerHTML = String(html`<div class="page no-nav stack landing">
+      ${UI.topBar({ title: 'Paul', back: '/' })}
+      <div class="landing-hi">${UI.mascot({ mood: 'focused', context: 'paul', size: 'sm' })}</div>
+      <button class="card door-card door-btn" data-new>
+        <span class="door-kicker">01</span><h2>Create New Program</h2>
+        <p>Build week 1, then let Repeat / Progress write the rest.</p></button>
+      <a class="card door-card plain" href="#/paul/library" data-open>
+        <span class="door-kicker">02</span><h2>Open Saved Program</h2>
+        <p>${list.length ? `${list.length} saved ${list.length === 1 ? 'program' : 'programs'} in this browser.` : 'Nothing saved yet. You can also import a .paulino file there.'}</p></a>
+      <p class="small muted center">A mode, not a login: anyone on this device sees the same programs. <a href="#/settings">Settings</a></p>
+    </div>`);
+    el.querySelector('[data-new]').onclick = async () => { const p = await Paul.createDialog(list); if (p) { history.replaceState(history.state, '', '#/paul/library'); app.navigate(`/paul/p/${p.id}`); } };
   }
 
   async function settings(el) {
@@ -4040,11 +4204,13 @@ window.Paulino = window.Paulino || {};
   const routes = [
     ['/', home],
     ['/settings', settings],
-    ['/academy', (el) => P.academy.index(el)],
+    ['/athlete', athleteLanding],
+    ['/academy', (el) => P.academy.index(el, app)],
     ['/academy/:id', (el, p) => P.academy.lesson(el, app, p)],
-    ['/paul', (el) => Paul.library(el, app)],
+    ['/paul', paulLanding],
+    ['/paul/library', (el) => Paul.library(el, app)],
     ['/paul/p/:id', (el, p, q) => Paul.editor(el, app, p, q)],
-    ['/paul/p/:id/print', async (el, p) => { const prog = await S.get('paul', p.id); if (!prog) return app.navigate('/paul', { replace: true }); Paul.printView(el, app, prog, `/paul/p/${p.id}`); }],
+    ['/paul/p/:id/print', async (el, p) => { const prog = await S.get('paul', p.id); if (!prog) return app.navigate('/paul/library', { replace: true }); Paul.printView(el, app, prog, `/paul/p/${p.id}`); }],
     ['/a', (el) => A.home(el, app)],
     ['/a/program', (el, p) => A.program(el, app, p)],
     ['/a/history', (el, p, q) => A.history(el, app, p, q)],
@@ -4133,7 +4299,8 @@ window.Paulino = window.Paulino || {};
 
   (async () => {
     UI.applyPalette();
-    await Promise.all([S.init(), P.art.loadManifest()]);
+    await S.init();
+    await P.art.loadManifest();
     if (!history.state) history.replaceState({ depth: 0 }, '', location.href);
     if (!location.hash) history.replaceState({ depth: 0 }, '', '#/');
     await resolve();

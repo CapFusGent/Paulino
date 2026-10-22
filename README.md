@@ -46,7 +46,7 @@ Any static server works (`python -m http.server`, VS Code Live Server…). Openi
 
 ## Paul
 
-Start screen → **I'm Paul: create programs**.
+Start screen → **I'M PAUL** → *Create New Program* or *Open Saved Program* (`#/paul/library`). These are modes, not logins.
 
 - **Library:** saved programs with athlete and creation date; sort by last edited, name, athlete or created. Each one can be opened, renamed, duplicated, deleted, shared, exported as a file, or printed.
 - **New program:** name, optional athlete, start date, duration in weeks, general instructions. Start **from scratch** (one empty week) or **duplicate an existing program**.
@@ -194,17 +194,23 @@ Prescriptions, actual results and modifications are stored separately, and exerc
 
 ---
 
+## Start screen
+
+Only the big **PAULINO!** title, the hero montage (Paul's head on his own double-biceps photo), one tagline, a bubble with one of Paul's real catchphrases, and two doors: **I'M AN ATHLETE** (`#/athlete`: *My Training Program* with import / saved programs / continue, and *Lifting Academy*) and **I'M PAUL** (`#/paul`). A shared link still opens the program directly.
+
 ## Paulino
 
-Six moods: **motivated, focused, happy, celebrating, disappointed, concerned**. Each is a photomontage built from real cut-outs of Paul (`assets/paulino/`) with paper scraps, halftone, marker notes and a speech bubble: cloud, shouting burst, or magazine callout. There are no genuine sad or worried photos, so those moods are carried by tilt, black-and-white, colour and marks, never by altering his face. Tap Paulino or his bubble for another line; lines don't repeat until all have been shown. The recipes are in the `art` module, and the full kit is in [`design/VISUAL_GUIDE.md`](design/VISUAL_GUIDE.md).
+Six moods: **motivated, focused, happy, celebrating, disappointed, concerned**. Each is a photomontage of real cut-outs of Paul (`assets/paulino/`), chosen by his real expression: flexing for motivated and celebrating, an unimpressed stare for disappointed, a mid-sentence look for concerned. Paul's face is never altered.
+
+**Lines:** Paul's own catchphrases ("BRACE! BRACE! BRACE!", "Push the floor away!", "Never skip leg day!", "A good brace is the most important!", "You can go deeper!", "How many grams of protein did you have today?") are marked `real` in the `data` module and weigh about 2–3× more than lines inspired by him. The picker is weighted-random, never repeats the last line or two, and cycles on tap. It is a fixed set of lines, not a chatbot. Exercise tips put Paul's own note first, then the catchphrases that fit the lift (squat: brace / deeper / floor; deadlift: floor / good brace), then technique cues.
 
 | Situation | Reaction |
 |---|---|
 | Home, before training | motivated |
 | Exercise tips during the workout (Paul's note first) | focused |
 | Plan restored, program saved | happy |
-| Workout finished, new PR | celebrating |
-| Athlete changes the **structure** of Paul's plan (fewer/more sets, other reps, other exercise, skipping an exercise, going heavier) | disappointed: *"WHAT?! Paul made this program for a reason!"*, *"You're changing Paul's masterpiece?! I'm disappointed!"*, with **Keep Paul's plan** / **Change anyway** |
+| Workout finished, new PR | celebrating: *"GOOD! NOW, HOW MANY GRAMS OF PROTEIN DID YOU HAVE TODAY?"* |
+| Athlete changes the **structure** of Paul's plan (fewer/more sets, other reps, other exercise, skipping an exercise, going heavier) | disappointed: *"WHAT?! YOU CHANGED MY PROGRAM?!"*, *"PAUL WROTE THIS FOR A REASON!"*, with **Keep Paul's plan** / **Change anyway** |
 | The same change with reason *pain* or *fatigue* | concerned & supportive, with safety advice |
 | Logging fewer reps or less weight in a set; a lighter load via "Change"; skipping for illness; reporting pain | neutral or supportive, never disappointed |
 
@@ -220,18 +226,14 @@ A change is stored as a local modification. Paul's original stays intact and is 
 
 ## Lifting Academy
 
-`#/academy`: a contents page and one vertically scrolling "magazine" per lift. Each step is a full-height page with:
-- the photo of that exact phase;
-- a step number and phase tag;
-- a short explanation;
-- a *Coaching choice* note where the step is one coach's approach rather than a general principle;
-- Paulino with a tappable cue.
+`#/academy` (from the athlete landing, no program needed): five lessons, **squat, overhead press, deadlift, bench press, power clean**, each a vertically scrolling magazine. Every step panel has a picture slot, a phase tag and title, *what to do*, *why it matters*, a *Coaching choice* note where the step is one coach's approach, and Paulino with a tappable cue (Paul's catchphrases first). Each lesson closes with a mistakes page (with a comparison figure for press and deadlift) and a recap. Pages slide in on scroll (off with reduced motion), and a progress rail runs along the top. Workout cards link to the matching lesson.
 
-Pages slide in as they scroll into view (turned off with reduced motion), and a progress rail runs along the top. Workout cards link to the matching lesson ("Learn the lift").
+**Pictures (per-panel manifest and licensing in [`design/ASSET_NOTES.md`](design/ASSET_NOTES.md)):**
+- *Public:* three frames from Paul's own deadlift video, annotated with bar contact, bar path and hip lockout. Slots come from `asset-manifest.json` → `lesson_photo_slots`, with `w`/`h` and `annotations` in % of the photo.
+- *Private:* 25 figures from *Starting Strength*. They are copyrighted, so they are **never deployed**. `python tools/build_reference_pack.py <PRIVATE_REFERENCE_ONLY>` writes `private/paulino-academy-pack.json` (git-ignored). Paul loads it via *Load private illustrations*; it lives only in that browser, carries a *PRIVATE REFERENCE · Not for sharing* label, and is left out of backups. Sharing the file needs the publisher's permission.
+- *Otherwise:* a **PHOTO NEEDED** slot naming the exact shot. Unrelated pictures are never substituted.
 
-- **Lessons:** squat, press, deadlift, bench press, power clean. These are the five *candidate* chapters from *Starting Strength*; **Paul still has to confirm the list**. The power clean isn't one of his program exercises.
-- **Text:** original, short wording written from the book chapters, which were read privately and are never deployed. No quotations or figures. Marked *draft* until Paul reviews it.
-- **Photos:** no cleared phase-by-phase photos exist yet, so every step shows a **PHOTO NEEDED** slot describing the exact shot required. Unrelated images are never substituted. Adding a photo means one entry in `asset-manifest.json` → `lesson_photo_slots` (e.g. `lesson_squat_bottom_loaded`). Bar-path arrows and labels (`annotations`, in % of the photo) are added together with it and checked against that photo.
+**Text:** original wording written from the book chapters, with no quotations. Marked *draft* until Paul reviews it.
 
 ---
 

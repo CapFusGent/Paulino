@@ -7,8 +7,9 @@ const row = (page, i) => page.locator('.grid-row').nth(i);
 
 test('1 · create a four-week program manually, 9 · save and reopen', async ({ page }) => {
   await open(page);
-  await page.getByRole('link', { name: /I'm Paul/ }).click();
-  await page.getByRole('button', { name: /New program/ }).click();
+  await expect(page.locator('.home-doors a')).toHaveCount(2);
+  await page.getByRole('link', { name: "I'm Paul" }).click();
+  await page.getByRole('button', { name: /Create New Program/ }).click();
   await page.getByLabel('Program name').fill('Marco: block 1');
   await page.getByLabel('Athlete (optional)').fill('Marco');
   await page.getByLabel('Start date').fill('2026-11-02');
@@ -168,7 +169,7 @@ test('7 · manually override a generated week, keep it when regenerating', async
 test('8 · duplicate a saved program', async ({ page }) => {
   await open(page);
   const id = await seedPaulProgram(page, { name: 'Block A' });
-  await open(page, '#/paul');
+  await open(page, '#/paul/library');
   await page.getByRole('button', { name: 'More actions for Block A' }).click();
   await page.getByRole('button', { name: /Duplicate/ }).click();
   await expect(page.locator('.editor-bar')).toContainText('Block A (copy)');
@@ -182,7 +183,7 @@ test('8 · duplicate a saved program', async ({ page }) => {
   await expect(page.locator('[data-save-state]')).toHaveText('Saved on this device');
   expect((await getPaul(page, id)).weeks[0].days[0].exercises[0].sets[0].kg).toBe(100);
   // and "New program → Duplicate existing" works too
-  await open(page, '#/paul');
+  await open(page, '#/paul/library');
   await page.getByRole('button', { name: /New program/ }).click();
   await page.getByLabel('Program name').fill('Block B');
   await page.getByRole('button', { name: /Duplicate an existing program/ }).click();

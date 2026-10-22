@@ -20,10 +20,10 @@ test('all screens at 360 px in every palette', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Session done!' })).toBeVisible();
 
   const screens = [
-    ['home', '#/'], ['paul-library', '#/paul'], ['paul-editor', `#/paul/p/${pid}`], ['print', `#/paul/p/${pid}/print`],
+    ['home', '#/'], ['athlete-landing', '#/athlete'], ['paul-landing', '#/paul'], ['paul-library', '#/paul/library'], ['paul-editor', `#/paul/p/${pid}`], ['print', `#/paul/p/${pid}/print`],
     ['athlete-home', '#/a'], ['athlete-program', `#/a/p/${prog.id}`], ['workout', `#/a/p/${prog.id}/d/${day}`],
     ['results', `#/a/p/${prog.id}/d/${day}/done`], ['history', '#/a/history'], ['library', '#/a/library'], ['settings', '#/settings'],
-    ['academy', '#/academy'], ['lesson-squat', '#/academy/squat'], ['lesson-clean', '#/academy/clean'],
+    ['academy', '#/academy'], ['lesson-squat', '#/academy/squat'], ['lesson-deadlift', '#/academy/deadlift'], ['lesson-clean', '#/academy/clean'],
   ];
   for (const pal of ['original', 'pink', 'teal', 'blue']) {
     await page.evaluate((p) => { localStorage.setItem('paulino:palette', JSON.stringify(p)); window.Paulino.ui.applyPalette(); }, pal);
@@ -85,7 +85,7 @@ test('works with storage blocked (memory fallback) and warns', async ({ browser 
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/#/settings');
   await expect(page.getByText(/blocks storage/)).toBeVisible();
-  await page.goto('/#/paul');
+  await page.goto('/#/paul/library');
   await page.getByRole('button', { name: /New program/ }).click();
   await page.getByLabel('Program name').fill('Temp');
   await page.getByRole('button', { name: 'Create program' }).click();

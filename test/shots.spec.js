@@ -9,6 +9,11 @@ test('review shots', async ({ page }) => {
   await page.getByRole('button', { name: 'Save & start training' }).click();
   await page.waitForTimeout(4000);
   await open(page, '#/'); await page.waitForTimeout(600); await shot(page, 'home');
+  await open(page, '#/athlete'); await page.waitForTimeout(400); await shot(page, 'athlete-landing');
+  await open(page, '#/paul'); await page.waitForTimeout(400); await shot(page, 'paul-landing');
+  await open(page, '#/academy/deadlift'); await page.waitForTimeout(400);
+  for (let i = 0; i < 12; i++) { await page.mouse.wheel(0, 600); await page.waitForTimeout(120); }
+  await shot(page, 'lesson-deadlift');
   await open(page, '#/academy'); await page.waitForTimeout(600); await shot(page, 'academy');
   await open(page, '#/academy/squat'); await page.waitForTimeout(400);
   for (let i = 0; i < 12; i++) { await page.mouse.wheel(0, 600); await page.waitForTimeout(120); }

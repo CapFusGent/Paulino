@@ -3,3 +3,7 @@ test-results/
 playwright-report/
 *.xlsx
 .claude/settings.local.json
+private/
+
+# copyrighted book scans / downloads: never commit
+Images/
