@@ -950,6 +950,22 @@ details.block > summary .block-head h3 { font-size: 1.3rem; text-transform: uppe
 }
 @media print { .cl-marks, .cl-ht, .cl-paper-2 { display: none; } }
 </style>
+<script>
+/* Trial designs (aesthetics only): ?design=<id> or the saved choice loads an extra
+   stylesheet before anything is drawn. Removed again once one design is chosen. */
+(function () {
+  var DESIGNS = ['collage', 'shapes'];
+  try {
+    var q = new URLSearchParams(location.search).get('design');
+    if (q && DESIGNS.indexOf(q) >= 0) localStorage.setItem('paulino:design', JSON.stringify(q));
+    var d = q && DESIGNS.indexOf(q) >= 0 ? q : JSON.parse(localStorage.getItem('paulino:design') || '"collage"');
+    if (DESIGNS.indexOf(d) > 0) {
+      document.documentElement.dataset.design = d;
+      document.write('<link rel="stylesheet" id="design-css" href="assets/designs/' + d + '.css">');
+    }
+  } catch (e) { /* storage blocked: default design */ }
+})();
+</script>
 </head>
 <body>
 <a class="skip-link" href="#app">Skip to content</a>
@@ -2566,11 +2582,29 @@ window.Paulino = window.Paulino || {};
     document.documentElement.dataset.palette = p.id;
     document.querySelector('meta[name=theme-color]')?.setAttribute('content', p.bg);
   };
+  // ---- trial designs (aesthetics only; see the loader in <head>) ----
+  UI.DESIGNS = [
+    { id: 'collage', name: 'Collage', note: 'Paper, ink and tape' },
+    { id: 'shapes', name: 'Shapes', note: 'Flat colour blocks, circles, pills' },
+  ];
+  UI.design = () => document.documentElement.dataset.design || 'collage';
+  UI.applyDesign = (id) => {
+    const d = UI.DESIGNS.some((x) => x.id === id) ? id : 'collage';
+    P.store.pref.set('design', d);
+    let link = document.getElementById('design-css');
+    if (d === 'collage') { delete document.documentElement.dataset.design; link?.remove(); return; }
+    document.documentElement.dataset.design = d;
+    if (!link) { link = document.createElement('link'); link.rel = 'stylesheet'; link.id = 'design-css'; document.head.append(link); }
+    link.href = `assets/designs/${d}.css`;
+  };
   UI.paletteCard = () => {
     const cur = document.documentElement.dataset.palette;
-    return html`<div class="card"><h2>Colours</h2><div class="palettes" role="group" aria-label="Colour palette">
+    const des = UI.design();
+    return html`<div class="card"><h2>Design <span class="chip">trial</span></h2>
+      <div class="choices design-choices" role="group" aria-label="Design">${UI.DESIGNS.map((d) => html`<button type="button" class="choice-btn" data-design="${d.id}" aria-pressed="${d.id === des}">${d.name}<small>${d.note}</small></button>`)}</div></div>
+    ${des !== 'collage' ? html`<div class="card"><h2>Colours</h2><p class="small" style="margin:0">The ${UI.DESIGNS.find((d) => d.id === des).name} design has its own colours.</p></div>` : html`<div class="card"><h2>Colours</h2><div class="palettes" role="group" aria-label="Colour palette">
       ${UI.PALETTES.map((p) => html`<button type="button" class="pal" data-pal="${p.id}" aria-pressed="${p.id === cur}" style="background:${p.bg}"><span class="sw"><i style="background:${p.bg}"></i><i style="background:${p.accent}"></i><i style="background:${p.ink}"></i></span>${p.name}</button>`)}
-    </div></div>`;
+    </div></div>`}`;
   };
 
   // ---- Paulino ----
@@ -4571,6 +4605,7 @@ window.Paulino = window.Paulino || {};
     </div>`);
     const offs = [];
     offs.push(on(el, 'click', '[data-pal]', (e, b) => { S.pref.set('palette', b.dataset.pal); UI.applyPalette(); app.refresh(); }));
+    offs.push(on(el, 'click', '[data-design]', (e, b) => { UI.applyDesign(b.dataset.design); app.refresh(); }));
     offs.push(on(el, 'change', '[data-pref]', (e, c) => S.pref.set('timer.prefs', { ...S.pref.get('timer.prefs', { auto: true, sound: true }), [c.dataset.pref]: c.checked })));
     offs.push(on(el, 'click', '[data-backup]', () => A.exportBackup()));
     offs.push(on(el, 'click', '[data-restore]', () => A.restoreBackup(app)));

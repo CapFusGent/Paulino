@@ -235,6 +235,8 @@ Six moods: **motivated, focused, happy, celebrating, disappointed, concerned**. 
 
 A change is stored as a local modification. Paul's original stays intact and is shown next to it, and **Restore Paul's plan** undoes it.
 
+**Trial designs** (aesthetics only, temporary): Settings → *Design*, or open any address with `?design=<id>` (e.g. `…/Paulino/?design=shapes#/`). Each design is one stylesheet in `assets/designs/` that only restyles; features and data are identical. The choice is remembered per browser. **Shapes**: blue ground, pink / mint slabs with one fully rounded end, flat circles, pill buttons and dock, orange accent, no borders, shadows or textures. Once one design is chosen it is merged into the main stylesheet and the switch is removed.
+
 **Palettes** (Settings): **NEVER SKIP LEG DAY** (mustard, black, warm white: the default), **BRACE! BRACE! BRACE!** (orange `#F47B20`, black `#171717`, off-white `#F5F0E6`), **PROTEIN PANIC** (pink, cream, charcoal), **PUSH THE FLOOR** (teal, deep blue, cream) and **GO DEEPER!** (retro red, beige, black). All are flat paper colours. Every text pair meets WCAG 4.5:1, which is checked in `coach.spec.js`. Paul's photos keep their own treatment in every palette. Old saved palette names map to the new ones.
 
 **Fonts:** Bricolage Grotesque (headings), Atkinson Hyperlegible (body), JetBrains Mono (numbers), loaded from Google Fonts with system fallbacks. Without a connection the system fonts are used.
