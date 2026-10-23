@@ -3,7 +3,8 @@
    PAULINO — trial design "Shapes"
    Flat 2D colour blocks: blue ground, pink / mint slabs with one fully rounded
    end, big circles, pill buttons and tabs, orange accent. No borders, no shadows,
-   no textures, no tilt. Aesthetics only: loaded on top of the base stylesheet
+   no textures, no tilt. Paulino keeps his comic-strip voice: bubbles with tails,
+   starburst shouts, marker scribbles and stickers. Aesthetics only: loaded on top of the base stylesheet
    when <html data-design="shapes">.
    Text: navy on every colour (WCAG AA); white only for large titles on blue.
    ============================================================================= */
@@ -42,7 +43,6 @@
   --nav-h: 78px;
   --font-head: 'Inter Tight', 'Helvetica Neue', Arial, system-ui, sans-serif;
   --font-body: 'Inter Tight', 'Helvetica Neue', Arial, system-ui, sans-serif;
-  --font-hand: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
   --grain: none;
 }
 
@@ -55,7 +55,7 @@
 [data-design="shapes"] a { text-decoration-thickness: 2px; }
 
 /* no paper texture, tape, scraps or tilt anywhere */
-[data-design="shapes"] .tape-strip, [data-design="shapes"] .card.tape::before, [data-design="shapes"] .scrap, [data-design="shapes"] .logo-tape, [data-design="shapes"] .cl-ht, [data-design="shapes"] .cl-marks, [data-design="shapes"] .cl-note, [data-design="shapes"] .cl-neck { display: none !important; }
+[data-design="shapes"] .tape-strip, [data-design="shapes"] .card.tape::before, [data-design="shapes"] .scrap, [data-design="shapes"] .logo-tape, [data-design="shapes"] .cl-neck { display: none !important; }
 [data-design="shapes"] .card-tilt, [data-design="shapes"] .toc li .toc-item, [data-design="shapes"] .stat, [data-design="shapes"] .photo-slot, [data-design="shapes"] .lesson-step.flip .photo-slot, [data-design="shapes"] .mag-kicker, [data-design="shapes"] .step-phase,
 [data-design="shapes"] .home-title, [data-design="shapes"] .logo-word, [data-design="shapes"] .bubble-callout .bubble, [data-design="shapes"] .masthead span { transform: none !important; }
 
@@ -207,22 +207,35 @@
 [data-design="shapes"] .done-btn[aria-pressed="true"] { background: var(--sh-navy); color: #fff; }
 [data-design="shapes"] .set-chip { background: #fff; border-radius: 999px; }
 
-/* ---------- Paulino: cut-outs on flat circles and pills ---------- */
+/* ---------- Paulino: comic strip on flat shapes ---------- */
+/* cut-outs keep their white sticker edge; flat circles and pills instead of torn paper */
 [data-design="shapes"] .cl img { filter: none; }
 [data-design="shapes"] .cl-bw img { filter: grayscale(1) contrast(1.15); }
 [data-design="shapes"] .cl-paper { clip-path: none !important; transform: none; border-radius: 50%; inset: 6% 4% 4% 4%; }
 [data-design="shapes"] .cl-paper-2 { border-radius: 999px; inset: 54% -4% 2% 40%; }
 [data-design="shapes"] .cl-xs .cl-paper { inset: 0; }
 [data-design="shapes"] .cl-fallback { border: 0; border-radius: 50%; transform: none; box-shadow: none; background: var(--sh-light); }
-[data-design="shapes"] .paulino:not(.still) .paulino-figure .cl { animation: none; }
-[data-design="shapes"] .bubble { border-radius: 28px 28px 28px 8px; box-shadow: none; background: #fff; font-weight: 700; }
-[data-design="shapes"] .bubble::before, [data-design="shapes"] .bubble::after { display: none; }
-[data-design="shapes"] .layout-stack .bubble { border-radius: 28px 28px 28px 28px; }
-[data-design="shapes"] .layout-cover .bubble { border-radius: 28px 28px 8px 28px; }
-[data-design="shapes"] .mood-disappointed .bubble { background: var(--sh-light); }
-[data-design="shapes"] .bubble-burst .bubble { background: var(--sh-orange); border-radius: 50%; padding: 30px 28px; filter: none; aspect-ratio: 1; display: grid; place-items: center; max-width: 220px; }
-[data-design="shapes"] .bubble-callout .bubble { border-radius: 26px; background: var(--sh-orange); }
-[data-design="shapes"] .bubble-callout .bubble::before { display: block; }
+/* comic marks: halftone dots, marker scribbles, sparks and the sticker note */
+[data-design="shapes"] .cl-ht { background: radial-gradient(circle, var(--sh-navy) 1.4px, transparent 1.8px) 0 0 / 7px 7px; opacity: .5; }
+[data-design="shapes"] .cl-marks { stroke: var(--sh-navy); stroke-width: 2.8; }
+[data-design="shapes"] .cl-note { background: var(--sh-orange); color: var(--sh-navy); border: 0; border-radius: 999px; padding: .2em .55em; box-shadow: none; transform: rotate(-8deg); }
+
+/* speech bubbles: white, rounded, with a comic tail */
+[data-design="shapes"] .bubble { --bb: #fff; background: var(--bb); border-radius: 26px; box-shadow: none; font-weight: 700; }
+[data-design="shapes"] .bubble::after { display: none; }
+[data-design="shapes"] .paulino:not(.bubble-callout):not(.bubble-burst) .bubble::before {
+  display: block; left: -16px; top: 50%; margin-top: -9px; border-width: 9px 18px 9px 0; border-color: transparent var(--bb) transparent transparent; }
+[data-design="shapes"] .paulino.layout-stack:not(.bubble-callout):not(.bubble-burst) .bubble::before {
+  left: 50%; top: auto; bottom: -16px; margin: 0 0 0 -9px; border-width: 18px 9px 0 9px; border-color: var(--bb) transparent transparent transparent; }
+[data-design="shapes"] .paulino.layout-cover:not(.bubble-callout):not(.bubble-burst) .bubble::before {
+  left: auto; right: -16px; border-width: 9px 0 9px 18px; border-color: transparent transparent transparent var(--bb); }
+[data-design="shapes"] .mood-disappointed .bubble { --bb: var(--sh-light); }
+[data-design="shapes"] .bubble.shout { letter-spacing: 0; }
+/* shouting: a comic starburst, flat (no offset shadow) */
+[data-design="shapes"] .bubble-burst .bubble { filter: none; }
+[data-design="shapes"] .mood-disappointed.bubble-burst .bubble { filter: grayscale(1); }
+/* caption box in lessons */
+[data-design="shapes"] .bubble-callout .bubble { border-radius: 22px; background: var(--sh-orange); transform: rotate(-1.5deg) !important; }
 
 /* ---------- home (athlete) ---------- */
 [data-design="shapes"] .home-title { letter-spacing: -.06em; font-weight: 800; }

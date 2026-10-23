@@ -86,7 +86,9 @@ test('13 · modifying the prescription triggers Paulino; 14 · restore the origi
   const drama = page.getByRole('dialog', { name: 'Paulino is disappointed' });
   await expect(drama).toBeVisible();
   await expect(drama.locator('.paulino.mood-disappointed')).toBeVisible();
-  await expect(drama.locator('.bubble')).toContainText(/YOU CHANGED MY PROGRAM|WROTE THIS FOR A REASON|Paul made this program for a reason|Paul is crying/i);
+  // Paul's own lines, or a joke about the lift that was changed (bench)
+  const allowed = (ctx, lift) => page.evaluate(([c, l]) => [...window.Paulino.data.LINES.disappointed[c], ...window.Paulino.data.LIFTS[l].changed].map((x) => x.t || x), [ctx, lift]);
+  expect(await allowed('sets', 'bench')).toContain(await drama.locator('.bubble-text').textContent());
   await expect(drama).toContainText('Changing the number of sets');
   await settle(page);
   await page.waitForTimeout(250);
@@ -111,7 +113,8 @@ test('13 · modifying the prescription triggers Paulino; 14 · restore the origi
   await card(page, 'Deadlift').getByRole('button', { name: 'Change' }).click();
   await page.getByLabel('Exercise', { exact: true }).selectOption('barbell-row');
   await page.getByRole('button', { name: 'Save change' }).click();
-  await expect(page.getByRole('dialog', { name: 'Paulino is disappointed' }).locator('.bubble')).toContainText(/YOU CHANGED MY PROGRAM|WROTE THIS FOR A REASON|Paul picked that one/i);
+  await expect(page.getByRole('dialog', { name: 'Paulino is disappointed' })).toBeVisible();
+  expect(await allowed('replace', 'deadlift')).toContain(await page.getByRole('dialog', { name: 'Paulino is disappointed' }).locator('.bubble-text').textContent());
   await page.getByRole('button', { name: 'Change anyway' }).click();
   await settle(page);
   await expect(card(page, 'Barbell row')).toContainText('Changed by you');

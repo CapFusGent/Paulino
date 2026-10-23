@@ -1434,14 +1434,20 @@ window.Paulino = window.Paulino || {};
     protein: R('How many grams of protein did you have today?'),
   };
   const X = (t, w = 2) => ({ t, w });   // inspired by Paul, not a quote
+  /** Jokes for screens that are not about one lift. */
+  const GYM = {
+    general: ['Do you even lift? Yes. Yes you do.', 'Today: lift, eat, sleep, repeat.', "The bar doesn't care about excuses.", 'Strong is the new chill.',
+      'When in doubt, add protein.', 'Pre-workout: one coffee and Paul\'s program.'],
+    rest: ['Rest day: muscles growing, sofa complaining.', 'No gym today. Protein is still mandatory.', 'Recovery: the most underrated gains.', 'Rest day. Even Hercules took naps.'],
+  };
   const LINES = {
     motivated: {
       home: [PAUL.brace, PAUL.floor, PAUL.legday, PAUL.goodBrace, PAUL.deeper, PAUL.protein],   // the home bubble only uses Paul's real lines
       athlete: [PAUL.brace, PAUL.legday, PAUL.protein, X('Did you eat your protein, champ?'), X('Today we lift. Tomorrow we brag.', 1)],
-      rest_day: [PAUL.protein, X('Rest day! Muscles grow while you chill.', 1), X('Recovery is training too.', 1)],
+      rest_day: [PAUL.protein, X('Rest day! Muscles grow while you chill.', 1), ...GYM.rest.map((t) => X(t))],
       empty: [X('No program yet. Ask Paul for a link!'), X('Open the link or file Paul sent you.')],
       paul: [PAUL.brace, X('Who are we making stronger today?'), X('Build week 1. I do the boring part.'), PAUL.legday],
-      workout: [PAUL.brace, PAUL.legday, PAUL.protein, X('Warm-up first: empty bar for 10!'), X('Perfect reps beat heavy reps.', 1)],
+      workout: [PAUL.brace, PAUL.legday, PAUL.protein, X('Warm-up first: empty bar for 10!'), X('Perfect reps beat heavy reps.', 1), ...GYM.general.map((t) => X(t, 1))],
     },
     focused: {
       generic: [PAUL.goodBrace, PAUL.brace, X('DID YOU BRACE?!'), X('YOU CALL THAT A BRACE?!'), X('NO EGO LIFTING!'), X('Leave one or two reps in the tank.', 1)],
@@ -1471,15 +1477,105 @@ window.Paulino = window.Paulino || {};
     },
   };
 
-  /** Exercise-specific lines (workout tips and lessons), on top of the technique cues. */
-  const EXERCISE_LINES = {
-    squat: [PAUL.brace, PAUL.deeper, PAUL.floor, PAUL.legday],
-    deadlift: [PAUL.floor, PAUL.goodBrace, X('KEEP IT CLOSE!')],
-    'bench-press': [PAUL.goodBrace, X('CONTROL THAT BAR!'), X('DID YOU BRACE?!')],
-    'overhead-press': [PAUL.goodBrace, X('Squeeze everything!'), X('DID YOU BRACE?!')],
-    'barbell-row': [PAUL.goodBrace, X('Flat back, champ!')],
-    'pull-up': [X('Chin over the bar!'), PAUL.protein],
+  /*
+   * Gym-bro jokes and tips, one library per lift, so Paulino always talks about
+   * the lift on screen: squat jokes in squat places, deadlift jokes in deadlift places.
+   *   real     Paul's own catchphrases that fit this lift (weighted highest)
+   *   jokes    original gym-bro humour about this lift
+   *   tips     short technique reminders for this lift
+   *   done     an exercise's last set is ticked off
+   *   pr       a new personal record on this lift
+   *   changed  the athlete changes this lift in Paul's plan (with Paul's own lines)
+   *   mistakes / recap   lesson bubbles
+   * Pain, fatigue and illness never get jokes.
+   */
+  const LIFTS = {
+    squat: {
+      real: [PAUL.brace, PAUL.deeper, PAUL.floor, PAUL.legday],
+      jokes: ['Squats: because stairs should fear YOU.', "If it's not below parallel, it's a curtsy.", 'Quarter squats are just enthusiastic standing up.',
+        "Friends don't let friends skip leg day.", 'Chicken legs are for chickens.', 'Sit down like the chair owes you money.', 'Squat now, waddle later.',
+        'Tomorrow the toilet will be a boss fight. Worth it.', "Jeans tight on the thighs? That's the goal, champ.", 'Knees go out, gains come in.',
+        'The squat rack is for squats. Not curls. Never curls.'],
+      tips: ['Big breath, brace, THEN go down.', 'Knees follow your toes.', 'Hip crease below the knee.', 'Drive your hips straight up.', 'Whole foot on the floor.', 'Eyes on the floor a few metres ahead.'],
+      done: ['Squats done. You may take the lift today.', 'Legs: destroyed. Mission: accomplished.', 'Squats done! Walk it off like a cowboy.'],
+      pr: ['SQUAT PR! Doorframes, prepare yourselves.', 'New squat PR! Your quads need their own postcode.'],
+      changed: ['Fewer squats?! Your legs were looking forward to that!', 'Skipping squats is how chicken legs start.'],
+      mistakes: ['Half reps, half legs.', 'Knees caving? Push them OUT, champ!', "Heels up? You're squatting, not dancing ballet."],
+      recap: ['Now go squat. The stairs are waiting.', "Below parallel or it didn't happen!"],
+    },
+    deadlift: {
+      real: [PAUL.floor, PAUL.goodBrace, PAUL.brace],
+      jokes: ['Deadlift: pick it up, put it down, feel like a legend.', 'The floor is lava. Get the bar off it.', 'Lift heavy things, become a heavy thing.',
+        'Chalk is cheaper than excuses.', "If the bar isn't touching your shins, it's too far away.", 'Grip it like it owes you rent.',
+        'Your hamstrings just got a calendar invite.', 'Hips and shoulders rise together. Like a respectable drawbridge.', 'Deadlifts: the original "lift with your legs".'],
+      tips: ['Bar over the middle of your foot.', "Shins to the bar. Don't move it.", 'Chest up, back flat, then pull.', 'Drag the bar up your legs.', "Stand tall. Don't lean back."],
+      done: ['Deadlifts done! You picked up the planet.', 'Bar back on the floor. Earth: still spinning.', 'Deadlifts done. Your back says thank you. Later.'],
+      pr: ['DEADLIFT PR! The floor wants its weight back.', 'New deadlift PR! Gravity has filed a complaint.'],
+      changed: ['Changing the deadlift?! The bar was ready for you!', 'Less deadlifting? Your back muscles are sulking.'],
+      mistakes: ['Round back? Not in my gym!', 'The bar left your legs. Bring it HOME.', "Leaning back at the top isn't a victory pose."],
+      recap: ['Now go pick something heavy up. Properly.'],
+    },
+    bench: {
+      real: [PAUL.goodBrace, PAUL.brace],
+      jokes: ['International Chest Day is every Monday. Apparently.', 'Bench press: the most popular lie-down in the gym.', "Bouncing the bar? Your chest isn't a trampoline.",
+        "Butt on the bench, or it's a glute bridge with extra steps.", 'Spotter means spotter, not co-lifter.', 'Thumbs around the bar. Thumbless grips are for action movies.',
+        'Feet planted like you pay rent there.', 'Big chest, big hugs.'],
+      tips: ['Eyes under the bar before you unrack.', 'Squeeze your shoulder blades together.', "Touch the chest, don't bounce.", 'Press back over your shoulders.', 'Feet flat, glutes on the bench.', 'Wrists straight over your elbows.'],
+      done: ['Bench done! T-shirts everywhere are nervous.', 'Chest day: complete. Mirror: pending.'],
+      pr: ['BENCH PR! Your sleeves just gave up.', 'New bench PR! Every Monday is your day now.'],
+      changed: ['Messing with the bench?! On chest day?!', 'Fewer bench sets? The mirror is disappointed too.'],
+      mistakes: ['That bounce was a trampoline act.', 'Butt stays down, champ!', 'Thumbs AROUND the bar!'],
+      recap: ['Now go bench. Bring a spotter.', 'Touch, press, repeat. Easy.'],
+    },
+    press: {
+      real: [PAUL.goodBrace, PAUL.brace],
+      jokes: ['Overhead press: put the bar where the sky is.', 'Strict means strict. No sneaky leg drive.', 'Leaning back that far? Is this a press or the limbo?',
+        'Boulder shoulders start here.', 'Head out of the way. The bar has right of way.', 'Lock it out like you are showing the bar to the ceiling.'],
+      tips: ['Squeeze your glutes and stay tall.', 'Bar close to your face.', 'Head through once the bar passes it.', 'Lock your elbows overhead.', 'Forearms vertical at the start.'],
+      done: ['Press done! Top shelves just got easy.', 'Shoulders cooked. Medium rare.'],
+      pr: ['PRESS PR! Ceiling fans, watch out.', 'New press PR! Boulder shoulders unlocked.'],
+      changed: ['Changing the press?! The sky was waiting for that bar!', 'Fewer presses? Your shoulders wanted the attention.'],
+      mistakes: ['No limbo! Stay tall.', "Bending the knees? That's a push press, sneaky."],
+      recap: ['Bar up, head through, lock it out.'],
+    },
+    clean: {
+      real: [PAUL.floor, PAUL.goodBrace],
+      jokes: ['Power clean: deadlift, jump, catch, look cool.', 'Arms are ropes, not hooks!', 'Fast elbows or a very slow day.',
+        'Curl the clean and a coach somewhere sheds a tear.', 'Jump like you heard free pizza.'],
+      tips: ['Arms straight until the jump.', 'Bar on the thighs, then JUMP.', 'Elbows forward and high in the catch.', 'Slow off the floor, fast at the top.'],
+      done: ['Cleans done! Explosive. Like your protein shake.'],
+      pr: ['CLEAN PR! You are officially fast AND strong.'],
+      changed: ['Changing the clean?! It was going to be explosive!'],
+      mistakes: ['Did you just reverse-curl that?!', 'Elbows UP, champ!'],
+      recap: ['Jump, shrug, fast elbows!'],
+    },
+    row: {
+      real: [PAUL.goodBrace],
+      jokes: ['Rows: build a back that needs its own postcode.', 'Pull to your belly, not to your ego.', 'Wide back, wide doorways.', 'Row the bar like it owes you money.'],
+      tips: ['Flat back, chest over the bar.', 'Pull to your belly button.', 'Lower it under control.'],
+      done: ['Rows done! Your back is officially wider.'],
+      pr: ['ROW PR! Time for bigger shirts.'],
+      changed: ['Changing the rows?! Your back had plans!'],
+      mistakes: [], recap: [],
+    },
+    pullup: {
+      real: [],
+      jokes: ["Chin over the bar, or it's just hanging out.", 'Pull-ups: you versus gravity. Win.', 'Kipping is for the circus.', 'Every pull-up is a tiny victory over gravity.'],
+      tips: ['Start from a dead hang.', 'Chest up to the bar.', 'Lower all the way down.'],
+      done: ['Pull-ups done! Gravity is confused.'],
+      pr: ['PULL-UP PR! Doorframes everywhere are scared.'],
+      changed: ['Fewer pull-ups? The bar misses you already.'],
+      mistakes: [], recap: [],
+    },
   };
+  const LIFT_OF = { squat: 'squat', deadlift: 'deadlift', 'bench-press': 'bench', 'overhead-press': 'press', 'barbell-row': 'row', 'pull-up': 'pullup' };
+  const CATEGORY_LIFT = { squat: 'squat', deadlift: 'deadlift', bench: 'bench' };
+  const J = (t, w = 2) => ({ t, w });
+  /** Weighted lines of one kind for a lift (empty if unknown). */
+  const liftLines = (lift, kind, w = 2) => (kind === 'real' ? (LIFTS[lift]?.real || []) : (LIFTS[lift]?.[kind] || []).map((t) => J(t, w)));
+
+  /** Exercise-specific lines (workout tips and lessons): Paul's lines for the lift, its jokes and tips. */
+  const EXERCISE_LINES = Object.fromEntries(Object.entries(LIFT_OF).map(([ex, lift]) => [ex, [...liftLines(lift, 'real'), ...liftLines(lift, 'jokes'), ...liftLines(lift, 'tips')]]));
 
   const SAFETY = {
     painStop: 'If you feel strong or sharp pain, stop the exercise straight away and don’t do any more reps or sets of it. Rest for 48 hours and see how you feel.',
@@ -1553,6 +1649,8 @@ window.Paulino = window.Paulino || {};
     out.push(...(EXERCISE_LINES[exerciseId] || []));
     if (!e) return out;
     if (e.custom) {
+      const lift = CATEGORY_LIFT[e.category];
+      if (lift) out.push(...liftLines(lift, 'real'), ...liftLines(lift, 'jokes', 1));
       if (e.notes) out.push({ t: `Paul says: ${e.notes.split(/\n+/)[0].slice(0, 140)}`, w: 4 });
       for (const st of e.steps) { if (st.cue) out.push({ t: st.cue, w: 2 }); if (st.warning) out.push({ t: `Watch out: ${st.warning}`, w: 1 }); }
       if (out.length < 2) out.push(PAUL.brace, PAUL.goodBrace);
@@ -1564,7 +1662,21 @@ window.Paulino = window.Paulino || {};
     return out;
   }
 
+  /** Which lift library an exercise uses (built-in id, or a custom exercise's category). */
+  const liftOf = (exerciseId) => LIFT_OF[exerciseId] || CATEGORY_LIFT[exById(exerciseId)?.category] || null;
+  /** Lines for a whole workout: Paul's brace plus the jokes of the lifts in it. */
+  const dayLines = (exerciseIds) => {
+    const lifts = [...new Set(exerciseIds.map(liftOf).filter(Boolean))];
+    const out = [PAUL.brace, ...lifts.flatMap((l) => [...liftLines(l, 'real'), ...liftLines(l, 'jokes', 1)])];
+    return out.length > 1 ? out : LINES.motivated.workout;
+  };
+  /** Reaction lines for the lifts involved, then the general ones. */
+  const reactionLines = (exerciseIds, kind, fallback = []) => {
+    const lifts = [...new Set(exerciseIds.map(liftOf).filter(Boolean))];
+    return [...lifts.flatMap((l) => liftLines(l, kind, 3)), ...fallback];
+  };
   P.data = { EXERCISES, GENERAL_TIPS, CATEGORIES, STATES, LINES, PAUL, EXERCISE_LINES, SAFETY, exById, exName, cuesFor,
+    LIFTS, GYM, liftOf, liftLines, dayLines, reactionLines,
     CUSTOM_ID, normalizeExercise, registerCustom, unregisterCustom, customExercises, customFor };
 })(window.Paulino);
 </script>
@@ -2999,7 +3111,11 @@ window.Paulino = window.Paulino || {};
     </section>`;
     };
     const nSteps = l.steps.length;
-    const coverLines = P.data.EXERCISE_LINES[l.exercise] || (l.custom ? P.data.cuesFor(l.exercise) : P.data.LINES.happy.academy);
+    const D = P.data;
+    const lift = l.custom ? D.liftOf(l.exercise) : l.id;
+    const coverLines = l.custom ? D.cuesFor(l.exercise) : [...D.liftLines(lift, 'real'), ...D.liftLines(lift, 'jokes')];
+    const mistakeLines = [...D.liftLines(lift, 'mistakes', 3), { t: 'NO EGO LIFTING!', w: 1 }, { t: 'YOU CALL THAT A BRACE?!', w: 1 }];
+    const recapLines = D.liftLines(lift, 'recap', 3).length ? [...D.liftLines(lift, 'recap', 3), ...D.liftLines(lift, 'real')] : [{ t: "THAT'S A PROPER REP!", w: 2 }, PL.goodBrace];
     return html`
       <section class="lesson-cover reveal in">
         <span class="mag-kicker">${l.kicker}</span>
@@ -3018,12 +3134,12 @@ window.Paulino = window.Paulino || {};
         ${l.mistakesPhoto ? html`<div class="step-photo">${raw(slot(l.mistakesPhoto, `${l.title}: common mistakes`))}</div>` : ''}
         <div class="step-text"><span class="step-phase">Watch out</span><h2>Common mistakes</h2>
           <ul class="x-list">${l.mistakes.map((m) => html`<li>${m}</li>`)}</ul>
-          <div class="step-coach">${UI.mascot({ mood: 'disappointed', lines: [{ t: 'NO EGO LIFTING!', w: 3 }, { t: 'YOU CALL THAT A BRACE?!', w: 2 }, PL.goodBrace], size: 'sm', still: true, bubble: 'callout', key: `lesson.${l.id}.mistakes` })}</div></div>
+          <div class="step-coach">${UI.mascot({ mood: 'disappointed', lines: mistakeLines, size: 'sm', still: true, bubble: 'callout', key: `lesson.${l.id}.mistakes` })}</div></div>
       </section>` : ''}
       <section class="lesson-step lesson-recap reveal no-photo" data-step="${nSteps + 2}">
         <div class="step-text"><span class="step-phase">Recap</span><h2>Remember this</h2>
           <ol class="recap-list">${l.recap.map((m) => html`<li>${m}</li>`)}</ol>
-          <div class="step-coach">${UI.mascot({ mood: 'happy', lines: [PL.protein, PL.legday, { t: "THAT'S A PROPER REP!", w: 2 }], size: 'sm', still: true, key: `lesson.${l.id}.recap` })}</div>
+          <div class="step-coach">${UI.mascot({ mood: 'happy', lines: recapLines, size: 'sm', still: true, key: `lesson.${l.id}.recap` })}</div>
           ${l.sources.length ? html`<p class="small muted">Written from ${l.sources.map((s) => `${s.book}, "${s.chapter}" (${s.section})`).join('; ')}, in original wording. Draft, waiting for Paul's review. Paul's coaching comes first.</p>` : html`<p class="small muted">Written by Paul.</p>`}
           ${preview ? '' : html`<div class="btn-row">${next ? html`<a class="btn" href="#/academy/${next.id}">Next: ${next.title} →</a>` : ''}<a class="btn btn-ghost" href="#/academy">All lessons</a></div>`}</div>
       </section>`;
@@ -4199,7 +4315,7 @@ window.Paulino = window.Paulino || {};
         ${status === 'done' ? html`<p class="notice notice-ok" style="margin-top:14px">Completed. You can still correct your numbers. <a href="#/a/p/${prog.id}/d/${day.id}/done">See results</a></p>` : ''}
         ${status === 'skipped' ? html`<p class="notice" style="margin-top:14px">Skipped (${log.skipReason}). <button class="link-btn" data-unskip>Train it after all</button></p>` : ''}
         ${day.notes ? html`<p class="paul-note" style="margin-top:14px">${day.notes}</p>` : ''}
-        ${status !== 'done' && !(log?.entries.some((e) => e.sets.some((s) => s.done))) ? html`<div class="card" style="margin-top:14px">${UI.mascot({ mood: 'motivated', context: 'workout', size: 'sm', still: true })}</div>` : ''}
+        ${status !== 'done' && !(log?.entries.some((e) => e.sets.some((s) => s.done))) ? html`<div class="card" style="margin-top:14px">${UI.mascot({ mood: 'motivated', lines: P.data.dayLines(items.filter((y) => !y.removed).map((y) => y.exerciseId)), key: `workout.${day.id}`, size: 'sm', still: true })}</div>` : ''}
         ${items.map((x, i) => exCard(x, i + 1))}
         ${!items.length ? html`<div class="card"><p>Rest day: nothing planned.</p></div>` : ''}
         <div class="stack-sm" style="margin-top:24px">
@@ -4265,6 +4381,10 @@ window.Paulino = window.Paulino || {};
       const nx = markNext();
       if (s.done && nx && timer.prefs().auto) timer.start(x.rest || 120, `next: ${exName(nx.e.exerciseId)} set ${nx.i + 1}`);
       if (s.done && !nx) UI.react('happy', 'All sets done! Hit Finish.');
+      else if (s.done && entryFor(x).sets.every((st) => st.done)) {
+        const lines = P.data.reactionLines([x.exerciseId], 'done', [{ t: "THAT'S A PROPER REP!", w: 1 }]);
+        UI.react('happy', UI.pick(`done.${x.exerciseId}`, lines));
+      }
     }));
     offs.push(on(root, 'click', '[data-cue]', (e, el) => {
       const x = items.find((y) => y.id === el.dataset.cue);
@@ -4396,7 +4516,7 @@ window.Paulino = window.Paulino || {};
   function drama(type, orig, mod) {
     const ctx = type === 'sets' ? 'sets' : type === 'replace' ? 'replace' : 'deviate';
     return sheet({ className: 'sheet-drama', label: 'Paulino is disappointed', dismissable: false }, (body, close) => {
-      body.innerHTML = String(html`${UI.mascot({ mood: 'disappointed', context: ctx, size: 'lg', layout: 'stack' })}
+      body.innerHTML = String(html`${UI.mascot({ mood: 'disappointed', lines: [...UI.linesFor('disappointed', ctx), ...P.data.reactionLines([orig.exerciseId], 'changed')], key: `drama.${ctx}`, size: 'lg', layout: 'stack' })}
         <div class="card" style="margin-top:14px"><p style="margin:0 0 6px"><b>${TYPE_TEXT[type]}: that's not Paul's plan.</b></p>
           <p class="small mono" style="margin:0"><span class="orig">${exName(orig.exerciseId)} ${M.summarize(orig.sets)}</span><br>→ ${mod.removed ? 'skipped today' : `${exName(mod.exerciseId)} ${M.summarize(mod.sets)}`}</p>
           <p class="small muted" style="margin:8px 0 0">Saved only on this device. Paul's original stays untouched, and you can restore it any time.</p></div>
@@ -4463,7 +4583,10 @@ window.Paulino = window.Paulino || {};
     root.innerHTML = String(html`<div class="page no-nav stack">
       ${UI.topBar({ title: 'Results', back: '/a/program' })}
       <section class="celebrate"><div class="burst" aria-hidden="true">${raw(confetti)}</div>
-        ${UI.mascot({ mood: pain ? 'concerned' : 'celebrating', context: pain ? 'pain' : prs.length ? 'pr' : 'finish', size: 'lg', layout: 'stack' })}
+        ${pain ? UI.mascot({ mood: 'concerned', context: 'pain', size: 'lg', layout: 'stack' })
+          : UI.mascot({ mood: 'celebrating', size: 'lg', layout: 'stack', key: `results.${log.key}`,
+            lines: prs.length ? P.data.reactionLines(prs.map((r) => r.exerciseId), 'pr', P.data.LINES.celebrating.pr)
+              : [...P.data.LINES.celebrating.finish, ...P.data.reactionLines(found.day.exercises.map((e) => e.exerciseId), 'done')] })}
         <h1 style="margin-top:14px">${pain ? 'Session logged' : 'Session done!'}</h1><p class="muted">${found.day.name} · ${M.weekLabel(prog, found.wi)}</p></section>
       ${pain ? html`<div class="notice notice-danger">You reported pain. Rest it and tell Paul what happened. If it's severe or getting worse, get it checked by a professional.</div>` : ''}
       <div class="stats">

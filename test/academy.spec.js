@@ -1,5 +1,5 @@
 // Lifting Academy, home / landings, dialogue and the photo-collage system.
-import { test, expect, open, noHScroll } from './helpers.js';
+import { test, expect, open, noHScroll, seedPaulProgram } from './helpers.js';
 
 test('athlete home is led by the big photo collage and a real catchphrase', async ({ page }) => {
   await open(page, '#/');
@@ -22,14 +22,17 @@ test("dialogue: Paul's real lines weigh most, never the same line twice in a row
   await open(page);
   const r = await page.evaluate(() => {
     const P = window.Paulino;
-    const lines = P.data.LINES.motivated.workout;
-    const real = new Set(lines.filter((l) => l.real).map((l) => l.t));
-    let hits = 0, repeats = 0, prev = null;
-    for (let i = 0; i < 600; i++) { const t = P.ui.pick('test', lines); if (real.has(t)) hits++; if (t === prev) repeats++; prev = t; }
-    return { share: hits / 600, repeats, finish: P.data.LINES.celebrating.finish.map((l) => l.t || l), deviate: P.data.LINES.disappointed.deviate.map((l) => l.t || l) };
+    const lines = P.data.dayLines(['squat', 'bench-press', 'deadlift']);
+    const real = lines.filter((l) => l.real), other = lines.filter((l) => !l.real);
+    let repeats = 0, prev = null;
+    const seen = new Set();
+    for (let i = 0; i < 600; i++) { const t = P.ui.pick('test', lines); if (t === prev) repeats++; prev = t; seen.add(t); }
+    return { minReal: Math.min(...real.map((l) => l.w)), maxOther: Math.max(...other.map((l) => l.w)), jokes: other.length, seen: seen.size, repeats, finish: P.data.LINES.celebrating.finish.map((l) => l.t || l), deviate: P.data.LINES.disappointed.deviate.map((l) => l.t || l) };
   });
   expect(r.repeats).toBe(0);
-  expect(r.share).toBeGreaterThan(0.6);
+  expect(r.minReal).toBeGreaterThan(r.maxOther);   // each real catchphrase beats any single joke
+  expect(r.jokes).toBeGreaterThan(20);              // ...and there are plenty of jokes
+  expect(r.seen).toBeGreaterThan(20);
   expect(r.finish).toContain('GOOD! NOW, HOW MANY GRAMS OF PROTEIN DID YOU HAVE TODAY?');
   expect(r.deviate).toEqual(expect.arrayContaining(['WHAT?! YOU CHANGED MY PROGRAM?!', 'PAUL WROTE THIS FOR A REASON!']));
 });
@@ -135,4 +138,49 @@ test('workout cards link to the matching lesson; missing images fall back to pap
   await noHScroll(p2);
   expect(pageErrors).toEqual([]);
   await ctx.close();
+});
+
+test('jokes and tips match the section: each lesson and each workout card talks about its own lift', async ({ page }) => {
+  await open(page);
+  const L = await page.evaluate(() => {
+    const D = window.Paulino.data, t = (xs) => xs.map((x) => x.t || x);
+    return Object.fromEntries(Object.keys(D.LIFTS).map((k) => [k, {
+      cover: t([...D.liftLines(k, 'real'), ...D.liftLines(k, 'jokes')]), jokes: D.LIFTS[k].jokes,
+      mistakes: [...D.LIFTS[k].mistakes, 'NO EGO LIFTING!', 'YOU CALL THAT A BRACE?!'], recap: [...D.LIFTS[k].recap, ...t(D.LIFTS[k].real)],
+    }]));
+  });
+  for (const lift of ['squat', 'press', 'deadlift', 'bench', 'clean']) {
+    await open(page, `#/academy/${lift}`);
+    const others = Object.entries(L).filter(([k]) => k !== lift).flatMap(([, v]) => v.jokes);
+    // tap the cover a few times: every line belongs to this lift
+    const cover = page.locator('.lesson-cover .bubble');
+    for (let i = 0; i < 4; i++) {
+      const text = await cover.locator('.bubble-text').textContent();
+      expect(L[lift].cover, `${lift} cover`).toContain(text);
+      expect(others).not.toContain(text);
+      await cover.click();
+    }
+    expect(L[lift].mistakes, `${lift} mistakes`).toContain(await page.locator('.lesson-mistakes .bubble-text').textContent());
+    expect(L[lift].recap, `${lift} recap`).toContain(await page.locator('.lesson-recap .bubble-text').textContent());
+  }
+  // workout: the bench card's tips are bench tips/jokes or Paul's note, never squat or deadlift jokes
+  const pid = await seedPaulProgram(page, { name: 'Joke block' });
+  const url = await page.evaluate(async (id) => (await window.Paulino.share.makeLink(await window.Paulino.store.get('paul', id))).url, pid);
+  await page.goto(url);
+  await page.getByRole('button', { name: 'Save & start training' }).click();
+  await expect(page.getByRole('heading', { name: /Hey Marco/ })).toBeVisible();
+  const prog = await page.evaluate(async () => (await window.Paulino.store.all('athlete'))[0]);
+  await open(page, `#/a/p/${prog.id}/d/${prog.weeks[0].days[0].id}`);
+  const bench = page.locator('.ex-card').filter({ has: page.getByRole('heading', { name: 'Bench press' }) });
+  const benchOk = await page.evaluate(() => window.Paulino.data.cuesFor('bench-press', '').map((x) => x.t));
+  for (let i = 0; i < 6; i++) {
+    const text = await bench.locator('[data-cue-text]').textContent();
+    expect(benchOk.some((t) => t === text) || text.startsWith('Paul says:')).toBe(true);
+    expect([...L.squat.jokes, ...L.deadlift.jokes]).not.toContain(text);
+    await bench.locator('.tip').click();
+  }
+  // the opening bubble only jokes about today's lifts (squat, bench, deadlift)
+  const dayOk = await page.evaluate(() => window.Paulino.data.dayLines(['squat', 'bench-press', 'deadlift']).map((x) => x.t));
+  expect(dayOk).toContain(await page.locator('.card .paulino .bubble-text').first().textContent());
+  expect([...L.press.jokes, ...L.pullup.jokes]).not.toContain(await page.locator('.card .paulino .bubble-text').first().textContent());
 });
